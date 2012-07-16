@@ -8,7 +8,7 @@
 
 	<?php if(isset($error)) : ?>
 		<div class="message error">
-			<?php echo $error; ?>
+			<?php echo $error;  ?>
 		</div>
 			
 	<?php endif; ?>	
@@ -20,7 +20,7 @@
 	<?php endif; ?>	
 
 	<div class="message">
-		Enter your Copify <strong>Email</strong> and <strong>API Key</strong>. <a href="#">View instructions how to get these</a>
+		Enter your Copify <strong>Email</strong> and <strong>API Key</strong>. <a target="blank" href="https://www.copify.com/users/settings">Get your API key from Copify</a>
 	</div>	
 
 	<form method="POST" class="CopifyForm CopifyWell">
@@ -36,7 +36,21 @@
 			<div class="input">
 				<input name="CopifyApiKey" value="<?php echo $CopifyApiKey; ?>" class="CopifyApiKey" type="text" maxLength="40" />
 			</div>
-
+			
+			<label for="CopifyApiKey">Locale</label>
+			<div class="input">
+				<select name="CopifyLocale">
+					<?php
+					foreach($CopifyAvailableLocales as $loc => $name) {
+						$selected = '';
+						if($CopifyLocale == $loc) {
+							$selected = 'selected="selected"';
+						}
+						echo sprintf('<option value="%s" %s>%s</option>' , $loc , $selected, $name); 
+					}
+					?>
+				</select>	
+			</div>
 			<?php submit_button(); ?>
 		</fieldset>			
 	</form>

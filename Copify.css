@@ -76,6 +76,16 @@
 	background-image:url('writer_std.png');
 }
 
+/* Dashboard index */
+.CopifyPage.CopifyDashboard td.statusName {
+	padding-left:25px;
+}
+
+.CopifyPage.CopifyDashboard td.savedInWordpress {
+	background-image: url("wordpress_sprite.png");
+    background-position: 0 -76px;
+    background-repeat: no-repeat;
+}
 
 /* View single job */
 .CopifyPage .CopifyViewJob h1 {
@@ -141,6 +151,13 @@
 	margin-bottom:3px;
 }
 
+.CopifyPage .CopifyForm label.error {
+	color:red;
+	font-size:10px;
+	background:none;
+	border:none;
+}
+
 .CopifyPage .CopifyForm .input input[type=text], 
 .CopifyPage .CopifyForm .input select,
 .CopifyPage .CopifyForm .input textarea {
@@ -162,7 +179,8 @@
 	color:#666;
 }
 
-.CopifyPage .CopifyForm input[type=submit].CopifyGreen:hover { 
+.CopifyPage .CopifyForm input[type=submit].CopifyGreen:hover,
+.CopifyPage .CopifyForm input[type=button].CopifyGreen:hover { 
 	color:#fff;
 }
 
@@ -228,6 +246,37 @@
 .CopifyPage .on.desc:before {
 	content:"▲ ";
 }
+
+
+/* New Order */
+.CopifyPage .CopifyOrderCost {
+	float:right;
+	font-size:30px;
+	color:#999;
+}
+
+.CopifyPage .CopifyOrderCost.loading {
+	padding-left:30px;
+	background-image:url('CopifyIndicator.gif');
+	background-position:0 0;
+	background-repeat:no-repeat;
+}
+
+.CopifyPage .CopifyOrderCost:after {
+	content: " inc. Tax";
+	font-size:11px;
+}
+
+.CopifyPage .CopifyOrderDeliveryTime {
+	float:right;
+	clear:both;
+	color:#999;
+}
+
+.CopifyPage .CopifyOrderDeliveryTime:before {
+	content:'Est. Delivery: ';
+}
+
 
 
 /* Job Feedback */

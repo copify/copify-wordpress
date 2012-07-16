@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Publish content sourced through Copify to your Wordpress blog
-Version: 1.0
+Version: 0.9
 Author: Rob McVey
 Author URI: http://www.copify.com/
 License: GPL2
@@ -23,6 +23,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+
 require('Lib/Copify.php');
 
 class CopifyWordpress {
@@ -30,8 +31,8 @@ class CopifyWordpress {
 	public $Copify;
 	
 	public $copifyDirName = 'copify-wordpress';
-			
-			
+	
+				
 	/**
 	 * cssAndScripts
 	 *
@@ -40,15 +41,21 @@ class CopifyWordpress {
 	 **/
 	public function CopifyCssAndScripts() {
 		
-		// JS
+		// JS - our own
 		$js_url = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'Copify.js');
-		$bootstrap_url = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'bootstrap-modal.js');
 		wp_enqueue_script('copify' , $js_url, array('jquery'));
+		
+		// JS - bootsrap modal
+		$bootstrap_url = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'bootstrap-modal.js');
 		wp_enqueue_script('bootstrap-modal' , $bootstrap_url, array('jquery'));
+		
+		// JS - jquery validate
+		$jquery_validate = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'jquery.validate.js');
+		wp_enqueue_script('jquery.validate' , $jquery_validate, array('jquery'));
 		
 		// CSS
 		$css_url = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'Copify.css');
-		wp_enqueue_style('copify', $css_url, null, null, null ); 
+		wp_enqueue_style('copify' , $css_url); 
 		
 	}
 	
@@ -72,11 +79,13 @@ class CopifyWordpress {
 				// The form input
 				$CopifyEmail = $_POST['CopifyEmail'];
 				$CopifyApiKey = $_POST['CopifyApiKey'];
+				$CopifyLocale = $_POST['CopifyLocale'];
 				
 				// Array to save
 				$toSave = array(
-					'CopifyEmail' => $_POST['CopifyEmail'],
-					'CopifyApiKey' => $_POST['CopifyApiKey'],
+					'CopifyEmail' => $CopifyEmail,
+					'CopifyApiKey' => $CopifyApiKey,
+					'CopifyLocale' => $CopifyLocale
 				);
 				
 				// Update or Add?
@@ -86,6 +95,9 @@ class CopifyWordpress {
 					add_option('CopifyLoginDetails', $toSave, null, 'no');
 				}
 				
+				// Clear any options cached (maybe they switched locales? So this is impoartant)
+				$this->CopifyClearCache();
+				
 				$success = "Settings updated!";
 				
 			} 
@@ -93,7 +105,21 @@ class CopifyWordpress {
 			elseif($CopifyLoginDetails) {
 				$CopifyEmail = $CopifyLoginDetails['CopifyEmail'];
 				$CopifyApiKey = $CopifyLoginDetails['CopifyApiKey'];
+				$CopifyLocale = $CopifyLoginDetails['CopifyLocale'];
 			} 
+			
+			// All available locales
+			$CopifyAvailableLocales = array(
+				'uk' => 'UK',
+				'us' => 'USA',
+			);
+			
+			// Flash message of some kind?
+			if(isset($_GET['flashMessage']) && !empty($_GET['flashMessage'])) {
+				$message = $_GET['flashMessage'];
+			}
+			
+			
 		} 
 		catch(Exception $e) {
 			$error = $e->getMessage();
@@ -112,12 +138,17 @@ class CopifyWordpress {
 	public function CopifySetApiClass() {
 		
 		$CopifyLoginDetails = get_option('CopifyLoginDetails' , false);
-		
+
 		if(!$CopifyLoginDetails) {
-			throw new Exception('Please enter your Copify API key in the <a href="admin.php?page=CopifySettings">Settings page</a>');
+			wp_die('<pre>To connect to Copify you must enter your API key on the <a href="admin.php?page=CopifySettings">Settings page</a></pre>');
 		} 
+
+		// Initialise the Copify API helper class
+		$this->Copify = new Copify($CopifyLoginDetails['CopifyEmail'] , $CopifyLoginDetails['CopifyApiKey']);
 		
-		$this->Copify = new Copify($CopifyLoginDetails['CopifyEmail'] , $CopifyLoginDetails['CopifyApiKey']);				
+		// Set the correct end point for the API
+		//$this->Copify->basePath = sprintf('https://%s.copify.com/api' , $CopifyLoginDetails['CopifyLocale']);
+
 	}
 	
 	
@@ -196,6 +227,9 @@ class CopifyWordpress {
 			$categoryList = $this->CopifyFlatten($CopifyCategories);
 			$budgetList = $this->CopifyFlatten($CopifyBudgets);
 			$statusList = $this->CopifyFlatten($CopifyStatuses);
+			
+			// An array of Copify job IDs which are saved in wordpress as posts
+			$CopifyPostIds = $this->CopifyGetCopifyPostIds();
 
 		}
 		catch(Exception $e) {
@@ -207,13 +241,13 @@ class CopifyWordpress {
 	
 	
 	/**
-	 * Place a new order for copy via API
+	 * Page to place a new order
 	 *
 	 * @return void
 	 * @author Rob Mcvey
 	 **/
 	public function CopifyOrder() {
-		
+
 		try {
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
@@ -230,20 +264,64 @@ class CopifyWordpress {
 			
 			// Sort categories alphabetacly
 			asort($categoryList);
-			
-			// Handle form
-			if(!empty($_POST) && isset($_POST['name'])) {
-				$result = $this->Copify->jobsAdd($_POST); 	
-				var_dump($result);
-			}	
-			
+
 		} 
-		catch(Exception $e) {
-			$error = $e->getMessage();
+		catch(Exception $e) {	
+
+			$error = $e->getMessage();	
+			
+			// Is this a balance exception? Link to "add more funds"
+			if(preg_match('/funds/i' , $error)) {
+				$error .= '. <a href="http://www.copify.com/payments/add" target="blank" >Make a payment</a>';
+			}
+
 		}
-		
+
 		require('CopifyOrder.php');
 		
+	}
+	
+	
+	/**
+	 * Ajax method to place and order via the API
+	 *
+	 * @return void
+	 * @author Rob Mcvey
+	 **/
+	public function CopifyAjaxOrder() {
+
+		// A default response
+		$response = array(
+			'status' => 'error',
+			'message' => 'Broke',
+			'response' => ''
+		);
+		
+		try {
+						
+			if(empty($_POST)) {
+				throw new Exceptioon('POST request required');
+			}
+			
+			// Initialise Copify API class
+			$this->CopifySetApiClass();
+			
+			parse_str($_POST['job'], $newJob);
+			
+			$response['response'] = $this->Copify->jobsAdd($newJob);
+			$response['message'] = 'New job added';
+			$response['status'] = 'success';
+			
+			echo json_encode($response);
+			die(); // urgh. Wordpress u so silly.
+
+		} 
+		catch(Exception $e) {
+			$response['message'] = $e->getMessage();
+			echo json_encode($response);
+			die(); // urgh. Wordpress u so silly.
+		}
+
 	}
 	
 	
@@ -440,6 +518,55 @@ class CopifyWordpress {
 	
 	
 	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Rob Mcvey
+	 **/
+	public function CopifyQuoteWords() {
+		
+		// A default response
+		$response = array(
+			'status' => 'error',
+			'message' => 'Broke',
+			'response' => ''
+		);
+		
+		try {
+			
+			if(empty($_POST)) {
+				throw new Exceptioon('POST request required');
+			}
+			
+			// Get the thingy
+			$job_budget_id = $_POST['job_budget_id'];
+			$words = $_POST['words'];
+			
+			// Initialise Copify API class
+			$this->CopifySetApiClass();
+			
+			// Fetch a quote via API
+			$result = $this->Copify->jobBudgetsView($job_budget_id,$words);
+			
+			// Build the success response
+			$response['status'] = 'success';
+			$response['response'] = $result;
+			$response['message'] = sprintf('Quote for %s' , $words);
+			
+			echo json_encode($response);
+			die(); // urgh. Wordpress u so silly.
+		
+		}	
+		catch(Exception $e) {
+			$response['message'] = $e->getMessage();
+			echo json_encode($response);
+			die(); // urgh. Wordpress u so silly.
+		}
+		
+	}
+	
+	
+	/**
 	 * Adds a post to wordpress db as a draft and saves an option with the ID ref
 	 *
 	 * @return int $new_wp_id The new WordPress post id
@@ -485,6 +612,34 @@ class CopifyWordpress {
 		$wpdb->query( 
 			$wpdb->prepare($query , $wp_post_id , 'CopifyJobIdExists%')
 		);
+	}
+	
+	
+	/**
+	 * Returns an array of all Copify job ID's already saved as a post
+	 *
+	 * @return array $ids An array of Copify IDs which are saved in wordpress db
+	 * @author Rob Mcvey
+	 **/
+	public function CopifyGetCopifyPostIds() {
+		global $wpdb;
+		$query = "SELECT REPLACE(`option_name` , 'CopifyJobIdExists' , '') as `option_name` FROM $wpdb->options WHERE `option_name` LIKE %s ";
+		return $wpdb->get_col( 
+			$wpdb->prepare($query , 'CopifyJobIdExists%')
+		);
+	}
+	
+	
+	/**
+	 * Remove any bits and bobs we've cached
+	 *
+	 * @return void
+	 * @author Rob Mcvey
+	 **/
+	public function CopifyClearCache() {
+		delete_transient('CopifyBudgets');
+		delete_transient('CopifyCategories');
+		delete_transient('CopifyStatuses');
 	}
 	
 	
@@ -621,7 +776,6 @@ class CopifyWordpress {
 	 * @author Rob Mcvey
 	 **/
 	public function CopifyAdminMenu() {
-		
 		// add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position )
 		$icon = plugin_dir_url(null).$this->copifyDirName.DIRECTORY_SEPARATOR.'icon16.png';
 		add_menu_page('Copify Wordpress Plugin', 'Copify', 'publish_posts', 'CopifyDashboard', array($this, 'CopifyDashboard'), $icon , 6); 
@@ -631,6 +785,7 @@ class CopifyWordpress {
 		add_submenu_page('CopifyDashboard', 'Copify Wordpress Settings', 'Settings', 'publish_posts', 'CopifySettings', array($this, 'CopifySettings'));
 		add_submenu_page('CopifySettings', 'Copify View Job', 'View', 'publish_posts', 'CopifyViewJob', array($this, 'CopifyViewJob'));
 	}
+	
 
 }
 
@@ -651,3 +806,9 @@ add_action('wp_ajax_CopifyPostFeedback', array($CopifyWordpress, 'CopifyPostFeed
 
 // Ajax action for moving an already approved job to drafts
 add_action('wp_ajax_CopifyMoveToDrafts', array($CopifyWordpress, 'CopifyMoveToDrafts'));
+
+// Ajax method to get a quote for words
+add_action('wp_ajax_CopifyQuoteWords', array($CopifyWordpress, 'CopifyQuoteWords'));
+
+// Ajax method to post a new job
+add_action('wp_ajax_CopifyAjaxOrder', array($CopifyWordpress, 'CopifyAjaxOrder'));

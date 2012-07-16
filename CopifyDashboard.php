@@ -5,7 +5,7 @@
 	</div>
 	
 	<h2>Copify
-		<a class="add-new-h2" id="CopifyNewOrder" href="#">Order content</a>
+		<a class="add-new-h2" id="CopifyNewOrder" href="?page=CopifyOrder">Order content</a>
 	</h2>
 	
 	<?php if(isset($error)) : ?>
@@ -71,7 +71,7 @@
 		<?php foreach($CopifyJobs['jobs'] as $k => $job) : ?>
 		<tr>
 			<td><?php echo $job['id']; ?></td>
-			<td>
+			<td class="">
 				<?php $JobId = $job['id']; ?>
 				<a href="<?php echo "?page=CopifyViewJob&id=$JobId"; ?>"><?php echo $job['name']; ?></a>
 			</td>
@@ -89,13 +89,20 @@
 					<?php echo $budgetName; ?>
 				</span>	
 			</td>
-			<td>
-				<?php 
-				$statusName = '' ;
-				if(array_key_exists($job['job_status_id'] , $statusList)) {
-					$statusName = $statusList[$job['job_status_id']];
-				}
-				?>
+			<?php 
+			$statusName = '' ;
+			if(array_key_exists($job['job_status_id'] , $statusList)) {
+				$statusName = $statusList[$job['job_status_id']];
+			}
+				
+			// Is this in wordpress as a post?
+			$linkClass = 'statusName';
+			if(in_array($job['id'] , $CopifyPostIds)) {
+				$linkClass .= ' savedInWordpress';
+			}
+				
+			?>
+			<td class="<?php echo $linkClass; ?>">
 				<span class="<?php echo str_replace(' ' , '_', strtolower($statusName)); ?>">
 					<?php echo $statusName; ?>
 				</span>		
@@ -103,6 +110,9 @@
 		</tr>
 		<?php endforeach; ?>	
 	</table>
+	
+	<br/>
+	<a class="CopifyButton CopifyGreen" href="?page=CopifyOrder">Order content</a>
 	
 	<div class="tablenav bottom">
 		<div class="tablenav-pages">

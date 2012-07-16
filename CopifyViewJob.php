@@ -154,6 +154,7 @@
 				</span> &nbsp; | &nbsp;
 				<?php 
 				$budgetName = '' ;
+				
 				if(array_key_exists($job['job_budget_id'] , $budgetList)) { // Budget name
 					$budgetName = $budgetList[$job['job_budget_id']];
 				}

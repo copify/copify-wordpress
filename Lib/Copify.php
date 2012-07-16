@@ -204,6 +204,26 @@ class Copify {
 	
 	
 	/**
+	 * View a single job budget
+	 *
+	 * @return array
+	 * @author Rob Mcvey
+	 * @param int $id of the job budget to fetch
+	 * @param int $words Optional, pass a value of words for a quote
+	 **/
+	public function jobBudgetsView($id = null, $words = null) {
+		if(!$id) {
+			throw new InvalidArgumentException('You must pass an a budget ID to this method');
+		}
+		$this->resource = "job_budgets".DS.$id;
+		if($words) {
+			$this->params = "?words=$words";
+		}
+		return $this->makeRequest();
+	}
+	
+	
+	/**
 	 * Get an array of availble job budgets/pricing
 	 *
 	 * @return array
