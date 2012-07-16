@@ -211,9 +211,9 @@
 					<p>When your job is complete, you will be notified by email and you will have chance to review the content before you publish it</p>
 					<ul>
 						<li><span class="open">Open</span> - Your job is in the queue for the next availalbe writer</li>
-						<li><span class="in_progress">In progress</span> -  Your job is in the queue for the next availalbe writer</li>
-						<li><span class="completed">Completed</span> -  Your job is in the queue for the next availalbe writer</li>
-						<li><span class="approved">Approved</span> -  Your job is in the queue for the next availalbe writer</li>
+						<li><span class="in_progress">In progress</span> -  A writer is working on your content, you will receive an email once complete</li>
+						<li><span class="completed">Completed</span> - Your content is ready for you to approve</li>
+						<li><span class="approved">Approved</span> -  The content has been approved and is ready to publish</li>
 					</ul>
 				</div>	
 			<?php endif; ?>
@@ -441,6 +441,16 @@ jQuery(document).ready(function() {
 		});
 		
 	});
+	
+	<?php if($job['job_status_id'] != 4) : ?>
+	
+	//Prevent copy paste from copy area
+	jQuery('.CopifyViewFinishedCopy').bind('cut copy paste', function(e) {
+		e.preventDefault();
+		alert('Please approve before copying! Thanks!');
+	});
+	
+	<?php endif; ?>
 	
 });
 </script>
