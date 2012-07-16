@@ -812,7 +812,7 @@ class CopifyWordpress {
 $CopifyWordpress = new CopifyWordpress();
 
 // Add our js and css
-add_action('wp_print_scripts', array($CopifyWordpress, 'CopifyCssAndScripts'));
+add_action('admin_init', array($CopifyWordpress, 'CopifyCssAndScripts'));
 
 // Add our admin menu 
 add_action('admin_menu', array($CopifyWordpress, 'CopifyAdminMenu'));
