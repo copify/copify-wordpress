@@ -23,7 +23,7 @@ class Copify {
 	/**
 	 * Dev / Live mode
 	 */
-	public $mode = 'dev';
+	public $mode = 'live';
 	
 	
 	/**
