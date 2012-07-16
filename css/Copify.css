@@ -11,7 +11,7 @@
 }
 
 .CopifyPage #icon-copify {
-	background-image:url('icon32.png'); 
+	background-image:url('../img/icon32.png'); 
 	background-repeat:no-repeat;
 	background-position:0 0;
 }
@@ -69,11 +69,11 @@
 }
 
 .CopifyPage .professional {
-	background-image:url('writer_pro.png');
+	background-image:url('../img/writer_pro.png');
 }
 
 .CopifyPage .standard {
-	background-image:url('writer_std.png');
+	background-image:url('../img/writer_std.png');
 }
 
 /* Dashboard index */
@@ -82,7 +82,7 @@
 }
 
 .CopifyPage.CopifyDashboard td.savedInWordpress {
-	background-image: url("wordpress_sprite.png");
+	background-image: url("../img/wordpress_sprite.png");
     background-position: 0 -76px;
     background-repeat: no-repeat;
 }
@@ -123,7 +123,7 @@
 	width:16px;
 	display:inline-block;
 	margin:0 8px;
-	background-image:url('CopifyIndicator.gif');
+	background-image:url('../img/CopifyIndicator.gif');
 	background-position:0 0;
 	background-repeat:no-repeat;
 }
@@ -257,7 +257,7 @@
 
 .CopifyPage .CopifyOrderCost.loading {
 	padding-left:30px;
-	background-image:url('CopifyIndicator.gif');
+	background-image:url('../img/CopifyIndicator.gif');
 	background-position:0 0;
 	background-repeat:no-repeat;
 }
@@ -302,7 +302,7 @@
 }
 
 .CopifyPage .CopifyStars {
-    background-image: url("CopifyStars.png");
+    background-image: url("../img/CopifyStars.png");
     background-position: -97px 0;
     background-repeat: no-repeat;
     display: inline-block;

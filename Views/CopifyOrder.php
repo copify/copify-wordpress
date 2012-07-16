@@ -23,6 +23,13 @@
 			<?php echo $message; ?>
 		</div>
 	<?php endif; ?>
+	
+	
+	<?php
+	// If we don't have our category or budget arrays it means we can't place an order, 
+	// and that the API key is wrong so don't show the form
+	if(is_array($budgetList) && is_array($categoryList)) :
+	?>
 
 	<form id="CopifyOrderForm" class="CopifyForm CopifyWell">
 		<fieldset>
@@ -109,6 +116,8 @@
 		
 		</fieldset>
 	</form>	
+	
+	<?php endif; ?>
 
 </div>
 

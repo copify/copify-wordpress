@@ -26,6 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 require('Lib/Copify.php');
 
+if(!defined('DS')) {
+	define('DS' , DIRECTORY_SEPARATOR);
+}
+
 class CopifyWordpress {
 
 	public $Copify;
@@ -42,19 +46,19 @@ class CopifyWordpress {
 	public function CopifyCssAndScripts() {
 		
 		// JS - our own
-		$js_url = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'Copify.js');
+		$js_url = plugins_url($this->copifyDirName.DS.'js'.DS.'Copify.js');
 		wp_enqueue_script('copify' , $js_url, array('jquery'));
 		
 		// JS - bootsrap modal
-		$bootstrap_url = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'bootstrap-modal.js');
+		$bootstrap_url = plugins_url($this->copifyDirName.DS.'js'.DS.'bootstrap-modal.js');
 		wp_enqueue_script('bootstrap-modal' , $bootstrap_url, array('jquery'));
 		
 		// JS - jquery validate
-		$jquery_validate = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'jquery.validate.js');
+		$jquery_validate = plugins_url($this->copifyDirName.DS.'js'.DS.'jquery.validate.js');
 		wp_enqueue_script('jquery.validate' , $jquery_validate, array('jquery'));
 		
 		// CSS
-		$css_url = plugins_url($this->copifyDirName.DIRECTORY_SEPARATOR.'Copify.css');
+		$css_url = plugins_url($this->copifyDirName.DS.'css'.DS.'Copify.css');
 		wp_enqueue_style('copify' , $css_url); 
 		
 	}
@@ -125,7 +129,7 @@ class CopifyWordpress {
 			$error = $e->getMessage();
 		}
 		
-		require('CopifySettings.php');
+		require('Views/CopifySettings.php');
 	}
 	
 	
@@ -147,7 +151,7 @@ class CopifyWordpress {
 		$this->Copify = new Copify($CopifyLoginDetails['CopifyEmail'] , $CopifyLoginDetails['CopifyApiKey']);
 		
 		// Set the correct end point for the API
-		//$this->Copify->basePath = sprintf('https://%s.copify.com/api' , $CopifyLoginDetails['CopifyLocale']);
+		$this->Copify->basePath = sprintf('https://%s.copify.com/api' , $CopifyLoginDetails['CopifyLocale']);
 
 	}
 	
@@ -233,10 +237,18 @@ class CopifyWordpress {
 
 		}
 		catch(Exception $e) {
+			
 			$error = $e->getMessage();
+			
+			// Bad API creectials?
+			if(preg_match('/user-agent/i' , $error)) {
+				$error .= '. <a href="?page=CopifySettings" >Check settings</a>';
+			}
+			
+			
 		}
 		
-		require('CopifyDashboard.php');
+		require('Views/CopifyDashboard.php');
 	}
 	
 	
@@ -249,6 +261,7 @@ class CopifyWordpress {
 	public function CopifyOrder() {
 
 		try {
+			
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
 		
@@ -274,10 +287,16 @@ class CopifyWordpress {
 			if(preg_match('/funds/i' , $error)) {
 				$error .= '. <a href="http://www.copify.com/payments/add" target="blank" >Make a payment</a>';
 			}
+			
+			// Bad API creectials?
+			if(preg_match('/user-agent/i' , $error)) {
+				$error .= '. <a href="?page=CopifySettings" >Check settings</a>';
+			}
+			
 
 		}
 
-		require('CopifyOrder.php');
+		require('Views/CopifyOrder.php');
 		
 	}
 	
@@ -378,7 +397,7 @@ class CopifyWordpress {
 			$error = $e->getMessage();
 		}
 		
-		require('CopifyViewJob.php');
+		require('Views/CopifyViewJob.php');
 		
 	}
 	
@@ -518,7 +537,7 @@ class CopifyWordpress {
 	
 	
 	/**
-	 * undocumented function
+	 * Ajax request to retrieve a quote for a word count
 	 *
 	 * @return void
 	 * @author Rob Mcvey
@@ -777,7 +796,7 @@ class CopifyWordpress {
 	 **/
 	public function CopifyAdminMenu() {
 		// add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position )
-		$icon = plugin_dir_url(null).$this->copifyDirName.DIRECTORY_SEPARATOR.'icon16.png';
+		$icon = plugin_dir_url(null).$this->copifyDirName.DS.'img'.DS.'icon16.png';
 		add_menu_page('Copify Wordpress Plugin', 'Copify', 'publish_posts', 'CopifyDashboard', array($this, 'CopifyDashboard'), $icon , 6); 
 		
 		//add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function );

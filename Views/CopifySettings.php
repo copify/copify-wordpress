@@ -34,7 +34,7 @@
 
 			<label for="CopifyApiKey">API Key</label>
 			<div class="input">
-				<input name="CopifyApiKey" value="<?php echo $CopifyApiKey; ?>" class="CopifyApiKey" type="text" maxLength="40" />
+				<input name="CopifyApiKey" style="width:300px;" value="<?php echo $CopifyApiKey; ?>" class="CopifyApiKey" type="text" maxLength="40" />
 			</div>
 			
 			<label for="CopifyApiKey">Locale</label>
