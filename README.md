@@ -1,4 +1,4 @@
-# Copify Wordpress Plugin
+# Copify Wordpress Plugin 0.9.2
 
 Copify gives you access to professionally written content from hundreds of approved writers.
 
@@ -15,5 +15,3 @@ All you have to do is fill in a simple brief detailing your requirements and a w
 1. Upload the `copify-wordpress` directory to your `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu
 3. Enter your Copify API key which can be found here: [Copify Settings](https://www.copify.com/users/settings)
-
-

@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Publish content sourced through Copify to your WordPress blog
-Version: 0.9
+Version: 0.9.2
 Author: Rob McVey
 Author URI: http://www.copify.com/
 License: GPL2
@@ -34,7 +34,7 @@ class CopifyWordpress {
 
 	public $Copify;
 	
-	public $copifyDirName = 'copify-wordpress';
+	public $copifyDirName = 'copify';
 	
 				
 	/**
