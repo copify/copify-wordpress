@@ -1,4 +1,4 @@
-# Copify Wordpress Plugin 0.9.2
+# Copify Wordpress Plugin 0.9.3
 
 Copify gives you access to professionally written content from hundreds of approved writers.
 
