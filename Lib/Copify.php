@@ -317,10 +317,9 @@ class Copify {
 		}
 		curl_setopt($curlyWurly , CURLOPT_HTTPHEADER, $headers);
 
-		if($this->mode == 'dev') {
-			curl_setopt($curlyWurly, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($curlyWurly, CURLOPT_SSL_VERIFYHOST, false);
-		}
+		// Some users have issues with CA certs so encrypt but dont auth
+		curl_setopt($curlyWurly, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curlyWurly, CURLOPT_SSL_VERIFYHOST, false);
 		
 		if(!$response = curl_exec($curlyWurly)) {
 			throw new Exception(curl_error($curlyWurly));

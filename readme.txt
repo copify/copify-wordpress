@@ -1,5 +1,5 @@
 === Copify ===
-Version: 0.9.2
+Version: 0.9.3
 Contributors: robmcvey
 Tags: guest blogger, guest blogging, posts, links, content, copywriting, blogging, writers, writing, creation, seo
 Requires at least: 3.2.0
