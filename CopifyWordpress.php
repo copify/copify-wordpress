@@ -34,7 +34,7 @@ class CopifyWordpress {
 
 	public $Copify;
 	
-	public $copifyDirName = 'copify-wordpress';
+	public $copifyDirName = 'copify';
 	
 				
 	/**
