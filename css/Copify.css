@@ -1,0 +1,337 @@
+/*
+   Copify.css
+   copify-wordpress
+   
+   Created by Rob Mcvey on 2012-07-02.
+   Copyright 2012 Rob Mcvey. All rights reserved.
+*/
+
+.CopifyPage { 
+	color:#464646;
+}
+
+.CopifyPage #icon-copify {
+	background-image:url('../img/icon32.png'); 
+	background-repeat:no-repeat;
+	background-position:0 0;
+}
+
+.CopifyFloatRight {
+	float:right;
+}
+.CopifyFloatLeft {
+	float:left;
+}
+
+/* Messages */
+.CopifyPage .message {
+	padding:8px 15px;
+	margin:15px 0;
+	border-radius: 3px 3px 3px 3px;
+	background:#FFFBCC;
+	border:1px solid #E6DB55;
+}
+
+.CopifyPage .error {
+	background:#FFEBE8;
+	border:1px solid #CC0000;
+}
+
+.CopifyPage .success {
+	background:#C1FFC1;
+	border:1px solid #32CD32;
+}
+
+/* Job Status */
+.CopifyPage .approved {
+	color:green;
+	font-weight:bold;
+}
+
+.CopifyPage .in_progress {
+	color:#E66F00;
+}
+
+.CopifyPage .completed {
+	color:green;
+}
+
+.CopifyPage .open {
+	color:red;
+}
+
+
+/* Job Quality */
+.CopifyPage .budget {
+	background-position:0 0;
+	padding-left:18px;
+	background-repeat:no-repeat;
+}
+
+.CopifyPage .professional {
+	background-image:url('../img/writer_pro.png');
+}
+
+.CopifyPage .standard {
+	background-image:url('../img/writer_std.png');
+}
+
+/* Dashboard index */
+.CopifyPage.CopifyDashboard td.statusName {
+	padding-left:25px;
+}
+
+.CopifyPage.CopifyDashboard td.savedInWordpress {
+	background-image: url("../img/wordpress_sprite.png");
+    background-position: 0 -76px;
+    background-repeat: no-repeat;
+}
+
+/* View single job */
+.CopifyPage .CopifyViewJob h1 {
+	margin:0;
+	padding-bottom:6px;
+	line-height:26px;
+}
+
+.CopifyPage .CopifyMeta {
+	color:#999;
+	display:block;
+	margin-top:2px;
+}
+
+.CopifyPage .CopifyJobStatusInfo ul {
+	list-style:disc;
+	margin-left:40px;
+}
+
+.CopifyPage .CopifyViewFinishedCopyHeading {
+	margin:20px 0 0 0;padding:0;
+}
+
+.CopifyPage .CopifyViewFinishedCopy {
+	border:1px solid #eee;
+	background-color:#fff;
+	padding:20px;
+	margin:5px 0 10px 0;
+	border-radius: 3px 3px 3px 3px;
+	font-family:Monaco,Andale Mono,Courier New,monospace;
+}
+
+.CopifyPage .CopifyConfirmSaving {
+	height:16px;
+	width:16px;
+	display:inline-block;
+	margin:0 8px;
+	background-image:url('../img/CopifyIndicator.gif');
+	background-position:0 0;
+	background-repeat:no-repeat;
+}
+
+/* Forms */
+.CopifyPage .CopifyWell {
+	padding:25px 20px;
+	background-color: #F5F5F5;
+    background-image: -moz-linear-gradient(center top , #F9F9F9, #F5F5F5);
+	border-color: #DFDFDF;
+    border-radius: 3px 3px 3px 3px;
+    box-shadow: 0 1px 0 #FFFFFF inset;
+}
+
+.CopifyPage .CopifyForm legend {
+	margin-bottom:10px;
+}
+
+.CopifyPage .CopifyForm legend {
+	font-weight:bold;
+	font-size:17px;
+}
+
+.CopifyPage .CopifyForm label {
+	margin-bottom:3px;
+}
+
+.CopifyPage .CopifyForm label.error {
+	color:red;
+	font-size:10px;
+	background:none;
+	border:none;
+}
+
+.CopifyPage .CopifyForm .input input[type=text], 
+.CopifyPage .CopifyForm .input select,
+.CopifyPage .CopifyForm .input textarea {
+	padding:8px;
+	min-width:280px;
+	margin-bottom:15px;
+}
+
+.CopifyPage .CopifyForm .input select {
+	padding:4px 0 2px 8px;
+}
+
+.CopifyPage .CopifyForm .input input[type=radio] { 
+	margin-right:8px;
+}
+
+.CopifyPage .CopifyForm .CopifyRadioSpan {
+	margin-right:15px;
+	color:#666;
+}
+
+.CopifyPage .CopifyForm input[type=submit].CopifyGreen:hover,
+.CopifyPage .CopifyForm input[type=button].CopifyGreen:hover { 
+	color:#fff;
+}
+
+.CopifyPage .CopifyForm .input input.CopifySmall {
+	width:140px;
+	min-width:140px;
+}
+
+.CopifyPage .CopifyForm .input input.CopifyTiny {
+	width:90px;
+	min-width:90px;
+}
+
+
+/* Buttons graciously borrowed from the fantastic Twitter bootstrap http://twitter.github.com */
+.CopifyPage .CopifyButton {
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	-moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #F5F5F5;
+    background-image: -moz-linear-gradient(center top , #FFFFFF, #E6E6E6);
+    background-repeat: repeat-x;
+    border-color: #E6E6E6 #E6E6E6 #B3B3B3;
+    border-radius: 4px 4px 4px 4px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05);
+    color: #333333;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 13px;
+    line-height: 18px;
+    margin-bottom: 0;
+    padding: 4px 10px;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    vertical-align: middle;
+	text-decoration:none;
+}
+
+.CopifyPage .CopifyGreen{
+	background-color: #5BB75B;
+	background-image: -moz-linear-gradient(center top , #62C462, #51A351);
+	background-repeat: repeat-x;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	color: #FFFFFF;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+
+/* Table rows on dashboard */
+.CopifyDashboard tr:hover {
+	background:#eee;
+}
+
+/* Table sort */
+.CopifyPage .on.asc:before {
+	content:"▼ ";
+}
+.CopifyPage .on.desc:before {
+	content:"▲ ";
+}
+
+
+/* New Order */
+.CopifyPage .CopifyOrderCost {
+	float:right;
+	font-size:30px;
+	color:#999;
+}
+
+.CopifyPage .CopifyOrderCost.loading {
+	padding-left:30px;
+	background-image:url('../img/CopifyIndicator.gif');
+	background-position:0 0;
+	background-repeat:no-repeat;
+}
+
+.CopifyPage .CopifyOrderCost:after {
+	content: " inc. Tax";
+	font-size:11px;
+}
+
+.CopifyPage .CopifyOrderDeliveryTime {
+	float:right;
+	clear:both;
+	color:#999;
+}
+
+.CopifyPage .CopifyOrderDeliveryTime:before {
+	content:'Est. Delivery: ';
+}
+
+
+
+/* Job Feedback */
+.CopifyPage .CopifyFeedback label {
+	width:100px;
+	float: left;
+	padding:6px 0 0 20px;
+}
+
+.CopifyPage .CopifyFeedback .CopifyStarsDiv {
+	margin-left: 120px;
+}
+
+.CopifyPage .CopifyFeedback .CopifyStarsDiv label {
+	display: block;
+    float: none;
+    line-height: 18px;
+    margin-left: 20px;
+    padding: 0;
+    text-align: left;
+    white-space: normal;
+    width: auto;
+}
+
+.CopifyPage .CopifyStars {
+    background-image: url("../img/CopifyStars.png");
+    background-position: -97px 0;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 15px;
+    text-indent: -9999px;
+    width: 97px;
+}
+
+.CopifyPage .CopifyStars1 {
+    background-position: -79px 0;
+}
+.CopifyPage .CopifyStars2 {
+    background-position: -58px 0;
+}
+.CopifyPage .CopifyStars3 {
+    background-position: -39px 0;
+}
+.CopifyPage .CopifyStars4 {
+    background-position: -20px 0;
+}
+.CopifyPage .CopifyStars5 {
+    background-position: 0 0;
+}
+
+.CopifyPage  ::-webkit-input-placeholder {
+    color:    #999;
+	font-style:italic;
+}
+.CopifyPage  :-moz-placeholder {
+    color:    #999;
+	font-style:italic;
+}
