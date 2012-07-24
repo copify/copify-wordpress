@@ -129,8 +129,13 @@
 		</div>
 	</div>
 	
-	<?php endif; ?>
+	<?php else : ?>
 	
-		
+	
+	<div class="message">
+		It looks like you have no jobs with Copify yet. <a href="?page=CopifyOrder">Click here to place your first order</a>
+	</div>
+	
+	<?php endif; ?>	
 
 </div>

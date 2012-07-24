@@ -37,7 +37,7 @@
 				<input name="CopifyApiKey" style="width:300px;" value="<?php echo $CopifyApiKey; ?>" class="CopifyApiKey" type="text" maxLength="40" />
 			</div>
 			
-			<label for="CopifyApiKey">Locale</label>
+			<label for="CopifyApiKey">Select country</label>
 			<div class="input">
 				<select name="CopifyLocale">
 					<?php
