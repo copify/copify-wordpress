@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Publish content sourced through Copify to your WordPress blog
-Version: 0.9.3
+Version: 0.9.4
 Author: Rob McVey
 Author URI: http://www.copify.com/
 License: GPL2
@@ -143,9 +143,15 @@ class CopifyWordpress {
 		
 		$CopifyLoginDetails = get_option('CopifyLoginDetails' , false);
 
+		// Check login stored
 		if(!$CopifyLoginDetails) {
 			wp_die('<pre>To connect to Copify you must enter your API key on the <a href="admin.php?page=CopifySettings">Settings page</a></pre>');
 		} 
+		
+		// Requires cURL
+		if(!function_exists('curl_init')) {
+			wp_die('<pre>This Plugin requires cURL to be installed</pre>');
+		}
 
 		// Initialise the Copify API helper class
 		$this->Copify = new Copify($CopifyLoginDetails['CopifyEmail'] , $CopifyLoginDetails['CopifyApiKey']);

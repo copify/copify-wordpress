@@ -5,6 +5,12 @@
 	</div>
 	
 	<h2>Settings</h2>
+	
+	<?php if(!function_exists('curl_init')) : ?>
+		<div class="message error">
+			This Plugin requires cURL
+		</div>
+	<?php endif; ?>
 
 	<?php if(isset($error)) : ?>
 		<div class="message error">

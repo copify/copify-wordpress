@@ -1,4 +1,4 @@
-# Copify Wordpress Plugin 0.9.3
+# Copify Wordpress Plugin 0.9.4
 
 Copify gives you access to professionally written content from hundreds of approved writers.
 
@@ -9,6 +9,11 @@ Copify is an online copywriting agency, we help our clients to source quality co
 All you have to do is fill in a simple brief detailing your requirements and a writer will be on the case in minutes. Once the content is complete, it is delivered to your dashboard, ready for you to format and publish to your site. It's that simple!
 
 ![](https://github.com/copify/copify-wordpress/raw/master/screenshot-1.png)
+
+### Requirements
+
+* WordPress >= 3.2.0
+* PHP cURL extension
 
 ### Installation
 
