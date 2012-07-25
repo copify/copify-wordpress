@@ -287,6 +287,10 @@ class Copify {
 	 **/
 	public function makeRequest($data = null) {
 		
+		if(!function_exists('curl_init')) {
+			throw new Exception('This Plugin requires cURL');
+		}
+		
 		// Build the URL
 		$this->setfullUrl();
 		
