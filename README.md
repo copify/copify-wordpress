@@ -1,4 +1,4 @@
-# Copify Wordpress Plugin 0.9.4
+# Copify Wordpress Plugin 0.9.5
 
 Copify gives you access to professionally written content from hundreds of approved writers.
 
@@ -14,6 +14,7 @@ All you have to do is fill in a simple brief detailing your requirements and a w
 
 * WordPress >= 3.2.0
 * PHP cURL extension
+* PHP JSON library
 
 ### Installation
 
