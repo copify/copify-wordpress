@@ -78,11 +78,6 @@ class Copify {
 	 **/
 	public function __construct($apiEmail = null , $apiKey = null) {
 
-		// Define short hand for DIRECTORY_SEPARATOR
-		if(!defined('DS')) {
-			define('DS' , DIRECTORY_SEPARATOR);
-		}
-		
 		// If we are not on sandbox, set the country sub domain
 		if($this->mode == 'live') {
 			$this->basePath = sprintf('https://%s.copify.com/api' , $this->country);
@@ -106,7 +101,7 @@ class Copify {
 	 * @author Rob Mcvey
 	 **/
 	public function setfullUrl() {
-		$this->fullUrl = $this->basePath.DS.$this->apiVersion.DS.$this->resource.'.'.$this->format.$this->params;
+		$this->fullUrl = $this->basePath.'/'.$this->apiVersion.'/'.$this->resource.'.'.$this->format.$this->params;
 	}
 	
 	
@@ -140,7 +135,7 @@ class Copify {
 		if(!$id || !is_numeric($id)) {
 			throw new InvalidArgumentException('Invalid job ID');
 		}
-		$this->resource = 'jobs'.DS.$id;
+		$this->resource = 'jobs/'.$id;
 		return $this->makeRequest();
 	}
 	
@@ -215,7 +210,7 @@ class Copify {
 		if(!$id) {
 			throw new InvalidArgumentException('You must pass an a budget ID to this method');
 		}
-		$this->resource = "job_budgets".DS.$id;
+		$this->resource = "job_budgets/".$id;
 		if($words) {
 			$this->params = "?words=$words";
 		}
@@ -273,7 +268,7 @@ class Copify {
 		if(!$id || !is_numeric($id)) {
 			throw new InvalidArgumentException('Invalid copywriter ID');
 		}
-		$this->resource = 'users'.DS.$id;
+		$this->resource = 'users/'.$id;
 		return $this->makeRequest();
 	}
 	
