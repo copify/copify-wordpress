@@ -135,7 +135,7 @@ class Copify {
 		if(!$id || !is_numeric($id)) {
 			throw new InvalidArgumentException('Invalid job ID');
 		}
-		$this->resource = 'jobs'.DS.$id;
+		$this->resource = 'jobs/'.$id;
 		return $this->makeRequest();
 	}
 	
@@ -210,7 +210,7 @@ class Copify {
 		if(!$id) {
 			throw new InvalidArgumentException('You must pass an a budget ID to this method');
 		}
-		$this->resource = "job_budgets".DS.$id;
+		$this->resource = "job_budgets/".$id;
 		if($words) {
 			$this->params = "?words=$words";
 		}
@@ -268,7 +268,7 @@ class Copify {
 		if(!$id || !is_numeric($id)) {
 			throw new InvalidArgumentException('Invalid copywriter ID');
 		}
-		$this->resource = 'users'.DS.$id;
+		$this->resource = 'users/'.$id;
 		return $this->makeRequest();
 	}
 	
