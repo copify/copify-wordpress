@@ -78,11 +78,6 @@ class Copify {
 	 **/
 	public function __construct($apiEmail = null , $apiKey = null) {
 
-		// Define short hand for DIRECTORY_SEPARATOR
-		if(!defined('DS')) {
-			define('DS' , DIRECTORY_SEPARATOR);
-		}
-		
 		// If we are not on sandbox, set the country sub domain
 		if($this->mode == 'live') {
 			$this->basePath = sprintf('https://%s.copify.com/api' , $this->country);
@@ -106,7 +101,7 @@ class Copify {
 	 * @author Rob Mcvey
 	 **/
 	public function setfullUrl() {
-		$this->fullUrl = $this->basePath.DS.$this->apiVersion.DS.$this->resource.'.'.$this->format.$this->params;
+		$this->fullUrl = $this->basePath.'/'.$this->apiVersion.'/'.$this->resource.'.'.$this->format.$this->params;
 	}
 	
 	
