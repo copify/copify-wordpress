@@ -1,9 +1,9 @@
 === Copify ===
-Version: 0.9.4
+Version: 0.9.5
 Contributors: robmcvey
 Tags: guest blogger, guest blogging, posts, links, content, copywriting, blogging, writers, writing, creation, seo
 Requires at least: 3.2.0
-Tested up to: 3.4.1
+Tested up to: 3.4.2
 Stable tag: trunk
 Github Stable tag: master
 License: GPLv2 or later
