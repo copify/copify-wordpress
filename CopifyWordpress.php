@@ -3,9 +3,9 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Publish content sourced through Copify to your WordPress blog
-Version: 0.9.5
+Version: 0.9.6
 Author: Rob McVey
-Author URI: http://www.copify.com/
+Author URI: http://uk.copify.com/
 License: GPL2
 
 Copyright 2012  Rob McVey  (email:rob@copify.com)
@@ -116,6 +116,7 @@ class CopifyWordpress {
 			$CopifyAvailableLocales = array(
 				'uk' => 'UK',
 				'us' => 'USA',
+				'au' => 'Australia',
 			);
 			
 			// Flash message of some kind?
@@ -291,7 +292,8 @@ class CopifyWordpress {
 			
 			// Is this a balance exception? Link to "add more funds"
 			if(preg_match('/funds/i' , $error)) {
-				$error .= '. <a href="http://www.copify.com/payments/add" target="blank" >Make a payment</a>';
+				$CopifyLoginDetails = get_option('CopifyLoginDetails' , false);
+				$error .= sprintf('. <a href="https://%s.copify.com/payments/add" target="blank" >Make a payment</a>' , $CopifyLoginDetails['CopifyLocale']);
 			}
 			
 			// Bad API creectials?
