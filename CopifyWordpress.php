@@ -292,7 +292,8 @@ class CopifyWordpress {
 			
 			// Is this a balance exception? Link to "add more funds"
 			if(preg_match('/funds/i' , $error)) {
-				$error .= sprintf('. <a href="%s/payments/add" target="blank" >Make a payment</a>' , $this->Copify->basePath);
+				$CopifyLoginDetails = get_option('CopifyLoginDetails' , false);
+				$error .= sprintf('. <a href="https://%s.copify.com/payments/add" target="blank" >Make a payment</a>' , $CopifyLoginDetails['CopifyLocale']);
 			}
 			
 			// Bad API creectials?
