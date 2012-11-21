@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Publish content sourced through Copify to your WordPress blog
-Version: 0.9.5
+Version: 0.9.6
 Author: Rob McVey
 Author URI: http://www.copify.com/
 License: GPL2
@@ -116,6 +116,7 @@ class CopifyWordpress {
 			$CopifyAvailableLocales = array(
 				'uk' => 'UK',
 				'us' => 'USA',
+				'au' => 'Australia',
 			);
 			
 			// Flash message of some kind?
