@@ -775,7 +775,7 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifyFormatBrief($str) {
-		return nl2br($str);
+		return nl2br(htmlentities($str));
 	}
 	
 /**
@@ -786,7 +786,7 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifyFormatCopy($str) {
-		return nl2br($str);
+		return nl2br(htmlentities($str));
 	}
 	
 /**
