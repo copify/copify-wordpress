@@ -8,80 +8,69 @@
 // 
 class Copify {
 	
-	/**
-	 * The API URL
-	 */
+/**
+ * The API URL
+ */
 	public $basePath = 'https://sandbox.copify.com/api';
-	
-	
-	/**
-	 * The API version
-	 */
+		
+/**
+ * The API version
+ */
 	public $apiVersion = 'v1';
-	
-	
-	/**
-	 * Dev / Live mode
-	 */
+		
+/**
+ * live / sandbox
+ */
 	public $mode = 'live';
 	
-	
-	/**
-	 * Which country API to use. uk or us
-	 */
+/**
+ * Which country API to use. uk or us
+ */
 	public $country = 'uk';
 	
+/**
+ * Resource path e.g. jobs
+ */
+	public $resource;	
 
-	/**
-	 * Resource path e.g. jobs
-	 */
-	public $resource;
-	
-	
-	/**
-	 * Accept format
-	 */
-	public $format = 'json';
-	
-	
-	/**
-	 * The full URL to the resource e.g. https://www.copify.com/jobs/123.json
-	 */
-	public $fullUrl;
-	
-	
-	/**
-	 * URL parameters to append
-	 */
-	public $params = '';
-	
-	
-	/**
-	 * The HTTP method to use
-	 */
-	public $httpMethod = 'GET';
-	
-	
-	/**
-	 * An array of headers to use during the HTTP request
-	 */
+/**
+ * Accept format
+ */
+	public $format = 'json';	
+
+/**
+ * The full URL to the resource e.g. https://www.copify.com/jobs/123.json
+ */
+	public $fullUrl;	
+
+/**
+ * URL parameters to append
+ */
+	public $params = '';	
+
+/**
+ * The HTTP method to use
+ */
+	public $httpMethod = 'GET';	
+
+/**
+ * An array of headers to use during the HTTP request
+ */
 	public $headers = array();
 	
-
-	/**
-	 * Start up
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 * @param string $apiEmail 
-	 * @param string $apiKey 
-	 **/
+/**
+ * Start up
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @param string $apiEmail 
+ * @param string $apiKey 
+ **/
 	public function __construct($apiEmail = null , $apiKey = null) {
-
 		// If we are not on sandbox, set the country sub domain
 		if($this->mode == 'live') {
 			$this->basePath = sprintf('https://%s.copify.com/api' , $this->country);
-		}
+		} 
 
 		if(empty($apiKey) || empty($apiEmail)) {
 			throw new InvalidArgumentException('Please set the values for your API key and your email e.g: <pre>$Copify = new Copify("API KEY" , "API EMAIL");</pre>');
@@ -92,29 +81,27 @@ class Copify {
 		$this->headers['User-Agent'] = $apiEmail;
 		
 	}
-	
-	
-	/**
-	 * Sets the full URL
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+		
+/**
+ * Sets the full URL
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function setfullUrl() {
 		$this->fullUrl = $this->basePath.'/'.$this->apiVersion.'/'.$this->resource.'.'.$this->format.$this->params;
 	}
-	
-	
-	/**
-	 * Get a list of job records (20 per page)
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 * @param bool $public Whether or not to get all public jobs too
-	 * @param int $page Which page
-	 * @param string $sort Sort by a field
-	 * @param string $directionsort Sort by direction, asc (ascending) or desc (descending)
-	 **/
+		
+/**
+ * Get a list of job records (20 per page)
+ *
+ * @return array
+ * @author Rob Mcvey
+ * @param bool $public Whether or not to get all public jobs too
+ * @param int $page Which page
+ * @param string $sort Sort by a field
+ * @param string $directionsort Sort by direction, asc (ascending) or desc (descending)
+ **/
 	public function jobsIndex($public = false , $page = 1, $sort = 'id' , $direction = 'asc') {
 		if($public) {
 			$this->params = '?public=true';
@@ -122,15 +109,14 @@ class Copify {
 		$this->resource = "jobs/page:$page/sort:$sort/direction:$direction";
 		return $this->makeRequest();
 	}
-	
-	
-	/**
-	 * View a single job record
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 * @param int $id 
-	 **/
+
+/**
+ * View a single job record
+ *
+ * @return array
+ * @author Rob Mcvey
+ * @param int $id 
+ **/
 	public function jobsView($id = null) {
 		if(!$id || !is_numeric($id)) {
 			throw new InvalidArgumentException('Invalid job ID');
@@ -139,14 +125,13 @@ class Copify {
 		return $this->makeRequest();
 	}
 	
-	
-	/**
-	 * Create a new job through the API
-	 *
-	 * @return mixed array of the new job record
-	 * @author Rob Mcvey
-	 * @param array $data array of new job fields...name, words, brief, category etc.
-	 **/
+/**
+ * Create a new job through the API
+ *
+ * @return mixed array of the new job record
+ * @author Rob Mcvey
+ * @param array $data array of new job fields...name, words, brief, category etc.
+ **/
 	public function jobsAdd($data = null) {
 		if(empty($data)) {
 			throw new InvalidArgumentException('You must pass an array of job details');
@@ -154,15 +139,14 @@ class Copify {
 		$this->httpMethod = 'POST';
 		$this->resource = 'jobs';
 		return $this->makeRequest($data);
-	}
-	
-	
-	/**
-	 * Post feedback for a completed job
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * Post feedback for a completed job
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function jobFeedback($feedback = null) {
 		if(empty($feedback)) {
 			throw new InvalidArgumentException('You must pass an array of feedback details');
@@ -170,42 +154,38 @@ class Copify {
 		$this->httpMethod = 'POST';
 		$this->resource = 'feedback';
 		return $this->makeRequest($feedback);
-	}
-	
-	
-	
-	/**
-	 * Get an array of availble job categories
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * Get an array of availble job categories
+ *
+ * @return array
+ * @author Rob Mcvey
+ **/
 	public function jobCategories() {
 		$this->resource = 'job_categories';
 		return $this->makeRequest();
 	}
-	
-	
-	/**
-	 * Get an array of availble job budgets/pricing
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 **/
+		
+/**
+ * Get an array of availble job budgets/pricing
+ *
+ * @return array
+ * @author Rob Mcvey
+ **/
 	public function jobBudgets() {
 		$this->resource = 'job_budgets';
 		return $this->makeRequest();
-	}
-	
-	
-	/**
-	 * View a single job budget
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 * @param int $id of the job budget to fetch
-	 * @param int $words Optional, pass a value of words for a quote
-	 **/
+	}	
+
+/**
+ * View a single job budget
+ *
+ * @return array
+ * @author Rob Mcvey
+ * @param int $id of the job budget to fetch
+ * @param int $words Optional, pass a value of words for a quote
+ **/
 	public function jobBudgetsView($id = null, $words = null) {
 		if(!$id) {
 			throw new InvalidArgumentException('You must pass an a budget ID to this method');
@@ -215,71 +195,66 @@ class Copify {
 			$this->params = "?words=$words";
 		}
 		return $this->makeRequest();
-	}
-	
-	
-	/**
-	 * Get an array of availble job budgets/pricing
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * Get an array of availble job budgets/pricing
+ *
+ * @return array
+ * @author Rob Mcvey
+ **/
 	public function jobStatuses() {
 		$this->resource = 'job_statuses';
 		return $this->makeRequest();
-	}
-	
-	
-	/**
-	 * Get an array of availble job types
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * Get an array of availble job types
+ *
+ * @return array
+ * @author Rob Mcvey
+ **/
 	public function jobTypes() {
 		$this->resource = 'job_types';
 		return $this->makeRequest();
 	}
 	
-	
-	/**
-	 * Get a list of copywriters (20 per page)
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 * @param int $page Which page
-	 * @param string $sort Sort by a field
-	 * @param string $directionsort Sort by direction, asc (ascending) or desc (descending)
-	 **/
+/**
+ * Get a list of copywriters (20 per page)
+ *
+ * @return array
+ * @author Rob Mcvey
+ * @param int $page Which page
+ * @param string $sort Sort by a field
+ * @param string $directionsort Sort by direction, asc (ascending) or desc (descending)
+ **/
 	public function usersIndex($page = 1, $sort = 'id' , $direction = 'asc') {
 		$this->resource = "users/page:$page/sort:$sort/direction:$direction";
 		return $this->makeRequest();
 	}
 	
-	
-	/**
-	 * View a single copywriter record
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 * @param int $id 
-	 **/
+/**
+ * View a single copywriter record
+ *
+ * @return array
+ * @author Rob Mcvey
+ * @param int $id 
+ **/
 	public function usersView($id =null) {
 		if(!$id || !is_numeric($id)) {
 			throw new InvalidArgumentException('Invalid copywriter ID');
 		}
 		$this->resource = 'users/'.$id;
 		return $this->makeRequest();
-	}
-	
-	
-	/**
-	 * Makes a request and returns the result as an array
-	 *
-	 * @return mixed
-	 * @author Rob Mcvey
-	 * @param mixed $data the body of the request (usually JSON)
-	 **/
+	}	
+
+/**
+ * Makes a request and returns the result as an array
+ *
+ * @return mixed
+ * @author Rob Mcvey
+ * @param mixed $data the body of the request (usually JSON)
+ **/
 	public function makeRequest($data = null) {
 		
 		if(!function_exists('curl_init')) {
@@ -329,15 +304,14 @@ class Copify {
 
 		return $this->parseFormat($response);
 	}
-	
-	
-	/**
-	 * Takes the raw response, returns an array or throws a huma readble exception
-	 *
-	 * @return array
-	 * @author Rob Mcvey
-	 * @param mixed $raw
-	 **/
+		
+/**
+ * Takes the raw response, returns an array or throws a huma readble exception
+ *
+ * @return array
+ * @author Rob Mcvey
+ * @param mixed $raw
+ **/
 	public function parseFormat($raw) {
 		if($this->format == 'json') {
 			$result = json_decode($raw , true);
@@ -350,6 +324,5 @@ class Copify {
 			throw new InvalidArgumentException('Only JSON is supported in this version of the SDK');
 		}
 	}
-	
 
 }
