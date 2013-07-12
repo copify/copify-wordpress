@@ -239,28 +239,28 @@
 				<!-- Modal -->
 				<div id="CopifyFeedBackModal" class="modal" style="display:none;">
 		
-					<div class="modal-header">
-						<button data-dismiss="modal" class="close" type="button">×</button>
-				      	<h3>Approve & Move to Drafts</h3>
-				    </div>
+					<form id="CopifyFeedbackForm">
+		
+						<div class="modal-header">
+							<button data-dismiss="modal" class="close" type="button">×</button>
+					      	<h3>Approve & Move to Drafts</h3>
+					    </div>
 	    
-					<div class="modal-body">
+						<div class="modal-body">
 
-						<p>We try to ensure that all of the writers on Copify are of a great standard. Help us by leaving some honest feedback for <?php echo $CopifyWriter['first_name']; ?>... </p>
+							<p>We try to ensure that all of the writers on Copify are of a great standard. Help us by leaving some honest feedback for <?php echo $CopifyWriter['first_name']; ?>... </p>
 
-						<div class="CopifyFeedback">
-	            
-							<form id="CopifyFeedbackForm">
+							<div class="CopifyFeedback">
 					
 								<input type="hidden" id="CopifyApproveJobIdHidden" value="<?php echo $job['id']; ?>" name="job_id">
 								<input type="hidden" id="CopifyApproveJobNameHidden" value="<?php echo $job['name']; ?>" name="name">
 								<input type="hidden" id="CopifyApproveJobCopyHidden" value="<?php echo $job['copy']; ?>" name="copy">
-				
-									
+			
+								
 								<label>
 									<img alt="<?php echo $CopifyWriter['first_name']; ?>" src="<?php echo $CopifyWriter['avatar']; ?>">		            
 								</label> 
-		            
+	            
 					            <div class="CopifyStarsDiv">
 					            	<ul>
 						                <li>
@@ -311,17 +311,23 @@
 						         	</ul>
 								</div>	
 					
-							</form>
-				
-			      		</div>
+				      		</div>
 
-				    </div>
+					    </div>
 		
-				    <div class="modal-footer">
-						<span data-dismiss="modal" class="CopifyButton" >Cancel</span>
-				      	<span class="CopifyButton CopifyGreen" id="CopifyConfirmApprove">Approve & Move to Drafts</span>
-						<span class="CopifyConfirmSaving" id="CopifyConfirmSaving" style="display:none;">&nbsp;</span>
-				    </div>
+					    <div class="modal-footer">
+							<div class="CopifyChoosePostOrPage">
+								<input type="radio" name="post_type" value="post" checked="checked">
+								<label>Post</label>
+								<input type="radio" name="post_type" value="page">
+								<label>Page</label>
+							</div>
+							<span data-dismiss="modal" class="CopifyButton" >Cancel</span>
+					      	<span class="CopifyButton CopifyGreen" id="CopifyConfirmApprove">Approve & Move to Drafts</span>
+							<span class="CopifyConfirmSaving" id="CopifyConfirmSaving" style="display:none;">&nbsp;</span>
+					    </div>
+			
+					</form>
 			
 				</div>
 
@@ -340,7 +346,7 @@
 <script type="text/javascript">
 jQuery(document).ready(function() {
 	
-	// Show brief. Chips chips chips chips chips
+	// Show brief
 	jQuery('.CopifyShowBriefClick').click(function() {
 		if(jQuery(this).html() == 'Show original brief') {
 			jQuery(this).html('Hide original brief');
@@ -371,6 +377,8 @@ jQuery(document).ready(function() {
 		var copy = jQuery('#CopifyApproveJobCopyHidden').val();
 		var comment = jQuery('.CopifyStarsDiv').find('input:checked').parent('.CopifyRating').find('.CopifyFeedbackComment').html();
 		var rating = jQuery('.CopifyStarsDiv').find('input:checked').val();
+		var post_type = jQuery('.CopifyChoosePostOrPage').find('input[type=radio]:checked').val();
+		//console.log(post_type);
 		
 		// Our feedback ob:
 		var feedback = {
@@ -379,10 +387,11 @@ jQuery(document).ready(function() {
 			name: name,
 			copy: copy,
 			comment: comment,
-			rating: rating
+			rating: rating,
+			type: post_type,
 		};
 
-		// Make ajax request. Fun this isn't it!?
+		// Make ajax request
 		jQuery.ajax(ajaxurl, {
 			type: 'post',
 			data: feedback,
@@ -392,6 +401,7 @@ jQuery(document).ready(function() {
 					// OK
 					jQuery('#CopifyConfirmApprove').hide();
 					jQuery('#CopifyConfirmSaving').hide();
+					//console.log(data);
 					window.location.href = window.location.href + '&flashMessage=Job+approved+and+moved+to+Drafts';
 				} else {
 					alert(data.message);
@@ -406,7 +416,6 @@ jQuery(document).ready(function() {
 
 		
 	});
-	
 	
 	// Move an already approved job to drafts
 	jQuery('.CopifyMoveToDrafts').click(function() {

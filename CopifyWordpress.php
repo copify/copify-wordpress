@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Publish content sourced through Copify to your WordPress blog
-Version: 0.9.6
+Version: 0.9.7
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
@@ -32,17 +32,22 @@ if(!defined('DS')) {
 
 class CopifyWordpress {
 
+/**
+ * Instance of Copify library
+ */
 	public $Copify;
-	
+
+/**
+ * Plugin dir name
+ */	
 	public $copifyDirName = 'copify';
-	
-				
-	/**
-	 * cssAndScripts
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+					
+/**
+ * cssAndScripts
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyCssAndScripts() {
 		
 		// JS - our own
@@ -62,14 +67,13 @@ class CopifyWordpress {
 		wp_enqueue_style('copify' , $css_url); 
 		
 	}
-	
-	
-	/**
-	 * Settings page
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+		
+/**
+ * Settings page
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifySettings() {
 		
 		try {
@@ -132,14 +136,13 @@ class CopifyWordpress {
 		
 		require('Views/CopifySettings.php');
 	}
-	
-	
-	/**
-	 * Initialise the Copify API class with the credentials from the options table
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+		
+/**
+ * Initialise the Copify API class with the credentials from the options table
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifySetApiClass() {
 		
 		$CopifyLoginDetails = get_option('CopifyLoginDetails' , false);
@@ -159,16 +162,14 @@ class CopifyWordpress {
 		
 		// Set the correct end point for the API
 		$this->Copify->basePath = sprintf('https://%s.copify.com/api' , $CopifyLoginDetails['CopifyLocale']);
-
 	}
-	
-	
-	/**
-	 * Main Copify page renders a table of all jobs
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+		
+/**
+ * Main Copify page renders a table of all jobs
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyDashboard() {
 		
 		try {
@@ -257,14 +258,13 @@ class CopifyWordpress {
 		
 		require('Views/CopifyDashboard.php');
 	}
-	
-	
-	/**
-	 * Page to place a new order
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+		
+/**
+ * Page to place a new order
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyOrder() {
 
 		try {
@@ -306,15 +306,14 @@ class CopifyWordpress {
 
 		require('Views/CopifyOrder.php');
 		
-	}
-	
-	
-	/**
-	 * Ajax method to place and order via the API
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * Ajax method to place and order via the API
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyAjaxOrder() {
 
 		// A default response
@@ -349,15 +348,14 @@ class CopifyWordpress {
 			die(); // urgh. Wordpress u so silly.
 		}
 
-	}
-	
-	
-	/**
-	 * View a single job via the API
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * View a single job via the API
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyViewJob() {
 		
 		try {
@@ -370,7 +368,7 @@ class CopifyWordpress {
 			
 			// Get the job record from the API	
 			$job = $this->Copify->jobsView($jobId); // Maybe cache this if already approved?
-				
+
 			// Get category, budget and status resources from API
 			$CopifyCategories = $this->CopifyGetJobCategories();
 			$CopifyBudgets = $this->CopifyGetJobBudgets();
@@ -407,16 +405,15 @@ class CopifyWordpress {
 		
 		require('Views/CopifyViewJob.php');
 		
-	}
+	}	
 	
-	
-	/**
-	 * Handle ajax feedback form post. The user is approving a job and leaving feedback
-	 * Outputs a JSON response
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Handle ajax feedback form post. The user is approving a job and leaving feedback
+ * Outputs a JSON response
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyPostFeedback() {
 		
 		// A default response
@@ -428,6 +425,7 @@ class CopifyWordpress {
 		
 		try {
 			
+			// Can only post to this method
 			if(empty($_POST)) {
 				throw new Exceptioon('POST request required');
 			}
@@ -438,8 +436,16 @@ class CopifyWordpress {
 			// Get the post data
 			$feedback = $_POST;
 			
-			// Remove the action key
+			// Get the type (post||page)
+			if (isset($feedback['type'])) {
+				$post_type = $feedback['type'];
+			} else {
+				$post_type = 'post';
+			}
+			
+			// Remove the action and type keys as we cant post these to API without an error
 			unset($feedback['action']);
+			unset($feedback['type']);
 			
 			// Check nothing added to array. (The API handles validation anyway but meh)
 			if(count($feedback) != 5) {
@@ -459,6 +465,7 @@ class CopifyWordpress {
 					'post_title' => $job['name'],
 					'post_content' => $job['copy'],
 					'post_status' => 'draft',
+					'post_type' => $post_type  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
 				);
 
 				$this->CopifyAddToDrafts($feedback['job_id'] , $newPost);
@@ -479,16 +486,15 @@ class CopifyWordpress {
 			echo json_encode($response);
 			die(); // urgh. Wordpress u so silly.
 		}
-	}
+	}	
 	
-	
-	/**
-	 * Handle ajax request to move a job to drafts
-	 * Outputs a JSON response
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Handle ajax request to move a job to drafts
+ * Outputs a JSON response
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyMoveToDrafts() {
 
 		// A default response
@@ -520,6 +526,7 @@ class CopifyWordpress {
 					'post_title' => $job['name'],
 					'post_content' => $job['copy'],
 					'post_status' => 'draft',
+					//'post_type' => [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
 				);
 
 				$this->CopifyAddToDrafts($job_id , $newPost);
@@ -542,14 +549,13 @@ class CopifyWordpress {
 		}
 		
 	}
-	
-	
-	/**
-	 * Ajax request to retrieve a quote for a word count
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+		
+/**
+ * Ajax request to retrieve a quote for a word count
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyQuoteWords() {
 		
 		// A default response
@@ -592,21 +598,20 @@ class CopifyWordpress {
 		
 	}
 	
-	
-	/**
-	 * Adds a post to wordpress db as a draft and saves an option with the ID ref
-	 *
-	 * @return int $new_wp_id The new WordPress post id
-	 * @author Rob Mcvey
-	 * @param int $job_id The Copify job ID
-	 * @param array $newpost An array (name, copy etc.) to save in WP database
-	 * Should be in format :
-	 * $newPost = array(
-	 *		'post_title' => 'Blog title',
-	 *		'post_content' => 'The copy of the blog blah blah...',
-	 *		'post_status' => 'draft',
-	 * );
-	 **/
+/**
+ * Adds a post to wordpress db as a draft and saves an option with the ID ref
+ *
+ * @return int $new_wp_id The new WordPress post id
+ * @author Rob Mcvey
+ * @param int $job_id The Copify job ID
+ * @param array $newpost An array (name, copy etc.) to save in WP database
+ * Should be in format :
+ * $newPost = array(
+ *		'post_title' => 'Blog title',
+ *		'post_content' => 'The copy of the blog blah blah...',
+ *		'post_status' => 'draft',
+ * );
+ **/
 	public function CopifyAddToDrafts($job_id, $newPost) {
 		
 		// Create the post
@@ -624,15 +629,14 @@ class CopifyWordpress {
 		return $new_wp_id;
 	}
 	
-	
-	/**
-	 * Remove the option flag when a post is deleted from wordpress by its ID.
-	 * If we don't do this they can delete a post and not have the option to add it to drafts again
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 * @param int $wp_post_id The wordpress post ID we want to remove our flag for
-	 **/
+/**
+ * Remove the option flag when a post is deleted from wordpress by its ID.
+ * If we don't do this they can delete a post and not have the option to add it to drafts again
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @param int $wp_post_id The wordpress post ID we want to remove our flag for
+ **/
 	public function CopifyBeforeDeletePost($wp_post_id) {
 		global $wpdb;
 		$query = "DELETE FROM $wpdb->options WHERE `option_value` = %d AND `option_name` LIKE %s ";
@@ -640,14 +644,13 @@ class CopifyWordpress {
 			$wpdb->prepare($query , $wp_post_id , 'CopifyJobIdExists%')
 		);
 	}
-	
-	
-	/**
-	 * Returns an array of all Copify job ID's already saved as a post
-	 *
-	 * @return array $ids An array of Copify IDs which are saved in wordpress db
-	 * @author Rob Mcvey
-	 **/
+		
+/**
+ * Returns an array of all Copify job ID's already saved as a post
+ *
+ * @return array $ids An array of Copify IDs which are saved in wordpress db
+ * @author Rob Mcvey
+ **/
 	public function CopifyGetCopifyPostIds() {
 		global $wpdb;
 		$query = "SELECT REPLACE(`option_name` , 'CopifyJobIdExists' , '') as `option_name` FROM $wpdb->options WHERE `option_name` LIKE %s ";
@@ -656,38 +659,35 @@ class CopifyWordpress {
 		);
 	}
 	
-	
-	/**
-	 * Remove any bits and bobs we've cached
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Remove any bits and bobs we've cached
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyClearCache() {
 		delete_transient('CopifyBudgets');
 		delete_transient('CopifyCategories');
 		delete_transient('CopifyStatuses');
 	}
 	
-	
-	/**
-	 * Checks if a Copify ID is already in database, returns the WP id of the post
-	 *
-	 * @return int The Wordpress post ID of our Copify job (or false if not present)
-	 * @param int The Copify job ID
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Checks if a Copify ID is already in database, returns the WP id of the post
+ *
+ * @return int The Wordpress post ID of our Copify job (or false if not present)
+ * @param int The Copify job ID
+ * @author Rob Mcvey
+ **/
 	public function CopifyJobIdExists($job_id = null) {
 		return get_option('CopifyJobIdExists'.$job_id , false);
 	}
 	
-	
-	/**
-	 * Get job categories from API or cache
-	 *
-	 * @return array An array of Copify categories from either API or cache
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Get job categories from API or cache
+ *
+ * @return array An array of Copify categories from either API or cache
+ * @author Rob Mcvey
+ **/
 	public function CopifyGetJobCategories() {
 		$CopifyCategories = get_transient('CopifyCategories');
 		if($CopifyCategories !== false) {
@@ -696,15 +696,14 @@ class CopifyWordpress {
 		$CopifyCategories = $this->Copify->jobCategories();
 		set_transient('CopifyCategories' , $CopifyCategories['job_categories'], 86400);
 		return $CopifyCategories['job_categories'];		
-	}
-	
-	
-	/**
-	 * Get job budgets from API or cache
-	 *
-	 * @return array An array of Copify budgets (standard or pro) from either API or cache
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * Get job budgets from API or cache
+ *
+ * @return array An array of Copify budgets (standard or pro) from either API or cache
+ * @author Rob Mcvey
+ **/
 	public function CopifyGetJobBudgets() {
 		$CopifyBudgets = get_transient('CopifyBudgets');
 		if($CopifyBudgets !== false) {
@@ -715,13 +714,12 @@ class CopifyWordpress {
 		return $CopifyBudgets['job_budgets'];
 	}
 	
-	
-	/**
-	 * Get job statuses from API or cache
-	 *
-	 * @return array An array of Copify job statuses (open, in progress, complete etc.) from either API or cache
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Get job statuses from API or cache
+ *
+ * @return array An array of Copify job statuses (open, in progress, complete etc.) from either API or cache
+ * @author Rob Mcvey
+ **/
 	public function CopifyGetJobStatuses() {
 		$CopifyStatuses = get_transient('CopifyStatuses');
 		if($CopifyStatuses !== false) {
@@ -730,15 +728,14 @@ class CopifyWordpress {
 		$CopifyStatuses = $this->Copify->jobStatuses();
 		set_transient('CopifyStatuses' , $CopifyStatuses['job_statuses'], 86400);
 		return $CopifyStatuses['job_statuses'];
-	}
-	
-	
-	/**
-	 * Get a user profile from API or cache
-	 *
-	 * @return array An array of a Copify writers public details from API or cache
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * Get a user profile from API or cache
+ *
+ * @return array An array of a Copify writers public details from API or cache
+ * @author Rob Mcvey
+ **/
 	public function CopifyGetUserProfile($id = 1) {
 		$CopifyGetUserProfile = get_transient('CopifyGetUserProfile'.$id);
 		if($CopifyGetUserProfile !== false) {
@@ -749,14 +746,13 @@ class CopifyWordpress {
 		return $CopifyGetUserProfile;
 	}
 	
-	
-	/**
-	 * Takes multi-dimensional array and returns a plain array with ID's as key
-	 *
-	 * @return array $flattened An array in the format array('id' => 1 , 'name' => 'foo' , 'id' => 2 , 'name' => 'bar')
-	 * @param array $multiArray A multi-dimensional array of stuff with 'id' and 'name' keys
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Takes multi-dimensional array and returns a plain array with ID's as key
+ *
+ * @return array $flattened An array in the format array('id' => 1 , 'name' => 'foo' , 'id' => 2 , 'name' => 'bar')
+ * @param array $multiArray A multi-dimensional array of stuff with 'id' and 'name' keys
+ * @author Rob Mcvey
+ **/
 	public function CopifyFlatten($multiArray = array()) {
 		$flattened = array();
 		if(is_array($multiArray) && !empty($multiArray)) {
@@ -769,39 +765,36 @@ class CopifyWordpress {
 		} else {
 			throw new Exception('Expects array');
 		}
-	}
-	
-	
-	/**
-	 * Format the brief with new lines -> <br>
-	 *
-	 * @return string The formatted brief
-	 * @param str The unformatted breif
-	 * @author Rob Mcvey
-	 **/
+	}	
+
+/**
+ * Format the brief with new lines -> <br>
+ *
+ * @return string The formatted brief
+ * @param str The unformatted breif
+ * @author Rob Mcvey
+ **/
 	public function CopifyFormatBrief($str) {
-		return nl2br($str);
+		return nl2br(htmlentities($str));
 	}
 	
-	
-	/**
-	 * Format the copy with new lines -> <br>
-	 *
-	 * @return string The formatted copy
-	 * @param string The unformatted copy
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Format the copy with new lines -> <br>
+ *
+ * @return string The formatted copy
+ * @param string The unformatted copy
+ * @author Rob Mcvey
+ **/
 	public function CopifyFormatCopy($str) {
-		return nl2br($str);
+		return nl2br(htmlentities($str));
 	}
 	
-	
-	/**
-	 * Admin menu hooks, at out links to the Wordpress menu
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+/**
+ * Admin menu hooks, at out links to the Wordpress menu
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function CopifyAdminMenu() {
 		// add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $function, $icon_url, $position )
 		$icon = plugin_dir_url(null).$this->copifyDirName.DS.'img'.DS.'icon16.png';
@@ -813,7 +806,6 @@ class CopifyWordpress {
 		add_submenu_page('CopifySettings', 'Copify View Job', 'View', 'publish_posts', 'CopifyViewJob', array($this, 'CopifyViewJob'));
 	}
 	
-
 }
 
 // Initialise the Copify Wordpress class
