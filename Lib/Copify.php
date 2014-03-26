@@ -258,7 +258,7 @@ class Copify {
 	public function makeRequest($data = null) {
 		
 		if(!function_exists('curl_init')) {
-			throw new Exception('This Plugin requires cURL');
+			throw new Exception('This Plugin requires PHP\'s cURL extension');
 		}
 		
 		// Build the URL
