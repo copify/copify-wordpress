@@ -4,7 +4,7 @@
 		<br>
 	</div>
 	
-	<h2>Order Content</h2>
+	<h2>Order a blog post</h2>
 
 	<?php if(isset($error)) : ?>
 		<div class="message error">
@@ -34,20 +34,20 @@
 	<form id="CopifyOrderForm" class="CopifyForm CopifyWell">
 		<fieldset>
 			
-			<legend>Place a new order through Copify</legend>
+		<!-- <legend>Order a new blog post through Copify</legend> -->
 			
 			<table>
 			<tr>
 				<td>
-					<label for="name">Enter a title for your job</label>
+					<label for="name">Enter a title for your order</label>
 					<div class="input">
-						<input name="name" class="required" placeholder="This will be the title of your new post" value="<?php echo $name; ?>"  type="text" minLength="5" maxLength="100" />
+						<input name="name" class="required" placeholder="This will be the title of your blog post" value="<?php echo $name; ?>"  type="text" minLength="5" maxLength="100" />
 					</div>
 				</td>
 				<td>
 					<?php 
 					if(is_array($categoryList)) : 
-						echo '<label for="job_category_id">Choose a category that best describes your topic</label>';
+						echo '<label for="job_category_id">Choose a category that best describes your blog</label>';
 						echo '<div class="input">';
 						echo '<select name="job_category_id">';
 						foreach($categoryList as $category_id => $category_name) :
@@ -65,9 +65,9 @@
 			</tr>
 			<tr>
 				<td colspan="2">			
-					<label for="brief">Your requirements</label>
+					<label for="brief">Additional information</label>
 					<div class="input">
-						<textarea name="brief" class="required" rows="10" cols="90" minLength="10" placeholder="Enter your brief here. In exact detail, describe what you require from the job and provide the writer with as much information as possible in order to meet your requirements." /><?php echo $brief; ?></textarea>
+						<textarea name="brief" class="required" rows="10" cols="90" minLength="10" placeholder="In exact detail, describe what you require, what your blog is about and any other information we might need in order to meet your requirements." /><?php echo $brief; ?></textarea>
 					</div>
 				</td>
 			</tr>
