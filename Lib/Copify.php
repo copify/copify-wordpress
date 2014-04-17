@@ -70,7 +70,7 @@ class Copify {
 		// If we are not on sandbox, set the country sub domain
 		if($this->mode == 'live') {
 			$this->basePath = sprintf('https://%s.copify.com/api' , $this->country);
-		} 
+		}
 
 		if(empty($apiKey) || empty($apiEmail)) {
 			throw new InvalidArgumentException('Please set the values for your API key and your email e.g: <pre>$Copify = new Copify("API KEY" , "API EMAIL");</pre>');
@@ -89,7 +89,7 @@ class Copify {
  * @author Rob Mcvey
  **/
 	public function setfullUrl() {
-		$this->fullUrl = $this->basePath.'/'.$this->apiVersion.'/'.$this->resource.'.'.$this->format.$this->params;
+		$this->fullUrl = $this->basePath .'/' . $this->apiVersion . '/'. $this->resource . '.' . $this->format . $this->params;
 	}
 		
 /**

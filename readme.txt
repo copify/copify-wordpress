@@ -1,21 +1,21 @@
 === Copify ===
-Version: 0.9.9
+Version: 1.0.0
 Contributors: robmcvey
-Tags: guest blogger, guest blogging, posts, links, content, copywriting, blogging, writers, writing, creation, seo
+Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
-Tested up to: 3.8.0
+Tested up to: 3.9.0
 Stable tag: trunk
 Github Stable tag: master
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Copify gives you access to professionally written content from hundreds of approved writers.
+Order quality blog posts from Copify's network of professional writers
 
 == Description ==
 
-Copify is an online copywriting agency, we help our clients to source quality content from hundreds of approved [freelance writers](http://uk.copify.com/freelance-writers/). Now, thanks to our new plugin, you can order content from our writers and have it delivered directly to your Wordpress site.
+Copify is an online copywriting platform which helps 1000s of businesses source quality blog content through their network of freelance writers.
 
-All you have to do is fill in a simple brief detailing your requirements and a writer will be on the case in minutes. Once the content is complete, it is delivered to your dashboard, ready for you to format and publish to your site. It's that simple!
+To order content for your blog, all you have to do is fill in a simple brief detailing your requirements and a writer will be on the case in minutes. Once the content is complete, it is delivered to your WordPress dashboard, ready for you to format and publish. It's that simple!
 
 == Requirements ==
 

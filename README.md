@@ -1,12 +1,12 @@
 # Copify Wordpress Plugin
 
-Copify gives you access to professionally written content from hundreds of approved writers.
+Order quality blog posts from Copify's network of professional writers
 
 ### Description
 
-Copify is an online copywriting agency, we help our clients to source quality content from hundreds of approved [freelance writers](http://uk.copify.com/freelance-writers/). Now, thanks to our new plugin, you can order content from our writers and have it delivered directly to your Wordpress site.
+Copify is an online copywriting platform which helps 1000s of businesses source quality blog content through their network of freelance writers.
 
-All you have to do is fill in a simple brief detailing your requirements and a writer will be on the case in minutes. Once the content is complete, it is delivered to your dashboard, ready for you to format and publish to your site. It's that simple!
+To order content for your blog, all you have to do is fill in a simple brief detailing your requirements and a writer will be on the case in minutes. Once the content is complete, it is delivered to your WordPress dashboard, ready for you to format and publish. It's that simple!
 
 ![](/screenshot-1.png)
 

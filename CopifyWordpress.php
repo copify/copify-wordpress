@@ -2,8 +2,8 @@
 /*
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
-Description: Publish content sourced through Copify to your WordPress blog
-Version: 0.9.9
+Description: Order quality blog posts from Copify's network of professional writers
+Version: 1.0.0
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
@@ -162,6 +162,7 @@ class CopifyWordpress {
 		
 		// Set the correct end point for the API
 		$this->Copify->basePath = sprintf('https://%s.copify.com/api' , $CopifyLoginDetails['CopifyLocale']);
+
 	}
 		
 /**
@@ -253,7 +254,6 @@ class CopifyWordpress {
 				$error .= '. <a href="?page=CopifySettings" >Check settings</a>';
 			}
 			
-			
 		}
 		
 		require('Views/CopifyDashboard.php');
@@ -301,7 +301,6 @@ class CopifyWordpress {
 				$error .= '. <a href="?page=CopifySettings" >Check settings</a>';
 			}
 			
-
 		}
 
 		require('Views/CopifyOrder.php');
@@ -333,6 +332,11 @@ class CopifyWordpress {
 			$this->CopifySetApiClass();
 			
 			parse_str($_POST['job'], $newJob);
+			
+			// Add the url as reference
+			if (isset($_SERVER['HTTP_HOST'])) {
+				$newJob['brief'] .= "\n\nThis blog will be posted on " . $_SERVER['HTTP_HOST'];
+			}
 			
 			$response['response'] = $this->Copify->jobsAdd($newJob);
 			$response['message'] = 'New job added';
@@ -801,7 +805,7 @@ class CopifyWordpress {
 		add_menu_page('Copify Wordpress Plugin', 'Copify', 'publish_posts', 'CopifyDashboard', array($this, 'CopifyDashboard'), $icon , 6); 
 		
 		//add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function );
-		add_submenu_page('CopifyDashboard', 'Copify Order New Content', 'Order Content', 'publish_posts', 'CopifyOrder', array($this, 'CopifyOrder'));
+		add_submenu_page('CopifyDashboard', 'Copify Order New Content', 'Order blog post', 'publish_posts', 'CopifyOrder', array($this, 'CopifyOrder'));
 		add_submenu_page('CopifyDashboard', 'Copify Wordpress Settings', 'Settings', 'publish_posts', 'CopifySettings', array($this, 'CopifySettings'));
 		add_submenu_page('CopifySettings', 'Copify View Job', 'View', 'publish_posts', 'CopifyViewJob', array($this, 'CopifyViewJob'));
 	}

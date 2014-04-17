@@ -5,7 +5,7 @@
 	</div>
 	
 	<h2>Copify
-		<a class="add-new-h2" id="CopifyNewOrder" href="?page=CopifyOrder">Order content</a>
+		<a class="add-new-h2" id="CopifyNewOrder" href="?page=CopifyOrder">Order a new blog post</a>
 	</h2>
 	
 	<?php if(isset($error)) : ?>
@@ -58,7 +58,7 @@
 				<a class="<?php if($sort == 'id') echo 'on '; echo $toggle; ?>" href="<?php echo "?page=$page&pageNumber=$pageNumber&sort=id&direction=$toggle"; ?>">#</a>
 			</th>
 			<th>
-				<a class="<?php if($sort == 'name') echo 'on '; echo $toggle; ?>" href="<?php echo "?page=$page&pageNumber=$pageNumber&sort=name&direction=$toggle"; ?>">Job name</a>
+				<a class="<?php if($sort == 'name') echo 'on '; echo $toggle; ?>" href="<?php echo "?page=$page&pageNumber=$pageNumber&sort=name&direction=$toggle"; ?>">Order name</a>
 			</th>
 			<th>
 				<a class="<?php if($sort == 'job_category_id') echo 'on '; echo $toggle; ?>" href="<?php echo "?page=$page&pageNumber=$pageNumber&sort=job_category_id&direction=$toggle"; ?>">Category</a>
@@ -133,7 +133,7 @@
 	
 	
 	<div class="message">
-		It looks like you have no jobs with Copify yet. <a href="?page=CopifyOrder">Click here to place your first order</a>
+		It doesn't look like you have any Copify orders yet. <a href="?page=CopifyOrder">Click here to place your first order</a>
 	</div>
 	
 	<?php endif; ?>	
