@@ -9,32 +9,38 @@ Github Stable tag: master
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Order quality blog posts from Copify's network of professional writers
+Automatically publish unique, relevant content every week from Copify's team of professional writers.
 
 == Description ==
 
-Copify is an online copywriting platform which helps 1000s of businesses source quality blog content through their network of freelance writers.
+If you don’t blog regularly, you’re not alone. Most companies struggle to find the time and inspiration to update their blog, which means they are missing out on a real opportunity.
 
-To order content for your blog, all you have to do is fill in a simple brief detailing your requirements and a writer will be on the case in minutes. Once the content is complete, it is delivered to your WordPress dashboard, ready for you to format and publish. It's that simple!
+Statistics from content marketing platform HubSpot reveal that blogs which are updated regularly get <b>55% more visitors</b> and <b>97% more links</b> than those which aren’t.
+
+This is where Copify can help. By installing our plugin and signing up for one of our [monthly packages](https://copify.com/blog-packages), we’ll deliver a number of blog posts every week. These posts can be pushed directly to your WordPress dashboard for quick and easy publishing.
 
 == Requirements ==
 
-Requires the PHP cURL extension to be installed
+* WordPress >= 3.2.0
+* PHP cURL extension
+* PHP JSON library
 
 == Installation ==
 
-1. Upload the `copify-wordpress` directory to your `/wp-content/plugins/` directory
+1. Unzip and upload the `copify` folder to your `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu
-3. Enter your Copify API key which can be found here: [Copify Settings](https://uk.copify.com/users/settings)
+3. Enter your API key which can be found on the settings page of your Copify account
+
+## Automation
 
 == Screenshots ==
 
-1. Order new content for your blog
-2. Browse the status of your current orders
-3. Once complete, review the content
-4. Leave feedback and move to Drafts
-5. Add images and links!
+1. Easily order a new blog post
+2. Browse all of your Copify orders
+3. Once complete, review your new content
+4. Leave feedback
+5. Add images, formatting and publish!
 
 == Changelog ==
 
-See https://github.com/copify/copify-wordpress
+See a full list of changes here: https://github.com/copify/copify-wordpress/commits/master

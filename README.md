@@ -2,7 +2,7 @@
 
 ## Copify Wordpress Plugin
 
-Don't have time to update your blog? Let Copify take care of it! Automatically publish unique, relevant SEO friendly content every week from Copify's team of professional writers.
+Automatically publish unique, relevant content every week from Copify's team of professional writers.
 
 ### Requirements
 
@@ -12,9 +12,9 @@ Don't have time to update your blog? Let Copify take care of it! Automatically p
 
 ### Installation
 
-1. Upload the `copify` directory to your `/wp-content/plugins/` directory
+1. Unzip and upload the `copify` folder to your `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu
-3. Enter your Copify API key which can be found here: 
+3. Enter your API key which can be found on the settings page of your Copify account
 
 ### Automation
 
