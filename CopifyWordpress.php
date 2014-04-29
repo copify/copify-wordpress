@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Order quality blog posts from Copify's network of professional writers
-Version: 1.0.0
+Version: 1.0.1
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
@@ -162,7 +162,6 @@ class CopifyWordpress {
 		
 		// Set the correct end point for the API
 		$this->Copify->basePath = sprintf('https://%s.copify.com/api' , $CopifyLoginDetails['CopifyLocale']);
-
 	}
 		
 /**
@@ -472,7 +471,7 @@ class CopifyWordpress {
 					'post_type' => $post_type  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
 				);
 
-				$this->CopifyAddToDrafts($feedback['job_id'] , $newPost);
+				$this->CopifyAddToPosts($feedback['job_id'] , $newPost);
 				
 			}	
 
@@ -533,7 +532,7 @@ class CopifyWordpress {
 					//'post_type' => [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
 				);
 
-				$this->CopifyAddToDrafts($job_id , $newPost);
+				$this->CopifyAddToPosts($job_id , $newPost);
 				
 			}	
 
@@ -616,19 +615,19 @@ class CopifyWordpress {
  *		'post_status' => 'draft',
  * );
  **/
-	public function CopifyAddToDrafts($job_id, $newPost) {
+	public function CopifyAddToPosts($job_id, $newPost) {
 		
 		// Create the post
 		$new_wp_id = wp_insert_post($newPost , $wp_error);
 			
 		// Check for errors
-		if(is_wp_error($new_wp_id)) {
+		if (is_wp_error($new_wp_id)) {
 			$errorMessage = $new_wp_id->get_error_message();
 			throw new Exception($errorMessage);
 		}
 				
 		// Pop in an option for the Copify Job ID
-		add_option('CopifyJobIdExists'.$job_id, $new_wp_id, null, 'no');
+		add_option('CopifyJobIdExists' . $job_id, $new_wp_id, null, 'no');
 		
 		return $new_wp_id;
 	}
@@ -683,7 +682,7 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifyJobIdExists($job_id = null) {
-		return get_option('CopifyJobIdExists'.$job_id , false);
+		return get_option('CopifyJobIdExists' . $job_id , false);
 	}
 	
 /**
@@ -810,6 +809,78 @@ class CopifyWordpress {
 		add_submenu_page('CopifySettings', 'Copify View Job', 'View', 'publish_posts', 'CopifyViewJob', array($this, 'CopifyViewJob'));
 	}
 	
+/**
+ * We can check through all requests in this method for things 
+ * like autoapprove post backs.
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function CopifyRequestFilter() {
+		try {
+			// NO request URI
+			if (!isset($_SERVER["REQUEST_URI"])) {
+				return;
+			}
+			// Valid POST back
+			$uri = $_SERVER["REQUEST_URI"];
+			if (!preg_match("/copify-autoapprove/", $uri)) {
+				return;
+			}
+			// ID
+			if (!isset($_GET["id"])) {
+				throw new Exception('Must include order ID');
+			}
+			// Email
+			if (!isset($_GET["token"])) {
+				throw new Exception('Must include auth token');
+			}
+			// Order ID and Email params
+			$id = $_GET["id"];
+			$token = $_GET["token"];
+			// Check valid login
+			$CopifyLoginDetails = get_option('CopifyLoginDetails' , false);
+			// Not valid account email
+			if ($CopifyLoginDetails == false || !isset($CopifyLoginDetails['CopifyEmail']) || !isset($CopifyLoginDetails['CopifyApiKey'])) {
+				throw new Exception('Copify plugin not conigured');
+			}
+			// Copify will send a hash of email/api key
+			$expectedToken = sha1($CopifyLoginDetails['CopifyEmail'] . $CopifyLoginDetails['CopifyApiKey']);
+			if ($expectedToken != $token) {
+				throw new Exception('Permission denied');
+			}
+			// Initialise Copify API class
+			$this->CopifySetApiClass();
+			// Check it's not already published
+			if ($this->CopifyJobIdExists($id)) {
+				throw new Exception(sprintf('Order %s already published', $id));
+			}	
+			// Get the job record from the API	
+			$job = $this->Copify->jobsView($id);
+			// Is order marked as complete?
+			if ($job['job_status_id'] != 3) {
+				throw new Exception(sprintf('Order %s is not yet complete', $id));
+			}
+			$newPost = array(
+				'post_title' => $job['name'],
+				'post_content' => $job['copy'],
+				'post_status' => 'publish',
+				'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
+			);	
+			$this->CopifyAddToPosts($id, $newPost);
+			$message = sprintf('Order %s auto-published', $id);
+			$json = array('success' => true, 'message' => $message);
+			echo json_encode($json);
+			die();
+		} catch (Exception $e) {
+			$message = $e->getMessage();
+			$json = array('message' => $message);
+			echo json_encode($json);
+			die();
+		}
+		
+	}
+	
 }
 
 // Initialise the Copify Wordpress class
@@ -817,6 +888,9 @@ $CopifyWordpress = new CopifyWordpress();
 
 // Add our js and css
 add_action('admin_init', array($CopifyWordpress, 'CopifyCssAndScripts'));
+
+// Run requests through our custom method
+add_action('parse_request', array($CopifyWordpress, 'CopifyRequestFilter'));
 
 // Add our admin menu 
 add_action('admin_menu', array($CopifyWordpress, 'CopifyAdminMenu'));
