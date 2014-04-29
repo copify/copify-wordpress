@@ -1,14 +1,8 @@
-# Copify Wordpress Plugin
+![](/assets/banner-772x250.png)
 
-Order quality blog posts from Copify's network of professional writers
+## Copify Wordpress Plugin
 
-### Description
-
-Copify is an online copywriting platform which helps 1000s of businesses source quality blog content through their network of freelance writers.
-
-To order content for your blog, all you have to do is fill in a simple brief detailing your requirements and a writer will be on the case in minutes. Once the content is complete, it is delivered to your WordPress dashboard, ready for you to format and publish. It's that simple!
-
-![](/screenshot-1.png)
+Automatically publish unique, relevant content every week from Copify's team of professional writers.
 
 ### Requirements
 
@@ -18,6 +12,10 @@ To order content for your blog, all you have to do is fill in a simple brief det
 
 ### Installation
 
-1. Upload the `copify` directory to your `/wp-content/plugins/` directory
+1. Unzip and upload the `copify` folder to your `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu
-3. Enter your Copify API key which can be found here: [Copify Settings](https://www.copify.com/users/settings)
+3. Enter your API key which can be found on the settings page of your Copify account
+
+### Automation
+
+The plugin is best used alongside one of Copify's [monthly blog packages](https://copify.com/blog-packages). Enable the <b>auto-publish</b> setting to allow posts to go live immediately.
