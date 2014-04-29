@@ -18,4 +18,4 @@ Automatically publish unique, relevant content every week from Copify's team of 
 
 ### Automation
 
-The plugin is best used alongside one of Copify's [monthly blog packages](https://copify.com/blog-packages). Enable the <b>auto-publish</b> setting to allow posts to go live immediately.
+The plugin is best used alongside one of Copify's [monthly blog packages](http://copify.com/blog-packages). Enable the <b>auto-publish</b> setting to allow posts to go live immediately.

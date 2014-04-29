@@ -17,7 +17,7 @@ If you don’t blog regularly, you’re not alone. Most companies struggle to fi
 
 Statistics from content marketing platform HubSpot reveal that blogs which are updated regularly get <b>55% more visitors</b> and <b>97% more links</b> than those which aren’t.
 
-This is where Copify can help. By installing our plugin and signing up for one of our [monthly packages](https://copify.com/blog-packages), we’ll deliver a number of blog posts every week. These posts can be pushed directly to your WordPress dashboard for quick and easy publishing.
+This is where Copify can help. By installing our plugin and signing up for one of our [monthly packages](http://copify.com/blog-packages), we’ll deliver a number of blog posts every week. These posts can be pushed directly to your WordPress dashboard for quick and easy publishing.
 
 == Requirements ==
 
@@ -30,8 +30,6 @@ This is where Copify can help. By installing our plugin and signing up for one o
 1. Unzip and upload the `copify` folder to your `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu
 3. Enter your API key which can be found on the settings page of your Copify account
-
-## Automation
 
 == Screenshots ==
 
