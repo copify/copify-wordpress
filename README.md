@@ -1,4 +1,4 @@
-![](/assets/banner-772x250.png)
+![](copify-wordpress/blob/assets/banner-772x250.png)
 
 ## Copify Wordpress Plugin
 
