@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Order quality blog posts from Copify's network of professional writers
-Version: 1.0.1
+Version: 1.0.2
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
@@ -31,6 +31,11 @@ if(!defined('DS')) {
 }
 
 class CopifyWordpress {
+
+/**
+ * Plugin version
+ */	
+	protected $version = '1.0.2';
 
 /**
  * Instance of Copify library
@@ -827,6 +832,11 @@ class CopifyWordpress {
 			if (!preg_match("/copify-autoapprove/", $uri)) {
 				return;
 			}
+			// Version check
+			if (isset($_GET["check"]) && $_GET["check"] == 'version') {
+				echo json_encode($this->version);
+				die();
+			}	
 			// ID
 			if (!isset($_GET["id"])) {
 				throw new Exception('Must include order ID');
