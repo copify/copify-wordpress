@@ -832,21 +832,10 @@ class CopifyWordpress {
 			if (!preg_match("/copify-autoapprove/", $uri)) {
 				return;
 			}
-			// Version check
-			if (isset($_GET["check"]) && $_GET["check"] == 'version') {
-				echo json_encode($this->version);
-				die();
-			}	
-			// ID
-			if (!isset($_GET["id"])) {
-				throw new Exception('Must include order ID');
-			}
-			// Email
+			// Token
 			if (!isset($_GET["token"])) {
 				throw new Exception('Must include auth token');
 			}
-			// Order ID and Email params
-			$id = $_GET["id"];
 			$token = $_GET["token"];
 			// Check valid login
 			$CopifyLoginDetails = get_option('CopifyLoginDetails' , false);
@@ -857,8 +846,18 @@ class CopifyWordpress {
 			// Copify will send a hash of email/api key
 			$expectedToken = sha1($CopifyLoginDetails['CopifyEmail'] . $CopifyLoginDetails['CopifyApiKey']);
 			if ($expectedToken != $token) {
-				throw new Exception('Permission denied');
+				throw new Exception('Permission denied', 403);
 			}
+			// Version check only
+			if (isset($_GET["check"]) && $_GET["check"] == 'version') {
+				echo json_encode($this->version);
+				die();
+			}
+			// Order ID
+			if (!isset($_GET["id"])) {
+				throw new Exception('Must include order ID');
+			}
+			$id = $_GET["id"];
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
 			// Check it's not already published
@@ -880,10 +879,14 @@ class CopifyWordpress {
 			$this->CopifyAddToPosts($id, $newPost);
 			$message = sprintf('Order %s auto-published', $id);
 			$json = array('success' => true, 'message' => $message);
-			echo json_encode($json);
-			die();
 		} catch (Exception $e) {
 			$message = $e->getMessage();
+			$code = $e->getCode();
+			if ($code == 403) {
+				header("HTTP/1.0 403 Forbidden");
+			} else {
+				header("HTTP/1.0 404 Not Found");
+			}
 			$json = array('message' => $message);
 			echo json_encode($json);
 			die();
