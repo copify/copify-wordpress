@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Order quality blog posts from Copify's network of professional writers
-Version: 1.0.2
+Version: 1.0.3
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
@@ -35,7 +35,7 @@ class CopifyWordpress {
 /**
  * Plugin version
  */	
-	protected $version = '1.0.2';
+	protected $version = '1.0.3';
 
 /**
  * Instance of Copify library
@@ -867,8 +867,8 @@ class CopifyWordpress {
 			// Get the job record from the API	
 			$job = $this->Copify->jobsView($id);
 			// Is order marked as complete?
-			if ($job['job_status_id'] != 3) {
-				throw new Exception(sprintf('Order %s is not yet complete', $id));
+			if (!in_array($job['job_status_id'], array(3,4))) {
+				throw new Exception(sprintf('Order %s is not yet complete/approved', $id));
 			}
 			$newPost = array(
 				'post_title' => $job['name'],
@@ -879,6 +879,8 @@ class CopifyWordpress {
 			$this->CopifyAddToPosts($id, $newPost);
 			$message = sprintf('Order %s auto-published', $id);
 			$json = array('success' => true, 'message' => $message);
+			echo json_encode($json);
+			die();
 		} catch (Exception $e) {
 			$message = $e->getMessage();
 			$code = $e->getCode();
