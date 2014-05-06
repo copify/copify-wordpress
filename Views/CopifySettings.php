@@ -26,7 +26,7 @@
 	<?php endif; ?>	
 
 	<div class="message">
-		Enter your Copify <strong>Email</strong> and <strong>API Key</strong>. <a target="blank" href="https://www.copify.com/users/settings">Get your API key from Copify</a>
+		Enter your Copify <strong>Email</strong> and <strong>API Key</strong>. <a target="blank" href="http://copify.com/users/settings">Get your API key from Copify</a>
 	</div>	
 
 	<form method="POST" class="CopifyForm CopifyWell">
