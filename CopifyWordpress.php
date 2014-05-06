@@ -879,6 +879,8 @@ class CopifyWordpress {
 			$this->CopifyAddToPosts($id, $newPost);
 			$message = sprintf('Order %s auto-published', $id);
 			$json = array('success' => true, 'message' => $message);
+			echo json_encode($json);
+			die();
 		} catch (Exception $e) {
 			$message = $e->getMessage();
 			$code = $e->getCode();
