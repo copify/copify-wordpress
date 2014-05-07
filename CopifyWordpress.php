@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Order quality blog posts from Copify's network of professional writers
-Version: 1.0.3
+Version: 1.0.4
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
@@ -35,7 +35,7 @@ class CopifyWordpress {
 /**
  * Plugin version
  */	
-	protected $version = '1.0.3';
+	protected $version = '1.0.4';
 
 /**
  * Instance of Copify library
@@ -534,7 +534,7 @@ class CopifyWordpress {
 					'post_title' => $job['name'],
 					'post_content' => $job['copy'],
 					'post_status' => 'draft',
-					//'post_type' => [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
+					//'post_type' => [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
 				);
 
 				$this->CopifyAddToPosts($job_id , $newPost);
@@ -824,12 +824,7 @@ class CopifyWordpress {
 	public function CopifyRequestFilter() {
 		try {
 			// NO request URI
-			if (!isset($_SERVER["REQUEST_URI"])) {
-				return;
-			}
-			// Valid POST back
-			$uri = $_SERVER["REQUEST_URI"];
-			if (!preg_match("/copify-autoapprove/", $uri)) {
+			if (!isset($_GET["copify-action"])) {
 				return;
 			}
 			// Token
@@ -866,15 +861,19 @@ class CopifyWordpress {
 			}	
 			// Get the job record from the API	
 			$job = $this->Copify->jobsView($id);
+			// Public orders won't have copy field
+			if (!isset($job['copy'])) {
+				throw new Exception(sprintf('Can not find copy for order %s', $id));
+			}
 			// Is order marked as complete?
 			if (!in_array($job['job_status_id'], array(3,4))) {
-				throw new Exception(sprintf('Order %s is not yet complete/approved', $id));
+				throw new Exception(sprintf('Order %s is not yet complete or approved', $id));
 			}
 			$newPost = array(
 				'post_title' => $job['name'],
 				'post_content' => $job['copy'],
 				'post_status' => 'publish',
-				'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
+				'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
 			);	
 			$this->CopifyAddToPosts($id, $newPost);
 			$message = sprintf('Order %s auto-published', $id);
