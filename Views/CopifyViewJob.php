@@ -182,7 +182,7 @@
 			
 			
 			<!-- This job is already in wordpress.... -->
-			<?php if(!empty($job['copy']) && $job['job_status_id'] == 4 && $CopifyJobIsPostAlready) : 
+			<?php if(!empty($job['copy']) && $CopifyJobIsPostAlready) : 
 				$urlText = 'Edit in Wordpress';
 				$buttonClass = 'CopifyButton CopifyGreen';
 				$linkToPost = sprintf('<a class="%s" href="post.php?post=%s&action=edit">%s</a>', $buttonClass, $CopifyJobIsPostAlready, $urlText); 
@@ -227,7 +227,7 @@
 			
 			
 			<!-- Modal for feedback -->
-			<?php if(isset($CopifyWriter) && !empty($CopifyWriter) && $job['job_status_id'] == 3) : ?>
+			<?php if(isset($CopifyWriter) && !empty($CopifyWriter) && $job['job_status_id'] == 3 && !$CopifyJobIsPostAlready) : ?>
 			
 				<!-- Approve btn -->
 				<span class="CopifyButton CopifyGreen CopifyApproveAndDraft">Approve & Move to Drafts</span>
