@@ -832,7 +832,16 @@ class CopifyWordpress {
 			if (!preg_match("/copify-autoapprove/", $uri)) {
 				return;
 			}
-			// Token
+			// Version check
+			if (isset($_GET["check"]) && $_GET["check"] == 'version') {
+				echo json_encode($this->version);
+				die();
+			}	
+			// ID
+			if (!isset($_GET["id"])) {
+				throw new Exception('Must include order ID');
+			}
+			// Email
 			if (!isset($_GET["token"])) {
 				throw new Exception('Must include auth token');
 			}
