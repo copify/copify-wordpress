@@ -832,16 +832,7 @@ class CopifyWordpress {
 			if (!preg_match("/copify-autoapprove/", $uri)) {
 				return;
 			}
-			// Version check
-			if (isset($_GET["check"]) && $_GET["check"] == 'version') {
-				echo json_encode($this->version);
-				die();
-			}	
-			// ID
-			if (!isset($_GET["id"])) {
-				throw new Exception('Must include order ID');
-			}
-			// Email
+			// Token
 			if (!isset($_GET["token"])) {
 				throw new Exception('Must include auth token');
 			}
@@ -888,8 +879,6 @@ class CopifyWordpress {
 			$this->CopifyAddToPosts($id, $newPost);
 			$message = sprintf('Order %s auto-published', $id);
 			$json = array('success' => true, 'message' => $message);
-			echo json_encode($json);
-			die();
 		} catch (Exception $e) {
 			$message = $e->getMessage();
 			$code = $e->getCode();
