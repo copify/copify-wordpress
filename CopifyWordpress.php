@@ -783,7 +783,7 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifyFormatBrief($str) {
-		return nl2br(htmlentities($str));
+		return nl2br(esc_attr($str));
 	}
 	
 /**
