@@ -12,7 +12,7 @@ require_once(__DIR__ . '/../../Lib/CopifyWordpress.php');
 class ApiTest extends PHPUnit_Framework_TestCase {
 
 /**
- * undocumented function
+ * test
  *
  * @return void
  * @author Rob Mcvey

@@ -24,27 +24,24 @@ class CopifyWordpress {
 	public $copifyDirName = 'copify';
 					
 /**
- * cssAndScripts
+ * Add our CSS and JS to wordpress
  *
  * @return void
  * @author Rob Mcvey
  **/
 	public function CopifyCssAndScripts() {
 		// JS - our own
-		$js_url = plugins_url($this->copifyDirName . COPIFY_DS . 'js' . COPIFY_DS . 'Copify.js');
-		wp_enqueue_script('copify', $js_url, array('jquery'));
-		
+		$js_url = $this->wordpress('plugins_url', $this->copifyDirName . COPIFY_DS . 'js' . COPIFY_DS . 'Copify.js');
+		$this->wordpress('wp_enqueue_script', 'copify', $js_url, array('jquery'));
 		// JS - bootsrap modal
-		$bootstrap_url = plugins_url($this->copifyDirName . COPIFY_DS . 'js' . COPIFY_DS . 'bootstrap-modal.js');
-		wp_enqueue_script('bootstrap-modal' , $bootstrap_url, array('jquery'));
-		
+		$bootstrap_url = $this->wordpress('plugins_url', $this->copifyDirName . COPIFY_DS . 'js' . COPIFY_DS . 'bootstrap-modal.js');
+		$this->wordpress('wp_enqueue_script', 'bootstrap-modal' , $bootstrap_url, array('jquery'));
 		// JS - jquery validate
-		$jquery_validate = plugins_url($this->copifyDirName . COPIFY_DS . 'js' . COPIFY_DS . 'jquery.validate.js');
-		wp_enqueue_script('jquery.validate' , $jquery_validate, array('jquery'));
-		
+		$jquery_validate = $this->wordpress('plugins_url', $this->copifyDirName . COPIFY_DS . 'js' . COPIFY_DS . 'jquery.validate.js');
+		$this->wordpress('wp_enqueue_script', 'jquery.validate' , $jquery_validate, array('jquery'));
 		// CSS
-		$css_url = plugins_url($this->copifyDirName . COPIFY_DS . 'css' . COPIFY_DS . 'Copify.css');
-		wp_enqueue_style('copify', $css_url);
+		$css_url = $this->wordpress('plugins_url', $this->copifyDirName . COPIFY_DS . 'css' . COPIFY_DS . 'Copify.css');
+		$this->wordpress('wp_enqueue_style', 'copify', $css_url);
 	}
 		
 /**
