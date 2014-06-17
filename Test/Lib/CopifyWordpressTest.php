@@ -65,7 +65,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->at(5))
 			->method('wordpress')
 			->with('wp_enqueue_script', 'jquery.validate', 'http://localhost.3dlockers.com/wp-content/plugins/copify/js/jquery.validate.js', array('jquery'));
-		// 
+		// Our css
 		$this->CopifyWordpress->expects($this->at(6))
 			->method('wordpress')
 			->with('plugins_url', 'copify/css/Copify.css')
@@ -74,6 +74,19 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('wp_enqueue_style', 'copify', 'http://localhost.3dlockers.com/wp-content/plugins/copify/css/Copify.css');
 		$this->CopifyWordpress->CopifyCssAndScripts();
+	}
+	
+/**
+ * testCopifySettings
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifySettings() {
+		// $CopifyEmail = $_POST['CopifyEmail'];
+		// $CopifyApiKey = $_POST['CopifyApiKey'];
+		// $CopifyLocale = $_POST['CopifyLocale'];
+		$this->markTestSkipped();
 	}
 	
 }

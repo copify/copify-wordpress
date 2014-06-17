@@ -398,7 +398,7 @@ jQuery(document).ready(function() {
 					jQuery('#CopifyConfirmApprove').hide();
 					jQuery('#CopifyConfirmSaving').hide();
 					//console.log(data);
-					window.location.href = window.location.href + '&flashMessage=Job+approved+and+moved+to+Drafts';
+					window.location.href = window.location.href + '&flashMessage=Order+approved+and+moved+to+Drafts';
 				} else {
 					alert(data.message);
 				}
@@ -433,7 +433,7 @@ jQuery(document).ready(function() {
 			success: function(data) {
 				if(data.status == 'success') {
 					// OK
-					window.location.href = window.location.href + '&flashMessage=Job+moved+to+Drafts';
+					window.location.href = window.location.href + '&flashMessage=Order+moved+to+Drafts';
 				} else {
 					alert(data.message);
 				}
