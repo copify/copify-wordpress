@@ -687,7 +687,7 @@ class CopifyWordpress {
 			}
 			// Token
 			if (!isset($_GET["token"])) {
-				throw new Exception('Must include auth token');
+				throw new Exception('Must include auth token', 400);
 			}
 			$token = $_GET["token"];
 			// Check valid login
@@ -742,14 +742,38 @@ class CopifyWordpress {
 			$message = $e->getMessage();
 			$code = $e->getCode();
 			if ($code == 403) {
-				header("HTTP/1.0 403 Forbidden");
-			} else {
-				header("HTTP/1.0 404 Not Found");
+				$this->setheader("HTTP/1.0 403 Forbidden");
+			} 
+			elseif (400) {
+				$this->setheader("HTTP/1.0 400 Bad Request");
+			}
+			else {
+				$this->setheader("HTTP/1.0 404 Not Found");
 			}
 			$json = array('message' => $message);
-			echo json_encode($json);
-			die();
+			$this->outputJson($json);
 		}
+	}
+	
+/**
+ * Set an output header
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	protected function setheader($header) {
+		header($header);
+	}
+
+/**
+ * Spit out an array as JSON
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function outputJson($json) {
+		echo json_encode($json);
+		die();
 	}
 
 /**

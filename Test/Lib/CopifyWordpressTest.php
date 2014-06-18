@@ -157,4 +157,45 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->CopifySettings();
 	}
 
+/**
+ * testCopifyRequestFilterBadToken
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyRequestFilterBadToken() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
+		$this->CopifyWordpress->expects($this->never())
+			->method('wordpress');
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array('message' => 'Must include auth token'));
+		$this->CopifyWordpress->expects($this->once())
+			->method('setheader')
+			->with('HTTP/1.0 400 Bad Request');	
+		$_GET["copify-action"] = true;	
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
+ * testCopifyRequestFilterBadApiDetails
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyRequestFilterBadApiDetails() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress');
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array('message' => 'Copify plugin not conigured'));
+		$this->CopifyWordpress->expects($this->once())
+			->method('setheader')
+			->with('HTTP/1.0 400 Bad Request');	
+		$_GET["copify-action"] = true;
+		$_GET["token"] = 'blah';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
 }
