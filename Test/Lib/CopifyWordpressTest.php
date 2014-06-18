@@ -245,12 +245,10 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->will($this->returnValue($mockVal));
 		$this->CopifyWordpress->expects($this->once())
 				->method('outputJson')
-				->with(array('message' => 'Permission denied'));
-		$this->CopifyWordpress->expects($this->once())
-			->method('setheader')
-			->with('HTTP/1.0 403 Forbidden');	
+				->with('1.0.4');
 		$_GET["copify-action"] = true;
-		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0';
+		$_GET["check"] = 'version';
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
 }

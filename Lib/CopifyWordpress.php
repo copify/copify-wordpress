@@ -264,11 +264,11 @@ class CopifyWordpress {
 			$response['response'] = $this->Api->jobsAdd($newJob);
 			$response['message'] = 'New job added';
 			$response['status'] = 'success';
-			$this->outputJson($response);
+			return $this->outputJson($response);
 		} 
 		catch (Exception $e) {
 			$response['message'] = $e->getMessage();
-			$this->outputJson($response);
+			return $this->outputJson($response);
 		}
 	}
 
@@ -371,11 +371,11 @@ class CopifyWordpress {
 			$response['status'] = 'success';
 			$response['response'] = $result;
 			$response['message'] = 'Job Approved';
-			$this->outputJson($response);
+			return $this->outputJson($response);
 		} 
 		catch (Exception $e) {
 			$response['message'] = $e->getMessage();
-			$this->outputJson($response);
+			return $this->outputJson($response);
 		}
 	}
 
@@ -417,11 +417,11 @@ class CopifyWordpress {
 			$response['status'] = 'success';
 			$response['response'] = $result;
 			$response['message'] = 'Job Moved to drafts';
-			$this->outputJson($response);
+			return $this->outputJson($response);
 		}	
 		catch (Exception $e) {
 			$response['message'] = $e->getMessage();
-			$this->outputJson($response);
+			return $this->outputJson($response);
 		}
 	}
 
@@ -453,11 +453,11 @@ class CopifyWordpress {
 			$response['status'] = 'success';
 			$response['response'] = $result;
 			$response['message'] = sprintf('Quote for %s', $words);
-			$this->outputJson($response);
+			return $this->outputJson($response);
 		}	
 		catch (Exception $e) {
 			$response['message'] = $e->getMessage();
-			$this->outputJson($response);
+			return $this->outputJson($response);
 		}
 	}
 
@@ -690,13 +690,12 @@ class CopifyWordpress {
 			}
 			// Copify will send a hash of email/api key
 			$expectedToken = sha1($CopifyLoginDetails['CopifyEmail'] . $CopifyLoginDetails['CopifyApiKey']);
-			die($expectedToken);
 			if ($expectedToken != $token) {
 				throw new Exception('Permission denied', 403);
 			}
 			// Version check only
 			if (isset($_GET["check"]) && $_GET["check"] == 'version') {
-				$this->outputJson($this->version);
+				return $this->outputJson($this->version);
 			}
 			// Order ID
 			if (!isset($_GET["id"])) {
@@ -728,7 +727,7 @@ class CopifyWordpress {
 			$this->CopifyAddToPosts($id, $newPost);
 			$message = sprintf('Order %s auto-published', $id);
 			$json = array('success' => true, 'message' => $message);
-			$this->outputJson($json);
+			return $this->outputJson($json);
 		} catch (Exception $e) {
 			$message = $e->getMessage();
 			$code = $e->getCode();
@@ -742,7 +741,7 @@ class CopifyWordpress {
 				$this->setheader("HTTP/1.0 404 Not Found");
 			}
 			$json = array('message' => $message);
-			$this->outputJson($json);
+			return $this->outputJson($json);
 		}
 	}
 	
