@@ -226,4 +226,31 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
 
+/**
+ * testCopifyRequestFilterCheckToken
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyRequestFilterCheckToken() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+		$this->CopifyWordpress->expects($this->once())
+				->method('outputJson')
+				->with(array('message' => 'Permission denied'));
+		$this->CopifyWordpress->expects($this->once())
+			->method('setheader')
+			->with('HTTP/1.0 403 Forbidden');	
+		$_GET["copify-action"] = true;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
 }

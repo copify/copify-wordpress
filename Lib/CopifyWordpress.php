@@ -690,6 +690,7 @@ class CopifyWordpress {
 			}
 			// Copify will send a hash of email/api key
 			$expectedToken = sha1($CopifyLoginDetails['CopifyEmail'] . $CopifyLoginDetails['CopifyApiKey']);
+			die($expectedToken);
 			if ($expectedToken != $token) {
 				throw new Exception('Permission denied', 403);
 			}
