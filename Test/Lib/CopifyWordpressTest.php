@@ -404,4 +404,56 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
 
+/**
+ * testCopifyRequestOrderPublished
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyRequestOrderPublished() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));		
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetApiClass');	
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyJobIdExists')
+			->with(62343)
+			->will($this->returnValue(false));
+		$job = array(
+			'id' => 62343,
+			'name' => 'some order name',
+			'copy' => 'some copy is here',
+			'job_status_id' => 3,
+		);	
+		$this->CopifyWordpress->Api->expects($this->once())
+			->method('jobsView')
+			->with(62343)
+			->will($this->returnValue($job));	
+		$newPost = array(
+			'post_title' => $job['name'],
+			'post_content' => $job['copy'],
+			'post_status' => 'publish',
+			'post_type' => 'post'
+		);	
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyAddToPosts')
+			->with(62343, $newPost);	
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array('success' => true, 'message' => 'Order 62343 auto-published'));
+		$_GET["copify-action"] = true;
+		$_GET["id"] = 62343;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
 }
