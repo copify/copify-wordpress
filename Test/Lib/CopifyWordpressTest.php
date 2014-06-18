@@ -216,8 +216,8 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
 		$this->CopifyWordpress->expects($this->once())
-				->method('outputJson')
-				->with(array('message' => 'Permission denied'));
+			->method('outputJson')
+			->with(array('message' => 'Permission denied'));
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
 			->with('HTTP/1.0 403 Forbidden');	
@@ -244,8 +244,8 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
 		$this->CopifyWordpress->expects($this->once())
-				->method('outputJson')
-				->with('1.0.4');
+			->method('outputJson')
+			->with('1.0.4');
 		$_GET["copify-action"] = true;
 		$_GET["check"] = 'version';
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
@@ -270,9 +270,49 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
 		$this->CopifyWordpress->expects($this->once())
-				->method('outputJson')
-				->with(array('message' => 'Must include order ID'));
+			->method('outputJson')
+			->with(array('message' => 'Must include order ID'));
 		$_GET["copify-action"] = true;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
+ * testCopifyRequestAlreadyPublished
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyRequestAlreadyPublished() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));	
+			
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetApiClass');	
+			
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyJobIdExists')
+			->with(62343)
+			->will($this->returnValue(true));
+			
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array('message' => 'Order 62343 already published'));
+			
+		$this->CopifyWordpress->expects($this->once())
+			->method('setheader')
+			->with('HTTP/1.0 409 Conflict');	
+			
+		$_GET["copify-action"] = true;
+		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}

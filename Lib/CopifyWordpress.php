@@ -699,14 +699,14 @@ class CopifyWordpress {
 			}
 			// Order ID
 			if (!isset($_GET["id"])) {
-				throw new Exception('Must include order ID');
+				throw new Exception('Must include order ID', 400);
 			}
 			$id = $_GET["id"];
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
 			// Check it's not already published
 			if ($this->CopifyJobIdExists($id)) {
-				throw new Exception(sprintf('Order %s already published', $id));
+				throw new Exception(sprintf('Order %s already published', $id), 409);
 			}	
 			// Get the job record from the API	
 			$job = $this->Api->jobsView($id);
@@ -715,7 +715,7 @@ class CopifyWordpress {
 				throw new Exception(sprintf('Can not find copy for order %s', $id));
 			}
 			// Is order marked as complete?
-			if (!in_array($job['job_status_id'], array(3,4))) {
+			if (!in_array($job['job_status_id'], array(3, 4))) {
 				throw new Exception(sprintf('Order %s is not yet complete or approved', $id));
 			}
 			$newPost = array(
@@ -734,8 +734,11 @@ class CopifyWordpress {
 			if ($code == 403) {
 				$this->setheader("HTTP/1.0 403 Forbidden");
 			} 
-			elseif (400) {
+			elseif ($code == 400) {
 				$this->setheader("HTTP/1.0 400 Bad Request");
+			}
+			elseif ($code == 409) {
+				$this->setheader("HTTP/1.0 409 Conflict");
 			}
 			else {
 				$this->setheader("HTTP/1.0 404 Not Found");
