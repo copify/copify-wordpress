@@ -79,7 +79,6 @@ class Api {
 		// Set the default headers for Authorization and User-Agent
 		$this->headers['Authorization'] = 'Bearer ' . $apiKey;
 		$this->headers['User-Agent'] = $apiEmail;
-		
 	}
 		
 /**
@@ -91,7 +90,7 @@ class Api {
 	public function setfullUrl() {
 		$this->fullUrl = $this->basePath .'/' . $this->apiVersion . '/'. $this->resource . '.' . $this->format . $this->params;
 	}
-		
+	
 /**
  * Get a list of job records (20 per page)
  *
@@ -124,7 +123,7 @@ class Api {
 		$this->resource = 'jobs/'.$id;
 		return $this->makeRequest();
 	}
-	
+
 /**
  * Create a new job through the API
  *
@@ -139,7 +138,7 @@ class Api {
 		$this->httpMethod = 'POST';
 		$this->resource = 'jobs';
 		return $this->makeRequest($data);
-	}	
+	}
 
 /**
  * Post feedback for a completed job
@@ -154,7 +153,7 @@ class Api {
 		$this->httpMethod = 'POST';
 		$this->resource = 'feedback';
 		return $this->makeRequest($feedback);
-	}	
+	}
 
 /**
  * Get an array of availble job categories
@@ -166,7 +165,7 @@ class Api {
 		$this->resource = 'job_categories';
 		return $this->makeRequest();
 	}
-		
+
 /**
  * Get an array of availble job budgets/pricing
  *
@@ -176,7 +175,7 @@ class Api {
 	public function jobBudgets() {
 		$this->resource = 'job_budgets';
 		return $this->makeRequest();
-	}	
+	}
 
 /**
  * View a single job budget
@@ -195,7 +194,7 @@ class Api {
 			$this->params = "?words=$words";
 		}
 		return $this->makeRequest();
-	}	
+	}
 
 /**
  * Get an array of availble job budgets/pricing
@@ -206,7 +205,7 @@ class Api {
 	public function jobStatuses() {
 		$this->resource = 'job_statuses';
 		return $this->makeRequest();
-	}	
+	}
 
 /**
  * Get an array of availble job types
@@ -218,7 +217,7 @@ class Api {
 		$this->resource = 'job_types';
 		return $this->makeRequest();
 	}
-	
+
 /**
  * Get a list of copywriters (20 per page)
  *
@@ -232,7 +231,7 @@ class Api {
 		$this->resource = "users/page:$page/sort:$sort/direction:$direction";
 		return $this->makeRequest();
 	}
-	
+
 /**
  * View a single copywriter record
  *
@@ -246,7 +245,7 @@ class Api {
 		}
 		$this->resource = 'users/'.$id;
 		return $this->makeRequest();
-	}	
+	}
 
 /**
  * Makes a request and returns the result as an array
@@ -256,11 +255,9 @@ class Api {
  * @param mixed $data the body of the request (usually JSON)
  **/
 	public function makeRequest($data = null) {
-		
 		if(!function_exists('curl_init')) {
 			throw new Exception('This Plugin requires PHP\'s cURL extension');
 		}
-		
 		// Build the URL
 		$this->setfullUrl();
 		
@@ -284,7 +281,7 @@ class Api {
 		if($method == 'POST' || $method == 'PUT') {
 			curl_setopt($curlyWurly, CURLOPT_POSTFIELDS, http_build_query($data));
 		}
-		
+
 		// Set the Authorization and User-Agent headers
 		foreach($this->headers as $key => $value) {
 			$headers[] = $key.': '.$value;
@@ -298,13 +295,13 @@ class Api {
 		if(!$response = curl_exec($curlyWurly)) {
 			throw new Exception(curl_error($curlyWurly));
 		} 
-				
+
 		// Bye bye curly wurly
 		curl_close($curlyWurly);
 
 		return $this->parseFormat($response);
 	}
-		
+
 /**
  * Takes the raw response, returns an array or throws a huma readble exception
  *

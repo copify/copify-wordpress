@@ -22,7 +22,7 @@ class CopifyWordpress {
  * Plugin dir name
  */	
 	public $copifyDirName = 'copify';
-					
+
 /**
  * Add our CSS and JS to wordpress
  *
@@ -43,7 +43,7 @@ class CopifyWordpress {
 		$css_url = $this->wordpress('plugins_url', $this->copifyDirName . COPIFY_DS . 'css' . COPIFY_DS . 'Copify.css');
 		$this->wordpress('wp_enqueue_style', 'copify', $css_url);
 	}
-		
+
 /**
  * Settings page
  *
@@ -126,7 +126,7 @@ class CopifyWordpress {
 			$this->Api->basePath = sprintf('https://%s.copify.com/api', $CopifyLoginDetails['CopifyLocale']);
 		}
 	}
-	
+
 /**
  * Main Copify page renders a table of all jobs
  *
@@ -319,7 +319,7 @@ class CopifyWordpress {
 
 /**
  * Handle ajax feedback form post. The user is approving a job and leaving feedback
- * Outputs a JSON response
+ * Outputs a JSON response.
  *
  * @return void
  * @author Rob Mcvey
@@ -540,7 +540,7 @@ class CopifyWordpress {
 	public function CopifyJobIdExists($job_id = null) {
 		return $this->wordpress('get_option', 'CopifyJobIdExists' . $job_id , false);
 	}
-	
+
 /**
  * Get job categories from API or cache
  *
@@ -587,7 +587,7 @@ class CopifyWordpress {
 		$CopifyStatuses = $this->Api->jobStatuses();
 		$this->wordpress('set_transient', 'CopifyStatuses', $CopifyStatuses['job_statuses'], 86400);
 		return $CopifyStatuses['job_statuses'];
-	}	
+	}
 
 /**
  * Get a user profile from API or cache
@@ -747,7 +747,7 @@ class CopifyWordpress {
 			return $this->outputJson($json);
 		}
 	}
-	
+
 /**
  * Set an output header
  *

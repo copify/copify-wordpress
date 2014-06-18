@@ -192,7 +192,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with(array('message' => 'Copify plugin not conigured'));
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
-			->with('HTTP/1.0 400 Bad Request');	
+			->with('HTTP/1.0 404 Not Found');	
 		$_GET["copify-action"] = true;
 		$_GET["token"] = 'blah';
 		$this->CopifyWordpress->CopifyRequestFilter();
