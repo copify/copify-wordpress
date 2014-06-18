@@ -455,7 +455,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
-	
+
 /**
  * testCopifyAdminMenu
  *
@@ -481,6 +481,34 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('add_submenu_page', 'CopifySettings', 'Copify View Job', 'View', 'publish_posts', 'CopifyViewJob', array($this->CopifyWordpress, 'CopifyViewJob'));
 		$this->CopifyWordpress->CopifyAdminMenu();
+	}
+
+/**
+ * testCopifyFlatten
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyFlatten() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$multi = array(
+			0 => array(
+				'id' => 4,
+				'name' => 'Foo',
+				'slug' => 'foo'
+			),
+			1 => array(
+				'id' => 7,
+				'name' => 'Bar',
+				'slug' => 'bar'
+			),
+		);
+		$expected = array(
+			4 => 'Foo',
+			7 => 'Bar'
+		);
+		$result = $this->CopifyWordpress->CopifyFlatten($multi);
+		$this->assertEquals($expected, $result);
 	}
 
 }

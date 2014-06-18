@@ -618,7 +618,7 @@ class CopifyWordpress {
 			foreach ($multiArray as $k => $inner) {
 				if (array_key_exists('id', $inner) && array_key_exists('name', $inner)) {
 					$flattened[$inner['id']] = $inner['name'];
-				}				
+				}
 			}
 			return $flattened;
 		} else {
