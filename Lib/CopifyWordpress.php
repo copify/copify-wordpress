@@ -67,7 +67,7 @@ class CopifyWordpress {
 					'CopifyLocale' => $CopifyLocale
 				);
 				// Update or Add?
-				if($CopifyLoginDetails) {
+				if ($CopifyLoginDetails) {
 					$this->wordpress('update_option', 'CopifyLoginDetails', $toSave);
 				} else {
 					$this->wordpress('add_option', 'CopifyLoginDetails', $toSave, null, 'no');
@@ -93,10 +93,10 @@ class CopifyWordpress {
 				$message = $_GET['flashMessage'];
 			}
 		} 
-		catch(Exception $e) {
+		catch (Exception $e) {
 			$error = $e->getMessage();
 		}
-		require(COPIFY_VIEWS . 'CopifySettings.php');
+		include_once(COPIFY_VIEWS . 'CopifySettings.php');
 	}
 
 /**
@@ -197,7 +197,7 @@ class CopifyWordpress {
 				$error .= '. <a href="?page=CopifySettings" >Check settings</a>';
 			}
 		}
-		require(COPIFY_VIEWS . 'CopifyDashboard.php');
+		include_once(COPIFY_VIEWS . 'CopifyDashboard.php');
 	}
 
 /**
@@ -233,7 +233,7 @@ class CopifyWordpress {
 				$error .= '. <a href="?page=CopifySettings" >Check settings</a>';
 			}
 		}
-		require(COPIFY_VIEWS . 'CopifyOrder.php');
+		include_once(COPIFY_VIEWS . 'CopifyOrder.php');
 	}
 
 /**
@@ -316,7 +316,7 @@ class CopifyWordpress {
 		catch (Exception $e) {
 			$error = $e->getMessage();
 		}
-		require(COPIFY_VIEWS . 'CopifyViewJob.php');
+		include_once(COPIFY_VIEWS . 'CopifyViewJob.php');
 	}
 
 /**
@@ -758,7 +758,7 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	public function wordpress($method, $mixed) {
+	protected function wordpress($method, $mixed) {
 		$args = func_get_args();
 		if (!isset($args[0])) {
 			return false;

@@ -23,9 +23,9 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-require('basics.php');
-require(COPIFY_PATH . COPIFY_DS . 'Lib/Api.php');
-require(COPIFY_PATH . COPIFY_DS . 'Lib/CopifyWordpress.php');
+require_once('basics.php');
+require_once(COPIFY_PATH . COPIFY_DS . 'Lib/Api.php');
+require_once(COPIFY_PATH . COPIFY_DS . 'Lib/CopifyWordpress.php');
 
 // Initialise the Copify Wordpress class
 $CopifyWordpress = new CopifyWordpress();

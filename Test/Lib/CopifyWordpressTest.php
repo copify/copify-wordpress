@@ -12,6 +12,28 @@ require_once(__DIR__ . '/../../Lib/CopifyWordpress.php');
 class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 
 /**
+ * Setup method
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function setUp() {
+		parent::setUp();
+		ob_start();
+	}
+
+/**
+ * Tear down
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function tearDown() {
+		parent::tearDown();
+		ob_get_clean();
+	}
+
+/**
  * testCopifySetApiClass
  *
  * @return void
@@ -32,7 +54,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->CopifySetApiClass();
 		$this->assertEquals('https://uk.copify.com/api', $this->CopifyWordpress->Api->basePath);
 	}
-	
+
 /**
  * testCopifyCssAndScripts
  *
@@ -75,18 +97,64 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with('wp_enqueue_style', 'copify', 'http://localhost.3dlockers.com/wp-content/plugins/copify/css/Copify.css');
 		$this->CopifyWordpress->CopifyCssAndScripts();
 	}
-	
+
 /**
- * testCopifySettings
+ * testCopifySettingsSave
  *
  * @return void
  * @author Rob Mcvey
  **/
-	public function testCopifySettings() {
-		// $CopifyEmail = $_POST['CopifyEmail'];
-		// $CopifyApiKey = $_POST['CopifyApiKey'];
-		// $CopifyLocale = $_POST['CopifyLocale'];
-		$this->markTestSkipped();
+	public function testCopifySettingsSave() {
+		$_POST['CopifyEmail'] = 'hello@newemail.com';
+		$_POST['CopifyApiKey'] = '876453456786';
+		$_POST['CopifyLocale'] = 'au';
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress'));
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue(false));
+		$toSave = array(
+			'CopifyEmail' => 'hello@newemail.com',
+			'CopifyApiKey' => '876453456786',
+			'CopifyLocale' => 'au',
+		);
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('wordpress')
+			->with('add_option', 'CopifyLoginDetails', $toSave)
+			->will($this->returnValue(true));	
+		$this->CopifyWordpress->CopifySettings();
 	}
-	
+
+/**
+ * testCopifySettingsUpdate
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifySettingsUpdate() {
+		$_POST['CopifyEmail'] = 'hello@newemail.com';
+		$_POST['CopifyApiKey'] = '876453456786';
+		$_POST['CopifyLocale'] = 'au';
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+		$toSave = array(
+			'CopifyEmail' => 'hello@newemail.com',
+			'CopifyApiKey' => '876453456786',
+			'CopifyLocale' => 'au',
+		);
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('wordpress')
+			->with('update_option', 'CopifyLoginDetails', $toSave)
+			->will($this->returnValue(true));	
+		$this->CopifyWordpress->CopifySettings();
+	}
+
 }
