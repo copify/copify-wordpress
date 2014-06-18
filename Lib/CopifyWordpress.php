@@ -264,13 +264,11 @@ class CopifyWordpress {
 			$response['response'] = $this->Api->jobsAdd($newJob);
 			$response['message'] = 'New job added';
 			$response['status'] = 'success';
-			echo json_encode($response);
-			die();
+			$this->outputJson($response);
 		} 
 		catch (Exception $e) {
 			$response['message'] = $e->getMessage();
-			echo json_encode($response);
-			die();
+			$this->outputJson($response);
 		}
 	}
 
@@ -373,13 +371,11 @@ class CopifyWordpress {
 			$response['status'] = 'success';
 			$response['response'] = $result;
 			$response['message'] = 'Job Approved';
-			echo json_encode($response);
-			die();
+			$this->outputJson($response);
 		} 
 		catch (Exception $e) {
 			$response['message'] = $e->getMessage();
-			echo json_encode($response);
-			die();
+			$this->outputJson($response);
 		}
 	}
 
@@ -421,13 +417,11 @@ class CopifyWordpress {
 			$response['status'] = 'success';
 			$response['response'] = $result;
 			$response['message'] = 'Job Moved to drafts';
-			echo json_encode($response);
-			die();
+			$this->outputJson($response);
 		}	
 		catch (Exception $e) {
 			$response['message'] = $e->getMessage();
-			echo json_encode($response);
-			die();
+			$this->outputJson($response);
 		}
 	}
 
@@ -459,13 +453,11 @@ class CopifyWordpress {
 			$response['status'] = 'success';
 			$response['response'] = $result;
 			$response['message'] = sprintf('Quote for %s', $words);
-			echo json_encode($response);
-			die(); // urgh. Wordpress u so silly.
+			$this->outputJson($response);
 		}	
 		catch (Exception $e) {
 			$response['message'] = $e->getMessage();
-			echo json_encode($response);
-			die();
+			$this->outputJson($response);
 		}
 	}
 
@@ -703,8 +695,7 @@ class CopifyWordpress {
 			}
 			// Version check only
 			if (isset($_GET["check"]) && $_GET["check"] == 'version') {
-				echo json_encode($this->version);
-				die();
+				$this->outputJson($this->version);
 			}
 			// Order ID
 			if (!isset($_GET["id"])) {
@@ -736,8 +727,7 @@ class CopifyWordpress {
 			$this->CopifyAddToPosts($id, $newPost);
 			$message = sprintf('Order %s auto-published', $id);
 			$json = array('success' => true, 'message' => $message);
-			echo json_encode($json);
-			die();
+			$this->outputJson($json);
 		} catch (Exception $e) {
 			$message = $e->getMessage();
 			$code = $e->getCode();
