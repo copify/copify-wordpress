@@ -711,7 +711,7 @@ class CopifyWordpress {
 			// Get the job record from the API	
 			$job = $this->Api->jobsView($id);
 			// Public orders won't have copy field
-			if (!isset($job['copy'])) {
+			if (!isset($job['copy']) || empty($job['copy'])) {
 				throw new Exception(sprintf('Can not find copy for order %s', $id));
 			}
 			// Is order marked as complete?

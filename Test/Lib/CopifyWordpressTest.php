@@ -293,24 +293,65 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->once())
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
-			->will($this->returnValue($mockVal));	
-			
+			->will($this->returnValue($mockVal));		
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifySetApiClass');	
-			
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyJobIdExists')
 			->with(62343)
 			->will($this->returnValue(true));
-			
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array('message' => 'Order 62343 already published'));
-			
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
 			->with('HTTP/1.0 409 Conflict');	
-			
+		$_GET["copify-action"] = true;
+		$_GET["id"] = 62343;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
+ * testCopifyRequestMissingCopy
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyRequestMissingCopy() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));		
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetApiClass');	
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyJobIdExists')
+			->with(62343)
+			->will($this->returnValue(false));
+		$job = array(
+			'id' => 62343,
+			'name' => 'some order name',
+			'copy' => '',
+			'job_status_id' => 3,
+		);	
+		$this->CopifyWordpress->Api->expects($this->once())
+			->method('jobsView')
+			->with(62343)
+			->will($this->returnValue($job));	
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array('message' => 'Can not find copy for order 62343'));
+		$this->CopifyWordpress->expects($this->once())
+			->method('setheader')
+			->with('HTTP/1.0 404 Not Found');	
 		$_GET["copify-action"] = true;
 		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
