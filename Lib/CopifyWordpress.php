@@ -686,7 +686,7 @@ class CopifyWordpress {
 			$CopifyLoginDetails = $this->wordpress('get_option', 'CopifyLoginDetails' , false);
 			// Not valid account email
 			if ($CopifyLoginDetails == false || !isset($CopifyLoginDetails['CopifyEmail']) || !isset($CopifyLoginDetails['CopifyApiKey'])) {
-				throw new Exception('Copify plugin not conigured');
+				throw new Exception('Copify plugin not conigured', 404);
 			}
 			// Copify will send a hash of email/api key
 			$expectedToken = sha1($CopifyLoginDetails['CopifyEmail'] . $CopifyLoginDetails['CopifyApiKey']);
@@ -708,7 +708,7 @@ class CopifyWordpress {
 			if ($this->CopifyJobIdExists($id)) {
 				throw new Exception(sprintf('Order %s already published', $id), 409);
 			}	
-			// Get the job record from the API	
+			// Get the job record from the API
 			$job = $this->Api->jobsView($id);
 			// Public orders won't have copy field
 			if (!isset($job['copy']) || empty($job['copy'])) {
@@ -764,7 +764,7 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	public function outputJson($json) {
+	protected function outputJson($json) {
 		echo json_encode($json);
 		die();
 	}
