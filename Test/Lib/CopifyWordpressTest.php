@@ -749,7 +749,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->will($this->returnValue(432));
 		$this->CopifyWordpress->expects($this->at(6))
 			->method('setUpdateAttachmentMeta')
-			->with(432, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg', array('flick_url' => 'foo'));
+			->with(432, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg', array());
 		$this->CopifyWordpress->expects($this->at(7))
 			->method('wordpress')
 			->with('set_post_thumbnail', 4, 432)
@@ -825,6 +825,80 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	}
 
 /**
+ * testCopifySetPostThumbnailWithMeta
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifySetPostThumbnailWithMeta() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique', 'setUpdateAttachmentMeta'));
+		$wp_upload_dir = array(
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
+			'subdir' => '/2014/06',
+			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
+			'baseurl' => 'http://localhost.3dlockers.com/wp-content/uploads',
+			'error' => false
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('wp_upload_dir')
+			->will($this->returnValue($wp_upload_dir));
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('_file_get_contents')
+			->with('http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
+			->will($this->returnValue('image data'));
+		$this->CopifyWordpress->expects($this->at(2))
+			->method('unique')
+			->will($this->returnValue('53a2a5db214eb'));
+		$wp_upload_bits = array(
+			'file' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg',
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06/53a2a5db214eb.jpg'
+		);
+		$this->CopifyWordpress->expects($this->at(3))
+			->method('wordpress')
+			->with('wp_upload_bits', '53a2a5db214eb.jpg', null, 'image data')
+			->will($this->returnValue($wp_upload_bits));
+		$wp_check_filetype = array(
+			'ext' => 'jpg',
+			'type' => 'image/jpeg'
+		);
+		$this->CopifyWordpress->expects($this->at(4))
+			->method('wordpress')
+			->with('wp_check_filetype', '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
+			->will($this->returnValue($wp_check_filetype));
+		$wp_insert_attachment = array(
+			'post_mime_type' => 'image/jpeg',
+			'post_title'     => '53a2a5db214eb', // preg_replace( '/\.[^.]+$/', '', basename($filepath)),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+			'post_excerpt' => 'Image from Flickr'
+		);
+		$this->CopifyWordpress->expects($this->at(5))
+			->method('wordpress')
+			->with('wp_insert_attachment', $wp_insert_attachment, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
+			->will($this->returnValue(432));		
+		$meta = array(
+			'copify_attr_photo_title' => 'Yellow-bellied Slider Turtle (Trachemys scripta scripta)',
+			'copify_attr_url' => 'https://www.flickr.com/photos/bees/9968828954/',
+			'copify_attr_user' => 'bees',
+			'copify_attr_user_url' => 'http://www.flickr.com/photos/bees',
+			'copify_attr_cc_license' => 4,
+			'copify_attr_cc_license_url' => 'http://creativecommons.org/licenses/by/4.0/'
+		);
+		$this->CopifyWordpress->expects($this->at(6))
+			->method('setUpdateAttachmentMeta')
+			->with(432, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg', $meta);
+		$this->CopifyWordpress->expects($this->at(7))
+			->method('wordpress')
+			->with('set_post_thumbnail', 4, 432)
+			->will($this->returnValue(211));	
+		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image, $meta);
+		$this->assertEquals(211, $result);
+	}
+
+/**
  * testSetImage
  *
  * @return void
@@ -855,6 +929,63 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			));
 		$_GET['wp_post_id'] = 22;
 		$_GET["copify-action"] = "set-image";
+		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
+ * testSetImageWithMeta
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testSetImageWithMeta() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+	
+	
+		$meta = array(
+			'copify_attr_photo_title' => 'Yellow-bellied Slider Turtle (Trachemys scripta scripta)',
+			'copify_attr_url' => 'https://www.flickr.com/photos/bees/9968828954/',
+			'copify_attr_user' => 'bees',
+			'copify_attr_user_url' => 'http://www.flickr.com/photos/bees',
+			'copify_attr_cc_license' => 4,
+			'copify_attr_cc_license_url' => 'http://creativecommons.org/licenses/by/4.0/'
+		);
+	
+	
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetPostThumbnailFromUrl')
+			->with(22, 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg', $meta)
+			->will($this->returnValue(421));
+	
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array(
+				'success' => true, 
+				'message' => 'Image for post 22 set to http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg',
+				'set_post_thumbnail' => 421
+			));
+			
+		
+		$_GET['wp_post_id'] = 22;
+		$_GET["copify-action"] = "set-image";
+		$_GET["copify_attr_photo_title"] = 'Yellow-bellied Slider Turtle (Trachemys scripta scripta)';
+		$_GET["copify_attr_url"] = 'https://www.flickr.com/photos/bees/9968828954/';
+		$_GET["copify_attr_user"] = 'bees';
+		$_GET["copify_attr_user_url"] = 'http://www.flickr.com/photos/bees';
+		$_GET["copify_attr_cc_license"] = 4;
+		$_GET["copify_attr_cc_license_url"] = 'http://creativecommons.org/licenses/by/4.0/';
 		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
@@ -1146,8 +1277,8 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'copify_attr_url' => 'https://www.flickr.com/photos/bees/9968828954/',
 			'copify_attr_user' => 'bees',
 			'copify_attr_user_url' => 'http://www.flickr.com/photos/bees',
-			'copify_cc_license' => 4,
-			'copify_cc_license_url' => 'http://creativecommons.org/licenses/by/4.0/'
+			'copify_attr_cc_license' => 4,
+			'copify_attr_cc_license_url' => 'http://creativecommons.org/licenses/by/4.0/'
 		);
 		$this->CopifyWordpress->expects($this->once())
 			->method('_wp_get_attachment_metadata')

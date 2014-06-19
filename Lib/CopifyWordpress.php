@@ -695,10 +695,10 @@ class CopifyWordpress {
 			);
 		}
 		// Licience 
-		if (isset($featured_image_meta['copify_cc_license']) && isset($featured_image_meta['copify_cc_license_url'])) {
+		if (isset($featured_image_meta['copify_attr_cc_license']) && isset($featured_image_meta['copify_attr_cc_license_url'])) {
 			$attribution .= sprintf(' licensed under <a href="%s" target="blank">Creative commons %s</a>', 
-				$featured_image_meta['copify_cc_license_url'],
-				$featured_image_meta['copify_cc_license']
+				$featured_image_meta['copify_attr_cc_license_url'],
+				$featured_image_meta['copify_attr_cc_license']
 			);
 		}
 		$attribution .= '</div>';
@@ -795,6 +795,25 @@ class CopifyWordpress {
 	}
 
 /**
+ * Parse photo attribution values from GET params
+ *
+ * @return array
+ * @author Rob Mcvey
+ **/
+	protected function parseImageAttributionMeta() {
+		if (empty($_GET)) {
+			return;
+		}
+		$attributionValues = array();
+		foreach ($_GET as $key => $value) {
+			if (preg_match("/^copify_attr_/", $key)) {
+				$attributionValues[$key] = $value;
+			}
+		}
+		return $attributionValues;
+	}
+
+/**
  * Checks GET params for wp_post_id and the image url and sets featured image
  *
  * @return void
@@ -804,7 +823,8 @@ class CopifyWordpress {
 		if (!isset($_GET['wp_post_id']) || !isset($_GET['image-url'])) {
 			throw new Exception('Missing params wp_post_id and image-url', 400);
 		}
-		$set_post_thumbnail = $this->CopifySetPostThumbnailFromUrl($_GET['wp_post_id'], $_GET['image-url']);
+		$meta = $this->parseImageAttributionMeta();
+		$set_post_thumbnail = $this->CopifySetPostThumbnailFromUrl($_GET['wp_post_id'], $_GET['image-url'], $meta);
 		$message = sprintf('Image for post %s set to %s', $_GET['wp_post_id'], $_GET['image-url']);
 		$json = array('success' => true, 'message' => $message, 'set_post_thumbnail' => $set_post_thumbnail);
 		return $this->outputJson($json);
@@ -893,7 +913,7 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	public function CopifySetPostThumbnailFromUrl($post_id, $url) {
+	public function CopifySetPostThumbnailFromUrl($post_id, $url, $meta = array()) {
 		// Validate the host
 		$this->CopifyCheckImageHost($url);
 		// Validate the extension 
@@ -937,7 +957,7 @@ class CopifyWordpress {
 			throw new Exception('Failed to create attachment');
 		}
 		// Set and update the meta for the image
-		$this->setUpdateAttachmentMeta($attach_id, $filepath, array('chips' => 'peas'));
+		$this->setUpdateAttachmentMeta($attach_id, $filepath, $meta);
 		// Set the thumbnail of our post
 		$set_post_thumbnail = $this->wordpress('set_post_thumbnail', $post_id, $attach_id);
 		if (!$set_post_thumbnail) {
@@ -975,13 +995,13 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	protected function setUpdateAttachmentMeta($attach_id, $filepath, $flickrMeta = array('foo' => 'bar')) {
+	protected function setUpdateAttachmentMeta($attach_id, $filepath, $meta = array()) {
 		require_once(ABSPATH . 'wp-admin/includes/image.php');
 		$attach_data = wp_generate_attachment_metadata($attach_id, $filepath);
-		if (!is_array($attach_data)) {
+		if (!is_array($attach_data) && !empty($meta)) {
 			return;
 		}
-		$attach_data = array_merge($attach_data, $flickrMeta);
+		$attach_data = array_merge($attach_data, $meta);
 		wp_update_attachment_metadata($attach_id, $attach_data);
 	}
 
