@@ -830,7 +830,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  * @author Rob Mcvey
  **/
 	public function testSetImageMissingParams() {
-		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
 		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
@@ -841,9 +841,16 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));		
+		
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetPostThumbnailFromUrl')
+			->with(22, 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg');
+		
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
-			->with(array('message' => 'Missing params wp_post_id and image-url'));
+			->with(array('success' => true, 'message' => 'Missing params wp_post_id and image-url'));
+			
+		$_GET['wp_post_id'] = 22;
 		$_GET["copify-action"] = "set-image";
 		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$_GET["id"] = 62343;

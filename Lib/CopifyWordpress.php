@@ -748,36 +748,38 @@ class CopifyWordpress {
 		}
 	}
 
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+/**
+ * undocumented function
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function setImage() {
 		if (!isset($_GET['wp_post_id']) || !isset($_GET['image-url'])) {
 			throw new Exception('Missing params wp_post_id and image-url', 400);
 		}
-		// print_r($_GET);
-		// exit;
+		$set_post_thumbnail = $this->CopifySetPostThumbnailFromUrl($_GET['wp_post_id'], $_GET['image-url']);
+		$message = sprintf('Image for post %s set to %s', $_GET['wp_post_id'], $_GET['image-url']);
+		$json = array('success' => true, 'message' => $message, 'set_post_thumbnail' => $set_post_thumbnail);
+		return $this->outputJson($json);
 	}
 
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+/**
+ * undocumented function
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function deleteImage() {
 
 	}
 
-	/**
-	 * undocumented function
-	 *
-	 * @return void
-	 * @author Rob Mcvey
-	 **/
+/**
+ * undocumented function
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
 	public function unpublishPost() {
 
 	}
@@ -875,6 +877,7 @@ class CopifyWordpress {
 		if (!$set_post_thumbnail) {
 			throw new Exception('Failed to set post image');
 		}
+		// Returns the thumbnail ID
 		return $set_post_thumbnail;
 	}
 
