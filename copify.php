@@ -30,6 +30,12 @@ require_once(COPIFY_PATH . COPIFY_DS . 'Lib/CopifyWordpress.php');
 // Initialise the Copify Wordpress class
 $CopifyWordpress = new CopifyWordpress();
 
+// Hook on to post content to add correct attribution
+add_filter('the_content', array($CopifyWordpress, 'CopifyAddFlickrAttribution'));
+
+// Hook in to the featured image HTML
+add_filter('post_thumbnail_html', array($CopifyWordpress, 'CopifyThumbnailHtml'));
+
 // Add our js and css
 add_action('admin_init', array($CopifyWordpress, 'CopifyCssAndScripts'));
 

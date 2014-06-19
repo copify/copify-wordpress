@@ -663,6 +663,26 @@ class CopifyWordpress {
 		$this->wordpress('add_submenu_page', 'CopifyDashboard', 'Copify Wordpress Settings', 'Settings', 'publish_posts', 'CopifySettings', array($this, 'CopifySettings'));
 		$this->wordpress('add_submenu_page', 'CopifySettings', 'Copify View Job', 'View', 'publish_posts', 'CopifyViewJob', array($this, 'CopifyViewJob'));
 	}
+	
+/**
+ * We can modifiy the content of the post here
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function CopifyAddFlickrAttribution($content) {
+		return $content;
+	}
+	
+/**
+ * We can modify the HTML of the featued image here
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function CopifyThumbnailHtml($html) {
+		return $html;
+	}
 
 /**
  * We can check through all requests in this method for things 
