@@ -702,33 +702,7 @@ class CopifyWordpress {
 			if (!isset($_GET["id"])) {
 				throw new Exception('Must include order ID', 400);
 			}
-			$id = $_GET["id"];
-			// Initialise Copify API class
-			$this->CopifySetApiClass();
-			// Check it's not already published
-			if ($this->CopifyJobIdExists($id)) {
-				throw new Exception(sprintf('Order %s already published', $id), 409);
-			}	
-			// Get the job record from the API
-			$job = $this->Api->jobsView($id);
-			// Public orders won't have copy field
-			if (!isset($job['copy']) || empty($job['copy'])) {
-				throw new Exception(sprintf('Can not find copy for order %s', $id));
-			}
-			// Is order marked as complete?
-			if (!in_array($job['job_status_id'], array(3, 4))) {
-				throw new Exception(sprintf('Order %s is not yet complete or approved', $id));
-			}
-			$newPost = array(
-				'post_title' => $job['name'],
-				'post_content' => $job['copy'],
-				'post_status' => 'publish',
-				'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
-			);	
-			$this->CopifyAddToPosts($id, $newPost);
-			$message = sprintf('Order %s auto-published', $id);
-			$json = array('success' => true, 'message' => $message);
-			return $this->outputJson($json);
+			$this->handleRequestFilter();
 		} catch (Exception $e) {
 			$message = $e->getMessage();
 			$code = $e->getCode();
@@ -750,14 +724,99 @@ class CopifyWordpress {
 	}
 
 /**
- * Remove the image associated with a post
+ * Handle incoming copify request. Defaults to auto-publishing the ID in the get params
+ * but can perform other actions like moving a post back to drafts, setting a featured image,
+ * removing an image etc.
  *
  * @return void
  * @author Rob Mcvey
- * @link http://codex.wordpress.org/Function_Reference/delete_post_thumbnail
  **/
-	public function CopifyDeletePostThumbnail($post_id) {
+	protected function handleRequestFilter() {
+		$action = $_GET["copify-action"];
+		
+		if ($action === "set-image") {
+			$this->setImage();
+		} 
+		elseif ($action === "delete-image") {
+			$this->deleteImage();
+		}
+		elseif ($action === "unpublish-post") {
+			$this->unpublishPost();
+		}
+		else {
+			$this->autoPublishOrder();
+		}
+	}
 
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Rob Mcvey
+	 **/
+	public function setImage() {
+		if (!isset($_GET['wp_post_id']) || !isset($_GET['image-url'])) {
+			throw new Exception('Missing params wp_post_id and image-url', 400);
+		}
+		// print_r($_GET);
+		// exit;
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Rob Mcvey
+	 **/
+	public function deleteImage() {
+
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author Rob Mcvey
+	 **/
+	public function unpublishPost() {
+
+	}
+
+/**
+ * Fetch an order from Copify API and publish
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	protected function autoPublishOrder() {
+		// Get the ID from the get params
+		$id = $_GET["id"];
+		// Initialise Copify API class
+		$this->CopifySetApiClass();
+		// Check it's not already published
+		if ($this->CopifyJobIdExists($id)) {
+			throw new Exception(sprintf('Order %s already published', $id), 409);
+		}	
+		// Get the job record from the API
+		$job = $this->Api->jobsView($id);
+		// Public orders won't have copy field
+		if (!isset($job['copy']) || empty($job['copy'])) {
+			throw new Exception(sprintf('Can not find copy for order %s', $id));
+		}
+		// Is order marked as complete?
+		if (!in_array($job['job_status_id'], array(3, 4))) {
+			throw new Exception(sprintf('Order %s is not yet complete or approved', $id));
+		}
+		$newPost = array(
+			'post_title' => $job['name'],
+			'post_content' => $job['copy'],
+			'post_status' => 'publish',
+			'post_type' => 'post' // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
+		);	
+		$wp_post_id = $this->CopifyAddToPosts($id, $newPost);
+		$message = sprintf('Order %s auto-published', $id);
+		$json = array('success' => true, 'message' => $message, 'wp_post_id' => $wp_post_id);
+		return $this->outputJson($json);
 	}
 
 /**
@@ -794,11 +853,8 @@ class CopifyWordpress {
 		}
 		// $filename should be the path to a file in the upload directory.
 		$filepath = $wp_upload_bits['file'];
-		echo $filepath . '<br>';
 		// Check the type of tile. We'll use this as the 'post_mime_type'.
 		$filetype = $this->wordpress('wp_check_filetype', $filepath);
-		print_r($filetype);
-		echo '<br>';
 		// Prepare an array of post data for the attachment.
 		$attachment = array(
 			'post_mime_type' => $filetype['type'],
@@ -814,7 +870,6 @@ class CopifyWordpress {
 		}
 		// Set and update the meta for the image
 		$this->setUpdateAttachmentMeta($attach_id, $filepath);
-		
 		// Set the thumbnail of our post
 		$set_post_thumbnail = $this->wordpress('set_post_thumbnail', $post_id, $attach_id);
 		if (!$set_post_thumbnail) {
