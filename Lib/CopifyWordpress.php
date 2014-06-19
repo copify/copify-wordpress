@@ -749,7 +749,7 @@ class CopifyWordpress {
 	}
 
 /**
- * undocumented function
+ * Checks GET params for wp_post_id and the image url and sets featured image
  *
  * @return void
  * @author Rob Mcvey
