@@ -51,6 +51,7 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifySettings() {
+		//$this->CopifySetPostThumbnailFromUrl(20, 'http://farm3.staticflickr.com/2017/2355610402_9920921974_o.jpg');
 		try {
 			// Get API credentials
 			$CopifyLoginDetails = $this->wordpress('get_option', 'CopifyLoginDetails' , false);	
@@ -749,6 +750,137 @@ class CopifyWordpress {
 	}
 
 /**
+ * Remove the image associated with a post
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @link http://codex.wordpress.org/Function_Reference/delete_post_thumbnail
+ **/
+	public function CopifyDeletePostThumbnail($post_id) {
+
+	}
+
+/**
+ * Set a posts thumbnail using set_post_thumbnail() from a remote image URL
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function CopifySetPostThumbnailFromUrl($post_id, $url) {
+		// Validate the host
+		$this->CopifyCheckImageHost($url);
+		// Validate the extension 
+		$filenameparts = explode('.', basename($url));
+		$ext = strtolower(array_pop($filenameparts));
+		$this->CopifyCheckThumbnailExtension($ext);
+		// Get the uploads dir info
+		$wp_upload_dir = $this->wordpress('wp_upload_dir', null);
+		if (!empty($wp_upload_dir['error'])) {
+			throw new Exception($wp_upload_dir['error']);
+		}
+		// Path to uploaded
+		$path = $wp_upload_dir['path'];
+		// Fetch our image
+		$image = $this->_file_get_contents($url);
+		if ($image == false) {
+			throw new Exception(sprintf("Failed to fetch %s", $url));
+		}
+		// Create a unique filename
+		$imageName = $this->unique() . '.' . $ext;
+		// Upload the image to the uploads dir
+		$wp_upload_bits = $this->wordpress('wp_upload_bits', $imageName, null, $image);
+		if (!empty($wp_upload_bits['error'])) {
+			throw new Exception($wp_upload_bits['error']);
+		}
+		// $filename should be the path to a file in the upload directory.
+		$filepath = $wp_upload_bits['file'];
+		echo $filepath . '<br>';
+		// Check the type of tile. We'll use this as the 'post_mime_type'.
+		$filetype = $this->wordpress('wp_check_filetype', $filepath);
+		print_r($filetype);
+		echo '<br>';
+		// Prepare an array of post data for the attachment.
+		$attachment = array(
+			'post_mime_type' => $filetype['type'],
+			'post_title'     => preg_replace( '/\.[^.]+$/', '', basename($filepath)),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+			'post_excerpt' => 'Image from Flickr'
+		);
+		// Insert the attachment.
+		$attach_id = $this->wordpress('wp_insert_attachment', $attachment, $filepath);
+		if (!is_numeric($attach_id) || $attach_id == 0) {
+			throw new Exception('Failed to create attachment');
+		}
+		// Set and update the meta for the image
+		$this->setUpdateAttachmentMeta($attach_id, $filepath);
+		
+		// Set the thumbnail of our post
+		$set_post_thumbnail = $this->wordpress('set_post_thumbnail', $post_id, $attach_id);
+		if (!$set_post_thumbnail) {
+			throw new Exception('Failed to set post image');
+		}
+		return $set_post_thumbnail;
+	}
+
+/**
+ * Return a UUID
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	protected function unique() {
+		return uniqid();
+	}
+
+/**
+ * Validate the mime of image url
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	protected function CopifyCheckThumbnailExtension($ext) {
+		if (!in_array(strtolower($ext), array('jpg', 'jpeg', 'gif', 'png', 'tiff', 'bmp'))) {
+			throw new InvalidArgumentException('Bad image type');
+		}
+	}
+
+/**
+ * Returns the path to WP image class
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	protected function setUpdateAttachmentMeta($attach_id, $filepath) {
+		require_once(ABSPATH . 'wp-admin/includes/image.php');
+		$attach_data = wp_generate_attachment_metadata($attach_id, $filepath);
+		wp_update_attachment_metadata($attach_id, $attach_data);
+	}
+
+/**
+ * file_get_contents
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	protected function _file_get_contents($path) {
+		return file_get_contents($path);
+	}
+
+/**
+ * Check an image URL is from a valid host
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	protected function CopifyCheckImageHost($url) {
+		$parts = parse_url($url);
+		if (!preg_match("/flickr|copify/", $parts['host'])) {
+			throw new InvalidArgumentException('Bad image host');
+		}
+	}
+
+/**
  * Set an output header
  *
  * @return void
@@ -775,7 +907,7 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	protected function wordpress($method, $mixed) {
+	protected function wordpress($method, $mixed = null) {
 		$args = func_get_args();
 		if (!isset($args[0])) {
 			return false;

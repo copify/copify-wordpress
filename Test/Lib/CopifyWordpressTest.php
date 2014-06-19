@@ -511,4 +511,371 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($expected, $result);
 	}
 
+/**
+ * testCopifySetPostThumbnailBadHost
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @expectedException InvalidArgumentException
+ * @expectedExceptionMessage Bad image host
+ **/
+	public function testCopifySetPostThumbnailBadHost() {
+		$image = 'http://farm1.pwned.com/71/185461246_ad07aa0f2d_o.php';
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+	}
+
+/**
+ * testCopifySetPostThumbnailBadExt
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @expectedException InvalidArgumentException
+ * @expectedExceptionMessage Bad image type
+ **/
+	public function testCopifySetPostThumbnailBadExt() {
+		$image = 'http://farm1.copify.pwned.com/71/185461246_ad07aa0f2d_o.php';
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+	}
+
+/**
+ * testCopifySetPostThumbnailBadUploadsDir
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @expectedException Exception
+ * @expectedExceptionMessage Unable to create directory /wordpress-3.9/wp-content/uploads. Is its parent directory writable by the server?
+ **/
+	public function testCopifySetPostThumbnailBadUploadsDir() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$wp_upload_dir = array(
+			'error' => 'Unable to create directory /wordpress-3.9/wp-content/uploads. Is its parent directory writable by the server?'
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('wp_upload_dir')
+			->will($this->returnValue($wp_upload_dir));
+		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+	}
+
+/**
+ * testCopifySetPostThumbnailCantLoadUrl
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @expectedException Exception
+ * @expectedExceptionMessage Failed to fetch http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg
+ **/
+	public function testCopifySetPostThumbnailCantLoadUrl() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents'));
+		$wp_upload_dir = array(
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
+			'subdir' => '/2014/06',
+			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
+			'baseurl' => 'http://localhost.3dlockers.com/wp-content/uploads',
+			'error' => false
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('wp_upload_dir')
+			->will($this->returnValue($wp_upload_dir));
+		$this->CopifyWordpress->expects($this->once())
+			->method('_file_get_contents')
+			->with('http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
+			->will($this->returnValue(false));	
+		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+	}
+	
+/**
+ * testCopifySetPostThumbnailUploadBitsFails
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @expectedException Exception
+ * @expectedExceptionMessage Invalid file type
+ **/
+	public function testCopifySetPostThumbnailUploadBitsFails() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique'));
+		$wp_upload_dir = array(
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
+			'subdir' => '/2014/06',
+			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
+			'baseurl' => 'http://localhost.3dlockers.com/wp-content/uploads',
+			'error' => false
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('wp_upload_dir')
+			->will($this->returnValue($wp_upload_dir));
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('_file_get_contents')
+			->with('http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
+			->will($this->returnValue('image data'));
+		$this->CopifyWordpress->expects($this->at(2))
+			->method('unique')
+			->will($this->returnValue('53a2a5db214eb'));
+		$wp_upload_bits = array(
+			'error' => 'Invalid file type'
+		);
+		$this->CopifyWordpress->expects($this->at(3))
+			->method('wordpress')
+			->with('wp_upload_bits', '53a2a5db214eb.jpg', null, 'image data')
+			->will($this->returnValue($wp_upload_bits));
+		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+	}
+
+/**
+ * testCopifySetPostThumbnailInsertAttachFails
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @expectedException Exception
+ * @expectedExceptionMessage Failed to create attachment
+ **/
+	public function testCopifySetPostThumbnailInsertAttachFails() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique'));
+		$wp_upload_dir = array(
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
+			'subdir' => '/2014/06',
+			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
+			'baseurl' => 'http://localhost.3dlockers.com/wp-content/uploads',
+			'error' => false
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('wp_upload_dir')
+			->will($this->returnValue($wp_upload_dir));
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('_file_get_contents')
+			->with('http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
+			->will($this->returnValue('image data'));
+		$this->CopifyWordpress->expects($this->at(2))
+			->method('unique')
+			->will($this->returnValue('53a2a5db214eb'));
+		$wp_upload_bits = array(
+			'file' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg',
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06/53a2a5db214eb.jpg'
+		);
+		$this->CopifyWordpress->expects($this->at(3))
+			->method('wordpress')
+			->with('wp_upload_bits', '53a2a5db214eb.jpg', null, 'image data')
+			->will($this->returnValue($wp_upload_bits));
+		$wp_check_filetype = array(
+			'ext' => 'jpg',
+			'type' => 'image/jpeg'
+		);
+		$this->CopifyWordpress->expects($this->at(4))
+			->method('wordpress')
+			->with('wp_check_filetype', '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
+			->will($this->returnValue($wp_check_filetype));
+		$wp_insert_attachment = array(
+			'post_mime_type' => 'image/jpeg',
+			'post_title'     => '53a2a5db214eb', // preg_replace( '/\.[^.]+$/', '', basename($filepath)),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+			'post_excerpt' => 'Image from Flickr'
+		);
+		$this->CopifyWordpress->expects($this->at(5))
+			->method('wordpress')
+			->with('wp_insert_attachment', $wp_insert_attachment, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
+			->will($this->returnValue(0));	
+		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+	}
+
+/**
+ * testCopifySetPostThumbnailSetThumbFails
+ *
+ * @return void
+ * @author Rob Mcvey
+ * @expectedException Exception
+ * @expectedExceptionMessage Failed to set post image
+ **/
+	public function testCopifySetPostThumbnailSetThumbFails() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique', 'setUpdateAttachmentMeta'));
+		$wp_upload_dir = array(
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
+			'subdir' => '/2014/06',
+			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
+			'baseurl' => 'http://localhost.3dlockers.com/wp-content/uploads',
+			'error' => false
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('wp_upload_dir')
+			->will($this->returnValue($wp_upload_dir));
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('_file_get_contents')
+			->with('http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
+			->will($this->returnValue('image data'));
+		$this->CopifyWordpress->expects($this->at(2))
+			->method('unique')
+			->will($this->returnValue('53a2a5db214eb'));
+		$wp_upload_bits = array(
+			'file' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg',
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06/53a2a5db214eb.jpg'
+		);
+		$this->CopifyWordpress->expects($this->at(3))
+			->method('wordpress')
+			->with('wp_upload_bits', '53a2a5db214eb.jpg', null, 'image data')
+			->will($this->returnValue($wp_upload_bits));
+		$wp_check_filetype = array(
+			'ext' => 'jpg',
+			'type' => 'image/jpeg'
+		);
+		$this->CopifyWordpress->expects($this->at(4))
+			->method('wordpress')
+			->with('wp_check_filetype', '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
+			->will($this->returnValue($wp_check_filetype));
+		$wp_insert_attachment = array(
+			'post_mime_type' => 'image/jpeg',
+			'post_title'     => '53a2a5db214eb', // preg_replace( '/\.[^.]+$/', '', basename($filepath)),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+			'post_excerpt' => 'Image from Flickr'
+		);
+		$this->CopifyWordpress->expects($this->at(5))
+			->method('wordpress')
+			->with('wp_insert_attachment', $wp_insert_attachment, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
+			->will($this->returnValue(432));
+		$this->CopifyWordpress->expects($this->at(6))
+			->method('setUpdateAttachmentMeta')
+			->with(432, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg');
+		$this->CopifyWordpress->expects($this->at(7))
+			->method('wordpress')
+			->with('set_post_thumbnail', 4, 432)
+			->will($this->returnValue(false));	
+		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+	}
+	
+/**
+ * testCopifySetPostThumbnail
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifySetPostThumbnail() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique', 'setUpdateAttachmentMeta'));
+		$wp_upload_dir = array(
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
+			'subdir' => '/2014/06',
+			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
+			'baseurl' => 'http://localhost.3dlockers.com/wp-content/uploads',
+			'error' => false
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('wp_upload_dir')
+			->will($this->returnValue($wp_upload_dir));
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('_file_get_contents')
+			->with('http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
+			->will($this->returnValue('image data'));
+		$this->CopifyWordpress->expects($this->at(2))
+			->method('unique')
+			->will($this->returnValue('53a2a5db214eb'));
+		$wp_upload_bits = array(
+			'file' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg',
+			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06/53a2a5db214eb.jpg'
+		);
+		$this->CopifyWordpress->expects($this->at(3))
+			->method('wordpress')
+			->with('wp_upload_bits', '53a2a5db214eb.jpg', null, 'image data')
+			->will($this->returnValue($wp_upload_bits));
+		$wp_check_filetype = array(
+			'ext' => 'jpg',
+			'type' => 'image/jpeg'
+		);
+		$this->CopifyWordpress->expects($this->at(4))
+			->method('wordpress')
+			->with('wp_check_filetype', '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
+			->will($this->returnValue($wp_check_filetype));
+		$wp_insert_attachment = array(
+			'post_mime_type' => 'image/jpeg',
+			'post_title'     => '53a2a5db214eb', // preg_replace( '/\.[^.]+$/', '', basename($filepath)),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+			'post_excerpt' => 'Image from Flickr'
+		);
+		$this->CopifyWordpress->expects($this->at(5))
+			->method('wordpress')
+			->with('wp_insert_attachment', $wp_insert_attachment, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
+			->will($this->returnValue(432));
+		$this->CopifyWordpress->expects($this->at(6))
+			->method('setUpdateAttachmentMeta')
+			->with(432, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg');
+		$this->CopifyWordpress->expects($this->at(7))
+			->method('wordpress')
+			->with('set_post_thumbnail', 4, 432)
+			->will($this->returnValue(211));	
+		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+		$this->assertEquals(211, $result);
+	}
+
+/**
+ * testCopifySetPostThumbnailUploadBitsFails
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	// public function testCopifySetPostThumbnailUploadBitsFails() {
+	// 	$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents'));
+	// 	$wp_upload_dir = array(
+	// 		'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+	// 		'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
+	// 		'subdir' => '/2014/06',
+	// 		'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
+	// 		'baseurl' => 'http://localhost.3dlockers.com/wp-content/uploads',
+	// 		'error' => false
+	// 	);
+	// 	$this->CopifyWordpress->expects($this->at(0))
+	// 		->method('wordpress')
+	// 		->with('wp_upload_dir')
+	// 		->will($this->returnValue($wp_upload_dir));
+	// 	// $this->CopifyWordpress->expects($this->at(2))
+	// 	// 	->method('wordpress')
+	// 	// 	->with('wp_upload_bits');
+	// 	$this->CopifyWordpress->expects($this->once())
+	// 		->method('_file_get_contents')
+	// 		->with('http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
+	// 		->will($this->returnValue('image data'));	
+	// 	$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+	// 	$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
+	// }	
+	// 
+	
+
+
+		// wp_generate_attachment_metadata()
+		// array(
+		// 	'width' => 1600,
+		//  	'height' => 1066,
+		//  	'file' => '2014/06/53a19c4fa4e76.jpg',
+		//  	'image_meta' => array (
+		// 		'aperture' => 0,
+		// 		'credit' => '', 
+		// 		'camera' => '',
+		// 		'caption' => '',
+		// 		'created_timestamp' => 0,
+		// 		'copyright' => '',
+		// 		'focal_length' => 0,
+		// 		 'iso' => 0,
+		// 		 'shutter_speed' => 0,
+		// 		 'title' => ''
+		// 	)
+		// ) 
+
+
+
 }
