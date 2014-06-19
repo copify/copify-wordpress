@@ -1238,7 +1238,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('_wp_get_attachment_metadata')
 			->will($this->returnValue($_wp_get_attachment_metadata));
 		$result = $this->CopifyWordpress->CopifyAddFlickrAttribution('foo bar');
-		$expected = 'foo bar<div style="display:block;padding:25px 0;font-size:10px;color:#999"><a target="blank" title="Creative Commons" href="https://www.flickr.com/photos/sixteenmilesofstring/8256206923/in/set-72157632200936657" rel="nofollow">Creative Commons</a></div>';
+		$expected = 'foo bar<div style="display:block;font-size:9px;">Photo: <a target="blank" title="Creative Commons" href="https://www.flickr.com/photos/sixteenmilesofstring/8256206923/in/set-72157632200936657" rel="nofollow">Creative Commons</a></div>';
 		$this->assertEquals($expected, $result);
 	}
 
@@ -1277,7 +1277,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('_wp_get_attachment_metadata')
 			->will($this->returnValue($_wp_get_attachment_metadata));
 		$result = $this->CopifyWordpress->CopifyAddFlickrAttribution('foo bar');	
-		$expected = 'foo bar<div style="display:block;padding:25px 0;font-size:10px;color:#999"><a target="blank" title="Yellow-bellied Slider Turtle (Trachemys scripta scripta)" href="https://www.flickr.com/photos/bees/9968828954/" rel="nofollow">Yellow-bellied Slider Turtle (Trachemys scripta scripta)</a> by <a href="http://www.flickr.com/photos/bees" target="blank" title="bees">bees</a> licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="blank">Creative commons 4</a></div>';
+		$expected = 'foo bar<div style="display:block;font-size:9px;">Photo: <a target="blank" title="Yellow-bellied Slider Turtle (Trachemys scripta scripta)" href="https://www.flickr.com/photos/bees/9968828954/" rel="nofollow">Yellow-bellied Slider Turtle (Trachemys scripta scripta)</a> by <a href="http://www.flickr.com/photos/bees" target="blank" title="bees" rel="nofollow">bees</a> licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="blank" rel="nofollow">Creative commons 4</a></div>';
 		$this->assertEquals($expected, $result);
 	}
 

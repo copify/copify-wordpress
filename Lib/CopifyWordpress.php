@@ -676,7 +676,7 @@ class CopifyWordpress {
 		if (empty($featured_image_meta) || !isset($featured_image_meta['copify_attr_url'])) {
 			return $content;
 		}
-		$attribution = '<div style="display:block;padding:25px 0;font-size:10px;color:#999">';
+		$attribution = '<div style="display:block;font-size:9px;">Photo: ';
 		// Check for title
 		if (isset($featured_image_meta['copify_attr_photo_title'])) { 
 			$title = $featured_image_meta['copify_attr_photo_title'];
@@ -688,7 +688,7 @@ class CopifyWordpress {
 		$attribution .= '</a>';
 		// Username 
 		if (isset($featured_image_meta['copify_attr_user']) && isset($featured_image_meta['copify_attr_user_url'])) {
-			$attribution .= sprintf(' by <a href="%s" target="blank" title="%s">%s</a>', 
+			$attribution .= sprintf(' by <a href="%s" target="blank" title="%s" rel="nofollow">%s</a>', 
 				$featured_image_meta['copify_attr_user_url'],
 				$featured_image_meta['copify_attr_user'],
 				$featured_image_meta['copify_attr_user']
@@ -696,7 +696,7 @@ class CopifyWordpress {
 		}
 		// Licience 
 		if (isset($featured_image_meta['copify_attr_cc_license']) && isset($featured_image_meta['copify_attr_cc_license_url'])) {
-			$attribution .= sprintf(' licensed under <a href="%s" target="blank">Creative commons %s</a>', 
+			$attribution .= sprintf(' licensed under <a href="%s" target="blank" rel="nofollow">Creative commons %s</a>', 
 				$featured_image_meta['copify_attr_cc_license_url'],
 				$featured_image_meta['copify_attr_cc_license']
 			);
