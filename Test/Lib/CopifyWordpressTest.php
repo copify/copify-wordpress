@@ -749,7 +749,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->will($this->returnValue(432));
 		$this->CopifyWordpress->expects($this->at(6))
 			->method('setUpdateAttachmentMeta')
-			->with(432, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg');
+			->with(432, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg', array('flick_url' => 'foo'));
 		$this->CopifyWordpress->expects($this->at(7))
 			->method('wordpress')
 			->with('set_post_thumbnail', 4, 432)
@@ -1050,6 +1050,111 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_GET["copify-action"] = "unpublish-post";
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+	
+/**
+ * testCopifyAddFlickrAttributionNoChange
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyAddFlickrAttributionNoChange() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl', 'CopifyBeforeDeletePost', '_wp_get_attachment_metadata'));
+		$_wp_get_attachment_metadata = array(
+		    'width' => 2896,
+		    'height' => 1936,
+		    'file' => '2014/06/53a2eaaf8fdd8.jpg',
+		    'image_meta' => array(
+				'aperture' => 0,
+				'credit' => '',
+				'camera' => '',
+				'caption' => '',
+				'created_timestamp' => 0,
+				'copyright' => '',
+				'focal_length' => 0,
+				'iso' => 0,
+				'shutter_speed' => 0,
+				'title' => '',
+			)
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('_wp_get_attachment_metadata')
+			->will($this->returnValue($_wp_get_attachment_metadata));
+		$result = $this->CopifyWordpress->CopifyAddFlickrAttribution('foo bar');
+		$this->assertEquals('foo bar', $result);
+	}
+
+/**
+ * testCopifyAddFlickrAttribution
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyAddFlickrAttribution() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl', 'CopifyBeforeDeletePost', '_wp_get_attachment_metadata'));
+		$_wp_get_attachment_metadata = array(
+		    'width' => 2896,
+		    'height' => 1936,
+		    'file' => '2014/06/53a2eaaf8fdd8.jpg',
+		    'image_meta' => array(
+				'aperture' => 0,
+				'credit' => '',
+				'camera' => '',
+				'caption' => '',
+				'created_timestamp' => 0,
+				'copyright' => '',
+				'focal_length' => 0,
+				'iso' => 0,
+				'shutter_speed' => 0,
+				'title' => '',
+			),
+			'copify_attr_url' => 'https://www.flickr.com/photos/sixteenmilesofstring/8256206923/in/set-72157632200936657',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('_wp_get_attachment_metadata')
+			->will($this->returnValue($_wp_get_attachment_metadata));
+		$result = $this->CopifyWordpress->CopifyAddFlickrAttribution('foo bar');
+		$expected = 'foo bar<div style="display:block;padding:25px 0;font-size:10px;color:#999"><a target="blank" title="Creative Commons" href="https://www.flickr.com/photos/sixteenmilesofstring/8256206923/in/set-72157632200936657" rel="nofollow">Creative Commons</a></div>';
+		$this->assertEquals($expected, $result);
+	}
+
+/**
+ * testCopifyAddFlickrAttributionFull
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyAddFlickrAttributionFull() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl', 'CopifyBeforeDeletePost', '_wp_get_attachment_metadata'));
+		$_wp_get_attachment_metadata = array(
+		    'width' => 2896,
+		    'height' => 1936,
+		    'file' => '2014/06/53a2eaaf8fdd8.jpg',
+		    'image_meta' => array(
+				'aperture' => 0,
+				'credit' => '',
+				'camera' => '',
+				'caption' => '',
+				'created_timestamp' => 0,
+				'copyright' => '',
+				'focal_length' => 0,
+				'iso' => 0,
+				'shutter_speed' => 0,
+				'title' => '',
+			),
+			'copify_attr_photo_title' => 'Yellow-bellied Slider Turtle (Trachemys scripta scripta)',
+			'copify_attr_url' => 'https://www.flickr.com/photos/bees/9968828954/',
+			'copify_attr_user' => 'bees',
+			'copify_attr_user_url' => 'http://www.flickr.com/photos/bees',
+			'copify_cc_license' => 4,
+			'copify_cc_license_url' => 'http://creativecommons.org/licenses/by/4.0/'
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('_wp_get_attachment_metadata')
+			->will($this->returnValue($_wp_get_attachment_metadata));
+		$result = $this->CopifyWordpress->CopifyAddFlickrAttribution('foo bar');	
+		$expected = 'foo bar<div style="display:block;padding:25px 0;font-size:10px;color:#999"><a target="blank" title="Yellow-bellied Slider Turtle (Trachemys scripta scripta)" href="https://www.flickr.com/photos/bees/9968828954/" rel="nofollow">Yellow-bellied Slider Turtle (Trachemys scripta scripta)</a> by <a href="http://www.flickr.com/photos/bees" target="blank" title="bees">bees</a> licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="blank">Creative commons 4</a></div>';
+		$this->assertEquals($expected, $result);
 	}
 
 }

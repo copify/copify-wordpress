@@ -663,7 +663,7 @@ class CopifyWordpress {
 		$this->wordpress('add_submenu_page', 'CopifyDashboard', 'Copify Wordpress Settings', 'Settings', 'publish_posts', 'CopifySettings', array($this, 'CopifySettings'));
 		$this->wordpress('add_submenu_page', 'CopifySettings', 'Copify View Job', 'View', 'publish_posts', 'CopifyViewJob', array($this, 'CopifyViewJob'));
 	}
-	
+
 /**
  * We can modifiy the content of the post here
  *
@@ -671,9 +671,41 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifyAddFlickrAttribution($content) {
+		// Get the thumbnail meta, and check for custom copify attributes
+		$featured_image_meta = $this->_wp_get_attachment_metadata();
+		if (empty($featured_image_meta) || !isset($featured_image_meta['copify_attr_url'])) {
+			return $content;
+		}
+		$attribution = '<div style="display:block;padding:25px 0;font-size:10px;color:#999">';
+		// Check for title
+		if (isset($featured_image_meta['copify_attr_photo_title'])) { 
+			$title = $featured_image_meta['copify_attr_photo_title'];
+		} else {
+			$title = 'Creative Commons';
+		}
+		$attribution .= sprintf('<a target="blank" title="%s" href="%s" rel="nofollow">', $title, $featured_image_meta['copify_attr_url']);
+		$attribution .= $title;
+		$attribution .= '</a>';
+		// Username 
+		if (isset($featured_image_meta['copify_attr_user']) && isset($featured_image_meta['copify_attr_user_url'])) {
+			$attribution .= sprintf(' by <a href="%s" target="blank" title="%s">%s</a>', 
+				$featured_image_meta['copify_attr_user_url'],
+				$featured_image_meta['copify_attr_user'],
+				$featured_image_meta['copify_attr_user']
+			);
+		}
+		// Licience 
+		if (isset($featured_image_meta['copify_cc_license']) && isset($featured_image_meta['copify_cc_license_url'])) {
+			$attribution .= sprintf(' licensed under <a href="%s" target="blank">Creative commons %s</a>', 
+				$featured_image_meta['copify_cc_license_url'],
+				$featured_image_meta['copify_cc_license']
+			);
+		}
+		$attribution .= '</div>';
+		$content .= $attribution;
 		return $content;
 	}
-	
+
 /**
  * We can modify the HTML of the featued image here
  *
@@ -768,7 +800,7 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	public function setImage() {
+	protected function setImage() {
 		if (!isset($_GET['wp_post_id']) || !isset($_GET['image-url'])) {
 			throw new Exception('Missing params wp_post_id and image-url', 400);
 		}
@@ -784,7 +816,7 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	public function deleteImage() {
+	protected function deleteImage() {
 		if (!isset($_GET['wp_post_id'])) {
 			throw new Exception('Missing params wp_post_id', 400);
 		}
@@ -800,7 +832,7 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	public function unpublishPost() {
+	protected function unpublishPost() {
 		if (!isset($_GET['wp_post_id'])) {
 			throw new Exception('Missing params wp_post_id', 400);
 		}
@@ -905,7 +937,7 @@ class CopifyWordpress {
 			throw new Exception('Failed to create attachment');
 		}
 		// Set and update the meta for the image
-		$this->setUpdateAttachmentMeta($attach_id, $filepath);
+		$this->setUpdateAttachmentMeta($attach_id, $filepath, array('chips' => 'peas'));
 		// Set the thumbnail of our post
 		$set_post_thumbnail = $this->wordpress('set_post_thumbnail', $post_id, $attach_id);
 		if (!$set_post_thumbnail) {
@@ -943,9 +975,13 @@ class CopifyWordpress {
  * @return void
  * @author Rob Mcvey
  **/
-	protected function setUpdateAttachmentMeta($attach_id, $filepath) {
+	protected function setUpdateAttachmentMeta($attach_id, $filepath, $flickrMeta = array('foo' => 'bar')) {
 		require_once(ABSPATH . 'wp-admin/includes/image.php');
 		$attach_data = wp_generate_attachment_metadata($attach_id, $filepath);
+		if (!is_array($attach_data)) {
+			return;
+		}
+		$attach_data = array_merge($attach_data, $flickrMeta);
 		wp_update_attachment_metadata($attach_id, $attach_data);
 	}
 
@@ -970,6 +1006,17 @@ class CopifyWordpress {
 		if (!preg_match("/flickr|copify/", $parts['host'])) {
 			throw new InvalidArgumentException('Bad image host');
 		}
+	}
+	
+/**
+ * Get attachment for current post, and return its meta data
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	protected function _wp_get_attachment_metadata() {
+		$attach_id = get_post_thumbnail_id($post->ID);
+		return wp_get_attachment_metadata($attach_id);
 	}
 
 /**
