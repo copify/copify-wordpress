@@ -51,7 +51,6 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifySettings() {
-		//$this->CopifySetPostThumbnailFromUrl(20, 'http://farm3.staticflickr.com/2017/2355610402_9920921974_o.jpg');
 		try {
 			// Get API credentials
 			$CopifyLoginDetails = $this->wordpress('get_option', 'CopifyLoginDetails' , false);	
@@ -789,6 +788,7 @@ class CopifyWordpress {
 		if (!$result) {
 			throw new Exception(sprintf('Failed to trash post %s', $_GET['wp_post_id']));
 		}
+		$this->CopifyBeforeDeletePost($_GET['wp_post_id']);
 		$message = sprintf('Post %s moved to trash', $_GET['wp_post_id']);
 		$json = array('success' => true, 'message' => $message);
 		return $this->outputJson($json);

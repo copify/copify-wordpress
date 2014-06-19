@@ -1022,7 +1022,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  * @author Rob Mcvey
  **/
 	public function testUnpublishPost() {
-		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl', 'CopifyBeforeDeletePost'));
 		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
@@ -1037,6 +1037,9 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('wp_trash_post', 77)
 			->will($this->returnValue(true));
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyBeforeDeletePost')
+			->with(77);
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
