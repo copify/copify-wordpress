@@ -590,7 +590,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
 	}
-	
+
 /**
  * testCopifySetPostThumbnailUploadBitsFails
  *
@@ -757,7 +757,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
 	}
-	
+
 /**
  * testCopifySetPostThumbnail
  *
@@ -842,12 +842,10 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifySetPostThumbnailFromUrl')
 			->with(22, 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
 			->will($this->returnValue(421));
-
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
@@ -880,10 +878,8 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-		
 		$this->CopifyWordpress->expects($this->never())
 			->method('CopifySetPostThumbnailFromUrl');
-		
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
@@ -913,7 +909,6 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
@@ -923,7 +918,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
-	
+
 /**
  * testDeleteImage
  *
@@ -942,12 +937,10 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-			
 		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('delete_post_thumbnail', 77)
 			->will($this->returnValue(true));
-
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
@@ -959,7 +952,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
-	
+
 /**
  * testUnpublishPostMissingParams
  *
@@ -1007,18 +1000,15 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-
 		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('wp_trash_post', 77)
 			->will($this->returnValue(false));
-
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
 				'message' => 'Failed to trash post 77',
 			));
-			
 		$_GET["wp_post_id"] = 77;	
 		$_GET["copify-action"] = "unpublish-post";
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
