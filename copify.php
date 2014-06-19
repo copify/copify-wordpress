@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Order quality blog posts from Copify's network of professional writers
-Version: 1.0.4
+Version: 1.0.5
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
