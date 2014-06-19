@@ -698,10 +698,6 @@ class CopifyWordpress {
 			if (isset($_GET["check"]) && $_GET["check"] == 'version') {
 				return $this->outputJson($this->version);
 			}
-			// Order ID
-			if (!isset($_GET["id"])) {
-				throw new Exception('Must include order ID', 400);
-			}
 			$this->handleRequestFilter();
 		} catch (Exception $e) {
 			$message = $e->getMessage();
@@ -780,13 +776,22 @@ class CopifyWordpress {
 	}
 
 /**
- * undocumented function
+ * Trash a post
  *
  * @return void
  * @author Rob Mcvey
  **/
 	public function unpublishPost() {
-
+		if (!isset($_GET['wp_post_id'])) {
+			throw new Exception('Missing params wp_post_id', 400);
+		}
+		$result = $this->wordpress('wp_trash_post', $_GET['wp_post_id']);
+		if (!$result) {
+			throw new Exception(sprintf('Failed to trash post %s', $_GET['wp_post_id']));
+		}
+		$message = sprintf('Post %s moved to trash', $_GET['wp_post_id']);
+		$json = array('success' => true, 'message' => $message);
+		return $this->outputJson($json);
 	}
 
 /**
@@ -796,6 +801,10 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	protected function autoPublishOrder() {
+		// Order ID
+		if (!isset($_GET["id"])) {
+			throw new Exception('Must include order ID', 400);
+		}
 		// Get the ID from the get params
 		$id = $_GET["id"];
 		// Initialise Copify API class
@@ -819,7 +828,7 @@ class CopifyWordpress {
 			'post_content' => $job['copy'],
 			'post_status' => 'publish',
 			'post_type' => 'post' // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
-		);	
+		);
 		$wp_post_id = $this->CopifyAddToPosts($id, $newPost);
 		$message = sprintf('Order %s auto-published', $id);
 		$json = array('success' => true, 'message' => $message, 'wp_post_id' => $wp_post_id);

@@ -446,10 +446,11 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		);	
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyAddToPosts')
-			->with(62343, $newPost);	
+			->with(62343, $newPost)
+			->will($this->returnValue(521));
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
-			->with(array('success' => true, 'message' => 'Order 62343 auto-published'));
+			->with(array('success' => true, 'message' => 'Order 62343 auto-published', 'wp_post_id' => 521));
 		$_GET["copify-action"] = true;
 		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
@@ -857,7 +858,6 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_GET['wp_post_id'] = 22;
 		$_GET["copify-action"] = "set-image";
 		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
-		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
@@ -891,7 +891,6 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			));
 		$_GET["copify-action"] = "set-image";
 		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
-		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
@@ -921,8 +920,6 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 				'message' => 'Missing params wp_post_id',
 			));
 		$_GET["copify-action"] = "delete-image";
-		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
-		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
@@ -959,8 +956,105 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			));
 		$_GET["wp_post_id"] = 77;
 		$_GET["copify-action"] = "delete-image";
-		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
-		$_GET["id"] = 62343;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+	
+/**
+ * testUnpublishPostMissingParams
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testUnpublishPostMissingParams() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+		
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array(
+				'message' => 'Missing params wp_post_id',
+			));
+		$_GET["copify-action"] = "unpublish-post";
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
+ * testUnpublishPostFails
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testUnpublishPostFails() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('wordpress')
+			->with('wp_trash_post', 77)
+			->will($this->returnValue(false));
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array(
+				'message' => 'Failed to trash post 77',
+			));
+			
+		$_GET["wp_post_id"] = 77;	
+		$_GET["copify-action"] = "unpublish-post";
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
+ * testUnpublishPost
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testUnpublishPost() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('wordpress')
+			->with('wp_trash_post', 77)
+			->will($this->returnValue(true));
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array(
+				'success' => true,
+				'message' => 'Post 77 moved to trash',
+			));
+		$_GET["wp_post_id"] = 77;	
+		$_GET["copify-action"] = "unpublish-post";
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
