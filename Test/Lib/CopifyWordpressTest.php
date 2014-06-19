@@ -824,6 +824,45 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	}
 
 /**
+ * testSetImage
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testSetImage() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetPostThumbnailFromUrl')
+			->with(22, 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
+			->will($this->returnValue(421));
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array(
+				'success' => true, 
+				'message' => 'Image for post 22 set to http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg',
+				'set_post_thumbnail' => 421
+			));
+		$_GET['wp_post_id'] = 22;
+		$_GET["copify-action"] = "set-image";
+		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$_GET["id"] = 62343;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
  * testSetImageMissingParams
  *
  * @return void
@@ -842,20 +881,84 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
 		
-		$this->CopifyWordpress->expects($this->once())
-			->method('CopifySetPostThumbnailFromUrl')
-			->with(22, 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
-			->will($this->returnValue(421));
+		$this->CopifyWordpress->expects($this->never())
+			->method('CopifySetPostThumbnailFromUrl');
 		
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
-				'success' => true, 
-				'message' => 'Image for post 22 set to http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg',
-				'set_post_thumbnail' => 421
+				'message' => 'Missing params wp_post_id and image-url',
 			));
-		$_GET['wp_post_id'] = 22;
 		$_GET["copify-action"] = "set-image";
+		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$_GET["id"] = 62343;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
+ * testDeleteImageMissingParams
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testDeleteImageMissingParams() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array(
+				'message' => 'Missing params wp_post_id',
+			));
+		$_GET["copify-action"] = "delete-image";
+		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
+		$_GET["id"] = 62343;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+	
+/**
+ * testDeleteImage
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testDeleteImage() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+			
+		$this->CopifyWordpress->expects($this->at(1))
+			->method('wordpress')
+			->with('delete_post_thumbnail', 77)
+			->will($this->returnValue(true));
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array(
+				'success' => true,
+				'message' => 'Image for post 77 was removed',
+			));
+		$_GET["wp_post_id"] = 77;
+		$_GET["copify-action"] = "delete-image";
 		$_GET["image-url"] = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';

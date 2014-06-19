@@ -733,7 +733,6 @@ class CopifyWordpress {
  **/
 	protected function handleRequestFilter() {
 		$action = $_GET["copify-action"];
-		
 		if ($action === "set-image") {
 			$this->setImage();
 		} 
@@ -765,13 +764,19 @@ class CopifyWordpress {
 	}
 
 /**
- * undocumented function
+ * Remove featured image from post
  *
  * @return void
  * @author Rob Mcvey
  **/
 	public function deleteImage() {
-
+		if (!isset($_GET['wp_post_id'])) {
+			throw new Exception('Missing params wp_post_id', 400);
+		}
+		$result = $this->wordpress('delete_post_thumbnail', $_GET['wp_post_id']);
+		$message = sprintf('Image for post %s was removed', $_GET['wp_post_id']);
+		$json = array('success' => true, 'message' => $message);
+		return $this->outputJson($json);
 	}
 
 /**
@@ -904,7 +909,7 @@ class CopifyWordpress {
 	}
 
 /**
- * Returns the path to WP image class
+ * Calls wp_generate_attachment_metadata and wp_update_attachment_metadata for attachment
  *
  * @return void
  * @author Rob Mcvey
