@@ -952,8 +952,6 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-	
-	
 		$meta = array(
 			'copify_attr_photo_title' => 'Yellow-bellied Slider Turtle (Trachemys scripta scripta)',
 			'copify_attr_url' => 'https://www.flickr.com/photos/bees/9968828954/',
@@ -962,13 +960,10 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'copify_attr_cc_license' => 4,
 			'copify_attr_cc_license_url' => 'http://creativecommons.org/licenses/by/4.0/'
 		);
-	
-	
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifySetPostThumbnailFromUrl')
 			->with(22, 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg', $meta)
 			->will($this->returnValue(421));
-	
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
@@ -976,8 +971,6 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 				'message' => 'Image for post 22 set to http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg',
 				'set_post_thumbnail' => 421
 			));
-			
-		
 		$_GET['wp_post_id'] = 22;
 		$_GET["copify-action"] = "set-image";
 		$_GET["copify_attr_photo_title"] = 'Yellow-bellied Slider Turtle (Trachemys scripta scripta)';
