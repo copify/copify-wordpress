@@ -11,7 +11,7 @@ class CopifyWordpress {
 /**
  * Plugin version
  */	
-	protected $version = '1.0.4';
+	protected $version = '1.0.5';
 
 /**
  * Instance of Copify library
