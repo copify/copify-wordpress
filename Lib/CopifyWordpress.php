@@ -1075,4 +1075,14 @@ class CopifyWordpress {
 		return call_user_func_array($method, $args);
 	}
 
+/**
+ * Does what it says on the tin
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function getVersion() {
+		return $this->version;
+	}
+
 }

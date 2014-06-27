@@ -234,6 +234,8 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testCopifyRequestFilterCheckToken() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
+		$version = $this->CopifyWordpress->getVersion();
+		$this->assertEquals('1.0.5', $version);
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -243,9 +245,9 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-		$this->CopifyWordpress->expects($this->once())
+		$this->CopifyWordpress->expects($this->any())
 			->method('outputJson')
-			->with('1.0.4');
+			->with($version);
 		$_GET["copify-action"] = true;
 		$_GET["check"] = 'version';
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
