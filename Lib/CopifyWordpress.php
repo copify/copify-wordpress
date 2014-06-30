@@ -1027,7 +1027,7 @@ class CopifyWordpress {
 			throw new InvalidArgumentException('Bad image host');
 		}
 	}
-	
+
 /**
  * Get attachment for current post, and return its meta data
  *
