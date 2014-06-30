@@ -1,5 +1,5 @@
 === Copify ===
-Version: 1.0.4
+Version: 1.0.5
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
