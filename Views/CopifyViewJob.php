@@ -202,11 +202,11 @@
 			<!-- Status info -->
 			<?php if(in_array($job['job_status_id'], array(1,2,6,7))) : // Job status info ?>
 				<div class="CopifyJobStatusInfo message">
-					<h3><?php echo sprintf('Your order is <span class="%s">%s</span>. What happens next?' , $statusNameClass, $statusName); ?></h3>
+					<h3><?php echo sprintf('Your order is <span class="%s">%s</span>. What happens next?', $statusNameClass, $statusName); ?></h3>
 					<p>Your order has been placed with an approved Copify writer, for now sit back and relax!</p>
-					<p>When your order is complete, you will be notified by email and you will have chance to review the content before you publish it</p>
+					<p>When your order is complete, you will be notified by email and you will have chance to review the content before you publish it.</p>
 					<ul>
-						<li><span class="open">Open</span> - Your order is in the queue for the next availalbe writer</li>
+						<li><span class="open">Open</span> - Your order is in the queue for the next available writer</li>
 						<li><span class="in_progress">In progress</span> -  A writer is working on your content, you will receive an email once complete</li>
 						<li><span class="completed">Completed</span> - Your content is ready for you to approve</li>
 						<li><span class="approved">Approved</span> -  The content has been approved and is ready to publish</li>
@@ -398,7 +398,7 @@ jQuery(document).ready(function() {
 					jQuery('#CopifyConfirmApprove').hide();
 					jQuery('#CopifyConfirmSaving').hide();
 					//console.log(data);
-					window.location.href = window.location.href + '&flashMessage=Job+approved+and+moved+to+Drafts';
+					window.location.href = window.location.href + '&flashMessage=Order+approved+and+moved+to+Drafts';
 				} else {
 					alert(data.message);
 				}
@@ -433,7 +433,7 @@ jQuery(document).ready(function() {
 			success: function(data) {
 				if(data.status == 'success') {
 					// OK
-					window.location.href = window.location.href + '&flashMessage=Job+moved+to+Drafts';
+					window.location.href = window.location.href + '&flashMessage=Order+moved+to+Drafts';
 				} else {
 					alert(data.message);
 				}
