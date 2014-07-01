@@ -2,7 +2,7 @@
 /*
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
-Description: Order quality blog posts from Copify's network of professional writers
+Description: Automatically publish unique, relevant content every week from Copify's team of professional writers.
 Version: 1.0.5
 Author: Rob McVey
 Author URI: http://uk.copify.com/
@@ -11,7 +11,7 @@ License: GPL2
 Copyright 2012  Rob McVey  (email:rob@copify.com)
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License, version 2, as 
+it under the terms of the GNU General Public License, version 2, as
 published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -42,7 +42,7 @@ add_action('admin_init', array($CopifyWordpress, 'CopifyCssAndScripts'));
 // Run requests through our custom method
 add_action('parse_request', array($CopifyWordpress, 'CopifyRequestFilter'));
 
-// Add our admin menu 
+// Add our admin menu
 add_action('admin_menu', array($CopifyWordpress, 'CopifyAdminMenu'));
 
 // When a post is deleted, remove the flag in options so we can re-add to drafts if needed
