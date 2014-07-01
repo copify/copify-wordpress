@@ -4,7 +4,7 @@
 
 [![Build Status](https://secure.travis-ci.org/copify/copify-wordpress.png?branch=master)](https://travis-ci.org/copify/copify-wordpress/)
 
-Automatically publish unique, relevant content every week from Copify's team of professional writers.
+Automatically publish unique, relevant blogs each week from Copify's team of professional writers. Now includes royalty free images.
 
 ### Requirements
 
