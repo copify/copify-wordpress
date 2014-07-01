@@ -57,7 +57,7 @@
 					?>
 				</select>	
 			</div>
-			<?php submit_button(); ?>
+			<button class="CopifyButton CopifyGreen">Save Changes</button>
 		</fieldset>			
 	</form>
 
