@@ -9,7 +9,7 @@
 
 // Dev mode
 if (!defined('COPIFY_DEVMODE')) {
-	define('COPIFY_DEVMODE', true); 
+	define('COPIFY_DEVMODE', false); 
 }
 
 // Directory seperator for this system
