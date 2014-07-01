@@ -1,5 +1,5 @@
 === Copify ===
-Version: 1.0.5
+Version: 1.0.6
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
@@ -37,6 +37,9 @@ This is where Copify can help. By installing our plugin and signing up for one o
 3. Select "Auto-publish" and we'll publish your blog posts automatically with an image!
 
 == Changelog ==
+
+= 1.0.6 =
+* Fixes issue with other plugins calling methods in wp-admin/includes/plugin.php such as is_plugin_active()
 
 = 1.0.5 =
 * Plugin now allows Copify to publish Creative Commons License photo as "Featured Image" when blog package has auto-publish enabled.
