@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Automatically publish unique, relevant content every week from Copify's team of professional writers.
-Version: 1.0.5
+Version: 1.0.6
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
@@ -24,6 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 require_once('basics.php');
+require_once(ABSPATH . 'wp-admin/includes/plugin.php');
 require_once(COPIFY_PATH . COPIFY_DS . 'Lib/Api.php');
 require_once(COPIFY_PATH . COPIFY_DS . 'Lib/CopifyWordpress.php');
 
@@ -35,9 +36,6 @@ add_filter('the_content', array($CopifyWordpress, 'CopifyAddFlickrAttribution'))
 
 // Hook in to the featured image HTML
 add_filter('post_thumbnail_html', array($CopifyWordpress, 'CopifyThumbnailHtml'));
-
-// Add our js and css
-add_action('admin_init', array($CopifyWordpress, 'CopifyCssAndScripts'));
 
 // Run requests through our custom method
 add_action('parse_request', array($CopifyWordpress, 'CopifyRequestFilter'));
@@ -59,3 +57,6 @@ add_action('wp_ajax_CopifyQuoteWords', array($CopifyWordpress, 'CopifyQuoteWords
 
 // Ajax method to post a new job
 add_action('wp_ajax_CopifyAjaxOrder', array($CopifyWordpress, 'CopifyAjaxOrder'));
+
+// Add our js and css
+add_action('admin_init', array($CopifyWordpress, 'CopifyCssAndScripts'));
