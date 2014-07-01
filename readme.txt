@@ -39,7 +39,7 @@ This is where Copify can help. By installing our plugin and signing up for one o
 == Changelog ==
 
 = 1.0.5 =
-* Plugin now allows Copify to publish Creative Commons photo as "Featured Image" when blog package has auto-publish enabled.
+* Plugin now allows Copify to publish Creative Commons License photo as "Featured Image" when blog package has auto-publish enabled.
 
 = 1.0.4 =
 * When auto-publish is set to "On" Copify will automatically publish blog posts.
