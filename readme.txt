@@ -21,9 +21,8 @@ This is where Copify can help. By installing our plugin and signing up for one o
 
 == Requirements ==
 
-* WordPress >= 3.2.0
 * PHP cURL extension
-* PHP JSON library
+* PHP JSON extension
 
 == Installation ==
 
@@ -33,9 +32,9 @@ This is where Copify can help. By installing our plugin and signing up for one o
 
 == Screenshots ==
 
-1. Add a blog package to your Copify account. We'll create you new blog posts each week.
-2. Install the plugin, and your content will begin to appear in WordPress where you can review.
-3. Optionally, select "Auto-publish" and we'll publish your blogs automatically with an image!
+1. Add a blog package to your Copify account and we'll deliver a number of posts to you every month.
+2. Install the plugin and your blog content will begin to appear in WordPress, where you can review it.
+3. Select "Auto-publish" and we'll publish your blog posts automatically with an image!
 
 == Changelog ==
 
