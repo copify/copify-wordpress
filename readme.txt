@@ -33,12 +33,14 @@ This is where Copify can help. By installing our plugin and signing up for one o
 
 == Screenshots ==
 
-1. Easily order a new blog post
-2. Browse all of your Copify orders
-3. Once complete, review your new content
-4. Leave feedback
-5. Add images, formatting and publish!
+1. Add a blog package to your Copify account. We'll create you new blog posts each week.
+2. Install the plugin, and your content will begin to appear in WordPress where you can review.
+3. Optionally, select "Auto-publish" and we'll publish your blogs automatically with an image!
 
 == Changelog ==
 
-See a full list of changes here: https://github.com/copify/copify-wordpress/commits/master
+= 1.0.5 =
+* Plugin now allows Copify to publish Creative Commons photo as "Featured Image" when blog package has auto-publish enabled.
+
+= 1.0.4 =
+* When auto-publish is set to "On" Copify will automatically publish blog posts.
