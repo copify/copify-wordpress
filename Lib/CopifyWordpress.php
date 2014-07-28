@@ -251,7 +251,7 @@ class CopifyWordpress {
 		);
 		try {
 			if (empty($_POST)) {
-				throw new Exceptioon('POST request required');
+				throw new Exception('POST request required');
 			}
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
@@ -334,7 +334,7 @@ class CopifyWordpress {
 		try {
 			// Can only post to this method
 			if (empty($_POST)) {
-				throw new Exceptioon('POST request required');
+				throw new Exception('POST request required');
 			}
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
@@ -395,7 +395,7 @@ class CopifyWordpress {
 		);
 		try {
 			if (empty($_POST)) {
-				throw new Exceptioon('POST request required');
+				throw new Exception('POST request required');
 			}
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
@@ -440,7 +440,7 @@ class CopifyWordpress {
 		);
 		try {
 			if (empty($_POST)) {
-				throw new Exceptioon('POST request required');
+				throw new Exception('POST request required');
 			}
 			// Get the thingy
 			$job_budget_id = $_POST['job_budget_id'];

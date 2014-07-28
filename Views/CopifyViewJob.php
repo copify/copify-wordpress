@@ -416,6 +416,13 @@ jQuery(document).ready(function() {
 	// Move an already approved job to drafts
 	jQuery('.CopifyMoveToDrafts').click(function() {
 		
+		
+		jQuery('#CopifyFeedBackModal').modal({
+			show: true
+		});
+		console.log('hello');
+		
+
 		jQuery(this).hide();
 		jQuery('#CopifyConfirmSaving').show();
 		
