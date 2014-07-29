@@ -330,6 +330,7 @@
 	float:left;
 }
 
+/* Move to drafts modal and buttons inside */
 .CopifyPage #CopifyDraftsModal .modal-body {
 	padding-top: 15px;
 	text-align: center;

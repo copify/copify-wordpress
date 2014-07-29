@@ -433,13 +433,15 @@ jQuery(document).ready(function() {
 
 		
 	});
-	
+
+	// Show move to drafts modal
 	jQuery('.CopifyMoveToDrafts').click(function() {
 		jQuery('#CopifyDraftsModal').modal({
 			show: true
 		});
 	});
-
+	
+	// Set the post type and css
 	jQuery('.CopifyLargeSelect').click(function(){
 		jQuery('.CopifyLargeSelect').removeClass('selected');
 		jQuery(this).addClass('selected');
