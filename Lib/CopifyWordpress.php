@@ -402,6 +402,9 @@ class CopifyWordpress {
 			// Get the job id and post type from the post data
 			$job_id = $_POST['job_id'];
             $post_type = $_POST['post_type'];
+            if (!in_array($post_type, array('post', 'page'))) {
+                throw new Exception('Post type must be either post or page');
+            }
 			// Get the job record from API
 			$job = $this->Api->jobsView($job_id);
 			// Check it is not already in the database, if not pop it in
@@ -416,8 +419,8 @@ class CopifyWordpress {
 			}
 			// Build the success response
 			$response['status'] = 'success';
-			$response['response'] = $result;
-			$response['message'] = 'Job Moved to drafts';
+			$response['response'] = true;
+			$response['message'] = 'Job moved to drafts';
 			return $this->outputJson($response);
 		}	
 		catch (Exception $e) {
