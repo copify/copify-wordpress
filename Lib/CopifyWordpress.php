@@ -399,8 +399,9 @@ class CopifyWordpress {
 			}
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
-			// Get the job id from the post data
+			// Get the job id and post type from the post data
 			$job_id = $_POST['job_id'];
+            $post_type = $_POST['post_type'];
 			// Get the job record from API
 			$job = $this->Api->jobsView($job_id);
 			// Check it is not already in the database, if not pop it in
@@ -409,7 +410,7 @@ class CopifyWordpress {
 					'post_title' => $job['name'],
 					'post_content' => $job['copy'],
 					'post_status' => 'draft',
-					//'post_type' => [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
+					'post_type' => $post_type  //[ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
 				);
 				$this->CopifyAddToPosts($job_id, $newPost);
 			}

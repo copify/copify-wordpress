@@ -174,10 +174,30 @@
 			<!-- Move to drafts if already approved and not a post already -->
 			<?php if(!empty($job['copy']) && $job['job_status_id'] == 4 && !$CopifyJobIsPostAlready) : ?>
 				<span class="CopifyButton CopifyGreen CopifyMoveToDrafts">Move to Wordpress</span>
-				<form style="display:none;">
-					<input type="hidden" id="CopifyApproveJobIdHidden" value="<?php echo $job['id']; ?>" name="job_id">
+				<form id="CopifyDraftsForm" style="display:none;">
+					<input type="hidden" id="CopifyDraftsJobIdHidden" value="<?php echo $job['id']; ?>" name="job_id">
+					<input type="hidden" id="CopifyDraftsPostTypeHidden" value="post" name="post_type">
 				</form>	
-				<span class="CopifyConfirmSaving" id="CopifyConfirmSaving" style="display:none;">&nbsp;</span>
+				<!--<span class="CopifyConfirmSaving" id="CopifyConfirmSaving" style="display:none;">&nbsp;</span>-->
+
+				<!-- Modal -->
+				<div id="CopifyDraftsModal" class="modal" style="display:none;">
+		
+						<div class="modal-header">
+							<button data-dismiss="modal" class="close" type="button">×</button>
+					      	<h3>Move to Wordpress as...</h3>
+					    </div>
+						<div class="modal-body">
+							<div data-post-type="post" class="CopifyLargeSelect selected"><h3>Post</h3></div>
+							<div data-post-type="page" class="CopifyLargeSelect"><h3>Page</h3></div>
+						</div>
+					    <div class="modal-footer">
+							<span data-dismiss="modal" class="CopifyButton" >Cancel</span>
+					      	<span class="CopifyButton CopifyGreen" id="CopifyConfirmToDrafts">Move to Drafts</span>
+							<span class="CopifyConfirmSaving" id="CopifyConfirmSaving" style="display:none;">&nbsp;</span>
+					    </div>
+			
+				</div>
 			<?php endif; ?>
 			
 			
@@ -328,6 +348,7 @@
 				</div>
 
 			<?php endif; ?>
+
 			
 		</div>
 	
@@ -413,23 +434,31 @@ jQuery(document).ready(function() {
 		
 	});
 	
-	// Move an already approved job to drafts
 	jQuery('.CopifyMoveToDrafts').click(function() {
-		
-		
-		jQuery('#CopifyFeedBackModal').modal({
+		jQuery('#CopifyDraftsModal').modal({
 			show: true
 		});
-		console.log('hello');
-		
+	});
+
+	jQuery('.CopifyLargeSelect').click(function(){
+		jQuery('.CopifyLargeSelect').removeClass('selected');
+		jQuery(this).addClass('selected');
+		var post_type = jQuery(this).data('post-type');
+		jQuery('#CopifyDraftsPostTypeHidden').attr('value', post_type);
+	});
+
+	// Move an already approved job to drafts
+	jQuery('#CopifyConfirmToDrafts').click(function() {
 
 		jQuery(this).hide();
 		jQuery('#CopifyConfirmSaving').show();
-		
-		var job_id = jQuery('#CopifyApproveJobIdHidden').val();
+
+		var job_id = jQuery('#CopifyDraftsJobIdHidden').val();
+		var post_type = jQuery('#CopifyDraftsPostTypeHidden').val();
 		
 		var job = {
 			job_id: job_id,
+			post_type: post_type,
 			action: 'CopifyMoveToDrafts'
 		};
 		
@@ -440,6 +469,8 @@ jQuery(document).ready(function() {
 			success: function(data) {
 				if(data.status == 'success') {
 					// OK
+					jQuery('#CopifyConfirmToDrafts').hide();
+					jQuery('#CopifyConfirmSaving').hide();
 					window.location.href = window.location.href + '&flashMessage=Order+moved+to+Drafts';
 				} else {
 					alert(data.message);
@@ -453,6 +484,7 @@ jQuery(document).ready(function() {
 		});
 		
 	});
+
 	
 	<?php if($job['job_status_id'] != 4) : ?>
 	
