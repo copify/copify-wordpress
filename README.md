@@ -32,8 +32,4 @@ When creating the `svn` branch locally, we set a different remote;
 
 `git checkout -b svn remotes/git-svn`
 
-Development can be carried out on any branch other than `svn` then when we want to publish our changes to WordPress, we merge using the `--squash` option;
-
-`git checkout svn && git merge --squash myWorkingBranch && git svn dcommit`
-
-This creates a single svn commit, which makes SVN play nice, and pushes the changes to the SVN server.
+..tbc
