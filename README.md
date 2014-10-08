@@ -40,5 +40,30 @@ The `svn` branch can now be commited with a single commit - important for SVN to
 
 `git commit -a`
 
+```bash
+1 Squashed commit of the following:
+2 
+3 commit bc314d4aec1ce5a69eaea06e601943f0cfe06eaf
+4 Merge: b09a9b4 17a8ef7
+5 Author: Rob McVey <robmcvey@gmail.com>
+6 Date:   Wed Oct 8 13:24:53 2014 +0100
+
+...
+```
+
+We can then publish using `dcommit`:
+
+```bash
+git svn dcommit
+Committing to http://plugins.svn.wordpress.org/copify/trunk ...
+	M	README.md
+Committed r1003783
+	M	README.md
+r1003783 = 3a7bb6a653e0eba4a382c6bccdd95267aa3657b3 (refs/remotes/trunk)
+
+...
+```
+
+
 
 
