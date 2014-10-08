@@ -24,7 +24,7 @@ The plugin is best used alongside one of Copify's [monthly blog packages](http:/
 
 ### Workflow
 
-Obviouslly we want to use git for version control, but WordPress uses SVN. Urgh.
+We want to use git for version control, but WordPress uses SVN. Urgh.
 
 We can get around this by using two local branches, `master` and `svn`.
 
@@ -32,7 +32,7 @@ When creating the `svn` branch locally, we set a different remote;
 
 `git checkout -b svn remotes/git-svn`
 
-Development can be carried out on any branch other than `svn` then when we want to publish out changes to WordPress, we merge using the `--squash` option;
+Development can be carried out on any branch other than `svn` then when we want to publish our changes to WordPress, we merge using the `--squash` option;
 
 `git checkout svn && git merge --squash myWorkingBranch && git svn dcommit`
 
