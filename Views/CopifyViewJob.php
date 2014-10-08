@@ -107,8 +107,7 @@
 			<br>
 		</div>
 	
-		<h2>
-			<?php echo sprintf('Order #%s' , $job['id']); ?>
+		<h2>	
 			<a class="add-new-h2" id="" href="?page=CopifyDashboard">« Back to all Copify orders</a>
 		</h2>
 	
@@ -132,39 +131,15 @@
 	
 		<div class="CopifyWell CopifyViewJob">
 		
-			
 			<h1><?php echo $job['name']; ?></h1>
-		
 			
 			<!-- Meta -->
-			<span class="CopifyMeta">Date created : <?php echo date('jS F Y' , strtotime($job['created'])); ?></span>
-			<span class="CopifyMeta"> 
-				<?php
-				if(array_key_exists($job['job_status_id'] , $statusList)) { // Job status
-					$statusName = $statusList[$job['job_status_id']];
-					$statusNameClass = str_replace(' ' , '_', strtolower($statusName));
-				}
-				?>
-				<span class="<?php echo $statusNameClass; ?>">
-					<?php echo $statusName; ?>
-				</span> &nbsp; | &nbsp;
+			<span class="CopifyMeta">
 				<?php 
-				$budgetName = '' ;
-				
-				if(array_key_exists($job['job_budget_id'] , $budgetList)) { // Budget name
-					$budgetName = $budgetList[$job['job_budget_id']];
-				}
-				?>
-				<span class="budget <?php echo strtolower($budgetName); ?>">
-					<?php echo $budgetName; ?>
-				</span> &nbsp;	| &nbsp;
-				<?php 
-				if(array_key_exists($job['job_category_id'] , $categoryList)) { // Category name
-					echo $categoryList[$job['job_category_id']];
-				}	
+				echo sprintf('#%s |' , $job['id']);
+				echo sprintf(' Date created : %s', date('jS F Y' , strtotime($job['created'])));
 				?>
 			</span>
-			
 			
 			<!-- Show original brief -->
 			<br>
@@ -220,7 +195,15 @@
 				
 				<h3 class="CopifyViewFinishedCopyHeading">The Finished Copy</h3>
 				<div class="CopifyViewFinishedCopy">
-					<?php echo $this->CopifyFormatCopy($job['copy']); ?>
+					<?php 
+					// If we have a title, and it's not the same as the order name (suggests blog package) we prepend the copy
+					$finishedCopy = '';
+					if (isset($job['title']) && !empty($job['title']) && $job['title'] != $job['name']) {
+						$finishedCopy .= $job['title'] . "\n\n";
+					}
+					$finishedCopy .= $job['copy'];
+					echo $this->CopifyFormatCopy($finishedCopy);
+					?>
 				</div>
 			
 			<?php endif; ?>
@@ -228,6 +211,36 @@
 			
 			<!-- Modal for feedback -->
 			<?php if(isset($CopifyWriter) && !empty($CopifyWriter) && $job['job_status_id'] == 3 && !$CopifyJobIsPostAlready) : ?>
+			
+				<?php 
+					// Do we have an image?
+					if (isset($job['image']) && !empty($job['image']) && is_array($job['image'])) {
+						// echo "<pre>";
+						// print_r($job);
+						// echo "</pre>";
+						foreach ($job['image'] as $image_option) {
+								// echo "<pre>";
+								// print_r($image_option);
+								// echo "</pre>";
+								if (isset($image_option['label']) && $image_option['label'] == 'Original') {
+									$copify_image_orig = $image_option['source'];
+								}
+								if (!$copify_image_thumb && isset($image_option['width']) && $image_option['width'] > 100 && $image_option['width'] < 600) {
+									$copify_image_thumb = $image_option['source'];
+								}
+						}
+						if (isset($copify_image_orig) && isset($copify_image_thumb) && isset($job['image_licence'])) {
+							echo '<div class="CopifySetSelectedImage">';
+							echo sprintf('<img class="CopifySetSelectedImageThumb" src="%s" >', $copify_image_thumb);
+							echo '<label>Use this image</label>';
+							echo '<input type="checkbox" name="CopifySetSelectedImageCheck" checked="checked" id="CopifySetSelectedImageCheck"/>';
+							echo sprintf('<input type="hidden" name="CopifySelectedImageUrl" value="%s" id="CopifySelectedImageUrl" >', $copify_image_orig);
+							echo sprintf('<textarea type="hidden" style="display:none;" name="CopifySelectedImageLicence" id="CopifySelectedImageLicence" readonly="readonly" >%s</textarea>', $job['image_licence']);
+							echo '</div>';
+						}	
+					}
+				
+				?>
 			
 				<!-- Approve btn -->
 				<span class="CopifyButton CopifyGreen CopifyApproveAndDraft">Approve & Move to Drafts</span>
@@ -374,7 +387,6 @@ jQuery(document).ready(function() {
 		var comment = jQuery('.CopifyStarsDiv').find('input:checked').parent('.CopifyRating').find('.CopifyFeedbackComment').html();
 		var rating = jQuery('.CopifyStarsDiv').find('input:checked').val();
 		var post_type = jQuery('.CopifyChoosePostOrPage').find('input[type=radio]:checked').val();
-		//console.log(post_type);
 		
 		// Our feedback ob:
 		var feedback = {
@@ -386,7 +398,13 @@ jQuery(document).ready(function() {
 			rating: rating,
 			type: post_type,
 		};
-
+		
+		// Push our image on feedback object if there's one set
+		if (jQuery("#CopifySetSelectedImageCheck").length > 0 && jQuery("#CopifySetSelectedImageCheck").prop("checked")) {
+			feedback['image'] = jQuery("#CopifySelectedImageUrl").val();
+			feedback['image_licence'] = jQuery("#CopifySelectedImageLicence").val();
+		}
+	
 		// Make ajax request
 		jQuery.ajax(ajaxurl, {
 			type: 'post',
@@ -409,7 +427,7 @@ jQuery(document).ready(function() {
 			timeout: 30000,
 			cache: false
 		});
-
+		
 		
 	});
 	

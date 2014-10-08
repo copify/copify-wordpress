@@ -346,27 +346,36 @@ class CopifyWordpress {
 			} else {
 				$post_type = 'post';
 			}
-			// Remove the action and type keys as we cant post these to API without an error
-			unset($feedback['action']);
-			unset($feedback['type']);
-			// Check nothing added to array. (The API handles validation anyway but meh)
-			if (count($feedback) != 5) {
-				throw new Exception('Feedback post data invalid format');
-			}
 			// Get the job record from API
 			$job = $this->Api->jobsView($feedback['job_id']);
-			// Submit feedback via API
-			$result = $this->Api->jobFeedback($feedback);
 			// Check it is not already in the database, if not pop it in
 			if (!$this->CopifyJobIdExists($feedback['job_id'])) {
+				// If we have a title, and it's not the same as the order name (suggests blog package) we prepend the copy
+				$finishedCopy = '';
+				if (isset($job['title']) && !empty($job['title']) && $job['title'] != $job['name']) {
+					$finishedCopy .= $job['title'] . "\n\n";
+				}
+				$finishedCopy .= $job['copy'];
 				$newPost = array(
 					'post_title' => $job['name'],
-					'post_content' => $job['copy'],
+					'post_content' => $finishedCopy,
 					'post_status' => 'draft',
 					'post_type' => $post_type  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
 				);
-				$this->CopifyAddToPosts($feedback['job_id'], $newPost);
+				$wp_post_id = $this->CopifyAddToPosts($feedback['job_id'], $newPost);
+				// Do we have an image selected?
+				if (isset($feedback['image']) && isset($feedback['image_licence'])) {
+					$meta = array('image_licence' => $feedback['image_licence']);
+					$this->CopifySetPostThumbnailFromUrl($wp_post_id, $feedback['image'], $meta);
+				}
 			}
+			// Remove the unwanted keys as we cant post these to API without an error
+			unset($feedback['action']);
+			unset($feedback['type']);
+			unset($feedback['image_licence']);
+			unset($feedback['image']);
+			// Submit feedback via API
+			$result = $this->Api->jobFeedback($feedback);
 			// Build the success response
 			$response['status'] = 'success';
 			$response['response'] = $result;
@@ -665,7 +674,8 @@ class CopifyWordpress {
 	}
 
 /**
- * We can modifiy the content of the post here
+ * We can modifiy the content of the post here. When a post is autopublished, with an image, we require
+ * image attribution.
  *
  * @return void
  * @author Rob Mcvey
@@ -673,7 +683,17 @@ class CopifyWordpress {
 	public function CopifyAddFlickrAttribution($content) {
 		// Get the thumbnail meta, and check for custom copify attributes
 		$featured_image_meta = $this->_wp_get_attachment_metadata();
-		if (empty($featured_image_meta) || !isset($featured_image_meta['copify_attr_url'])) {
+		if (empty($featured_image_meta)) {
+			return $content;
+		}
+		if (isset($featured_image_meta['image_licence']) && !empty($featured_image_meta['image_licence'])) {
+			$attribution = '<div style="display:block;font-size:9px;">Photo: ';
+			$attribution .= $featured_image_meta['image_licence'];
+			$attribution .= '</div>';
+			$content .= $attribution;
+			return $content;
+		}	
+		if (!isset($featured_image_meta['copify_attr_url'])) {
 			return $content;
 		}
 		$attribution = '<div style="display:block;font-size:9px;">Photo: ';
@@ -694,7 +714,7 @@ class CopifyWordpress {
 				$featured_image_meta['copify_attr_user']
 			);
 		}
-		// Licience 
+		// Licence 
 		if (isset($featured_image_meta['copify_attr_cc_license']) && isset($featured_image_meta['copify_attr_cc_license_url'])) {
 			$attribution .= sprintf(' licensed under <a href="%s" target="blank" rel="nofollow">Creative commons %s</a>', 
 				$featured_image_meta['copify_attr_cc_license_url'],
