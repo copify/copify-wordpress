@@ -1,5 +1,5 @@
 === Copify ===
-Version: 1.0.7
+Version: 1.0.8
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
@@ -37,6 +37,9 @@ This is where Copify can help. By installing our plugin and signing up for one o
 3. Select "Auto-publish" and we'll publish your blog posts automatically with an image!
 
 == Changelog ==
+
+= 1.0.8 =
+* When moving an already approved order to drafts, offer selection of "Post" or "Page"
 
 = 1.0.7 =
 * Allows user to choose to publish blog with the supplied royalty free image (Blog package customers only)
