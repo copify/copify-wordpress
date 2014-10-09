@@ -159,11 +159,13 @@
 				<div id="CopifyDraftsModal" class="modal" style="display:none;">	
 					<div class="modal-header">
 						<button data-dismiss="modal" class="close" type="button">×</button>
-						<h3>Move to Wordpress as...</h3>
+						<h3>Move to...</h3>
 					</div>
 					<div class="modal-body">
-						<div data-post-type="post" class="CopifyLargeSelect selected"><h3>Post</h3></div>
-						<div data-post-type="page" class="CopifyLargeSelect"><h3>Page</h3></div>
+						<select id="CopifyDraftsPostTypeSelect" class="CopifyDraftsPostTypeSelect">
+							<option value="post">Posts</option>
+							<option value="page">Pages</option>
+						</select>
 					</div>
 					<div class="modal-footer">
 						<span data-dismiss="modal" class="CopifyButton" >Cancel</span>
@@ -456,10 +458,8 @@ jQuery(document).ready(function() {
 	});
 	
 	// Set the post type and css
-	jQuery('.CopifyLargeSelect').click(function() {
-		jQuery('.CopifyLargeSelect').removeClass('selected');
-		jQuery(this).addClass('selected');
-		var post_type = jQuery(this).data('post-type');
+	jQuery('#CopifyDraftsPostTypeSelect').change(function() {
+		var post_type = jQuery(this).val();
 		jQuery('#CopifyDraftsPostTypeHidden').attr('value', post_type);
 	});
 	
