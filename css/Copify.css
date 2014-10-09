@@ -343,11 +343,21 @@
 	float:left;
 }
 
+/* Move to drafts modal and buttons inside */
+.CopifyPage #CopifyDraftsModal .modal-body {
+	padding-top: 15px;
+	text-align: center;
+}
+
+.CopifyPage .CopifyDraftsPostTypeSelect {
+	width:100%;
+}
+
 .CopifyPage  ::-webkit-input-placeholder {
-    color:    #999;
+    color: #999;
 	font-style:italic;
 }
 .CopifyPage  :-moz-placeholder {
-    color:    #999;
+    color: #999;
 	font-style:italic;
 }
