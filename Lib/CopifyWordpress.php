@@ -362,6 +362,7 @@ class CopifyWordpress {
 					'post_status' => 'draft',
 					'post_type' => $post_type  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
 				);
+				// Insert the post
 				$wp_post_id = $this->CopifyAddToPosts($feedback['job_id'], $newPost);
 				// Do we have an image selected?
 				if (isset($feedback['image']) && isset($feedback['image_licence'])) {
@@ -921,6 +922,11 @@ class CopifyWordpress {
 			'post_status' => 'publish',
 			'post_type' => 'post' // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
 		);
+		// Do we have an admin ID we can set as post author?
+		$admins = get_users('role=administrator');
+		if (isset($admins[0]) && is_object($admins[0]) && property_exists($admins[0], 'data') && property_exists($admins[0]->data, 'ID')) {
+			$newPost['post_author'] = $admins[0]->data->ID;
+		}
 		$wp_post_id = $this->CopifyAddToPosts($id, $newPost);
 		$message = sprintf('Order %s auto-published', $id);
 		$json = array('success' => true, 'message' => $message, 'wp_post_id' => $wp_post_id);

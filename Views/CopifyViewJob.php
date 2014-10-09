@@ -101,7 +101,7 @@
 
 <div class="wrap CopifyView CopifyPage">
 	
-	<?php if(isset($job) && !empty($job)) : ?>
+	<?php if (isset($job) && !empty($job)) : ?>
 	
 		<div class="icon32" id="icon-copify">
 			<br>
@@ -111,19 +111,19 @@
 			<a class="add-new-h2" id="" href="?page=CopifyDashboard">« Back to all Copify orders</a>
 		</h2>
 	
-		<?php if(isset($error)) : ?>
+		<?php if (isset($error)) : ?>
 			<div class="message error">
 				<?php echo $error; ?>
 			</div>
 		<?php endif; ?>	
 	
-		<?php if(isset($success)) : ?>
+		<?php if (isset($success)) : ?>
 			<div class="message success">
 				<?php echo $success; ?>
 			</div>
 		<?php endif; ?>	
 		
-		<?php if(isset($message)) : ?>
+		<?php if (isset($message)) : ?>
 			<div class="message">
 				<?php echo $message; ?>
 			</div>
@@ -147,7 +147,7 @@
 			
 			
 			<!-- Move to drafts if already approved and not a post already -->
-			<?php if(!empty($job['copy']) && $job['job_status_id'] == 4 && !$CopifyJobIsPostAlready) : ?>
+			<?php if (!empty($job['copy']) && $job['job_status_id'] == 4 && !$CopifyJobIsPostAlready) : ?>
 				<span class="CopifyButton CopifyGreen CopifyMoveToDrafts">Move to Wordpress</span>
 				<form style="display:none;">
 					<input type="hidden" id="CopifyApproveJobIdHidden" value="<?php echo $job['id']; ?>" name="job_id">
@@ -156,8 +156,8 @@
 			<?php endif; ?>
 			
 			
-			<!-- This job is already in wordpress.... -->
-			<?php if(!empty($job['copy']) && $CopifyJobIsPostAlready) : 
+			<!-- This job is already in wordpress -->
+			<?php if (!empty($job['copy']) && $CopifyJobIsPostAlready) : 
 				$urlText = 'Edit in Wordpress';
 				$buttonClass = 'CopifyButton CopifyGreen';
 				$linkToPost = sprintf('<a class="%s" href="post.php?post=%s&action=edit">%s</a>', $buttonClass, $CopifyJobIsPostAlready, $urlText); 
@@ -175,7 +175,12 @@
 			
 			
 			<!-- Status info -->
-			<?php if(in_array($job['job_status_id'], array(1,2,6,7))) : // Job status info ?>
+			<?php if (in_array($job['job_status_id'], array(1,2,6,7))) : // Job status info
+					if (array_key_exists($job['job_status_id'], $statusList)) { // Job status
+						$statusName = $statusList[$job['job_status_id']];
+						$statusNameClass = str_replace(' ' , '_', strtolower($statusName));
+					}
+				?>
 				<div class="CopifyJobStatusInfo message">
 					<h3><?php echo sprintf('Your order is <span class="%s">%s</span>. What happens next?', $statusNameClass, $statusName); ?></h3>
 					<p>Your order has been placed with an approved Copify writer, for now sit back and relax!</p>
