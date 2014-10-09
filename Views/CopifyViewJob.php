@@ -220,13 +220,7 @@
 				<?php 
 					// Do we have an image?
 					if (isset($job['image']) && !empty($job['image']) && is_array($job['image'])) {
-						// echo "<pre>";
-						// print_r($job);
-						// echo "</pre>";
 						foreach ($job['image'] as $image_option) {
-								// echo "<pre>";
-								// print_r($image_option);
-								// echo "</pre>";
 								if (isset($image_option['label']) && $image_option['label'] == 'Original') {
 									$copify_image_orig = $image_option['source'];
 								}
