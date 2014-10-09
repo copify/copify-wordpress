@@ -277,7 +277,20 @@
 	content:'Est. Delivery: ';
 }
 
-
+/*Job image*/
+.CopifySetSelectedImage {
+	margin-bottom:10px;
+}
+.CopifySetSelectedImage .CopifySetSelectedImageThumb {
+	display:block;
+	clear:both;
+	margin:6px 0;
+	padding:2px;
+	border:1px solid #eee;
+}
+.CopifySetSelectedImage label {
+	margin:0 6px 0 0;
+}
 
 /* Job Feedback */
 .CopifyPage .CopifyFeedback label {
