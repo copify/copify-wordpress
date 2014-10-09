@@ -429,7 +429,7 @@ class CopifyWordpress {
 			}
 			// Build the success response
 			$response['status'] = 'success';
-			$response['response'] = $result;
+			$response['response'] = true;
 			$response['message'] = 'Order moved to drafts';
 			return $this->outputJson($response);
 		}	
