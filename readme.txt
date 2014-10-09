@@ -38,6 +38,9 @@ This is where Copify can help. By installing our plugin and signing up for one o
 
 == Changelog ==
 
+= 1.0.7 =
+* Allows user to choose to publish blog with the supplied royalty free image (Blog package customers only)
+
 = 1.0.6 =
 * Fixes issue with other plugins calling methods in wp-admin/includes/plugin.php such as is_plugin_active()
 
