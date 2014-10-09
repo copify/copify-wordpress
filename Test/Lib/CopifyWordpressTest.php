@@ -235,7 +235,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifyRequestFilterCheckToken() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
 		$version = $this->CopifyWordpress->getVersion();
-		$this->assertEquals('1.0.5', $version);
+		$this->assertEquals('1.0.7', $version);
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -420,10 +420,21 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'CopifyApiKey' => '324532452345324',
 			'CopifyLocale' => 'uk',
 		);
-		$this->CopifyWordpress->expects($this->once())
+		$this->CopifyWordpress->expects($this->at(0))
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
-			->will($this->returnValue($mockVal));		
+			->will($this->returnValue($mockVal));
+		
+		$authors = new stdClass();
+		$authors->data = new stdClass();
+		$authors->data->ID = 22;
+		$authorsMock = array(0 => $authors);
+		
+		$this->CopifyWordpress->expects($this->at(3))
+			->method('wordpress')
+			->with('get_users', 'role=administrator')
+			->will($this->returnValue($authorsMock));
+					
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifySetApiClass');	
 		$this->CopifyWordpress->expects($this->once())
@@ -444,7 +455,8 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'post_title' => $job['name'],
 			'post_content' => $job['copy'],
 			'post_status' => 'publish',
-			'post_type' => 'post'
+			'post_type' => 'post',
+			'post_author' => 22,
 		);	
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyAddToPosts')
@@ -513,6 +525,177 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$result = $this->CopifyWordpress->CopifyFlatten($multi);
 		$this->assertEquals($expected, $result);
 	}
+	
+/**
+ * testCopifyPostFeedbackEmptyPost
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyPostFeedbackEmptyPost() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$_POST = null;
+		$this->CopifyWordpress->expects($this->never())
+			->method('CopifyAddToPosts');
+		$this->CopifyWordpress->expects($this->never())
+			->method('CopifySetPostThumbnailFromUrl');	
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array('message' => 'POST request required', 'status' => 'error', 'response' => ''));
+		$this->CopifyWordpress->CopifyPostFeedback();
+	}
+
+/**
+ * testCopifyPostFeedbackMain
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyPostFeedbackMain() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView', 'jobFeedback'), array('foo@bar.com', '324532452345324'));
+		$_POST = array(
+			'type' => 'post',
+			'action' => 'CopifyPostFeedback',
+			'job_id' => 4233,
+			'name' => 'my great post',
+			'copy' => 'amazing copy',
+			'comment' => 'good ta',
+			'rating' => 4,
+		);
+		
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetApiClass');
+			
+		$job = array(
+			'id' => 4233,
+			'name' => 'some order name',
+			'copy' => 'chips',
+			'job_status_id' => 3,
+		);	
+		$this->CopifyWordpress->Api->expects($this->once())
+			->method('jobsView')
+			->with(4233)
+			->will($this->returnValue($job));
+			
+		$feedback = array(
+			'job_id' => 4233,
+			'comment' => 'good ta',
+			'rating' => 4,
+		    'name' => 'my great post',
+		    'copy' => 'amazing copy',
+		);	
+			
+		$this->CopifyWordpress->Api->expects($this->once())
+			->method('jobFeedback')
+			->with($feedback)
+			->will($this->returnValue(array('status' => 'success', 'id' => 9)));
+		
+		$newPost = array(
+			'post_title' => 'some order name',
+			'post_content' => 'chips',
+			'post_status' => 'draft',
+			'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
+		);
+			
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyAddToPosts')
+			->with(4233, $newPost)
+			->will($this->returnValue(2));	
+		
+		
+		$this->CopifyWordpress->expects($this->never())
+			->method('CopifySetPostThumbnailFromUrl');
+			
+		$response = array();	
+		$response['status'] = 'success';
+		$response['response'] = array('status' => 'success', 'id' => 9);
+		$response['message'] = 'Job Approved';	
+			
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with($response);	
+				
+		$this->CopifyWordpress->CopifyPostFeedback();
+	}
+	
+/**
+ * testCopifyPostFeedbackImage
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyPostFeedbackImage() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView', 'jobFeedback'), array('foo@bar.com', '324532452345324'));
+		$_POST = array(
+			'type' => 'post',
+			'action' => 'CopifyPostFeedback',
+			'job_id' => 54233,
+			'name' => 'my great post',
+			'copy' => 'amazing copy',
+			'comment' => 'good ta',
+			'rating' => 4,
+			'image' => 'https://some.image.com/lolcat.png',
+			'image_licence' => 'Foo blah <a href="https://some.image.com/lolcat.png">Foobar</a>',
+		);
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetApiClass');
+
+		$job = array(
+			'id' => 54233,
+			'name' => 'some order name',
+			'copy' => 'chips',
+			'job_status_id' => 3,
+		);	
+		$this->CopifyWordpress->Api->expects($this->once())
+			->method('jobsView')
+			->with(54233)
+			->will($this->returnValue($job));
+
+		$feedback = array(
+			'job_id' => 54233,
+			'comment' => 'good ta',
+			'rating' => 4,
+		    'name' => 'my great post',
+		    'copy' => 'amazing copy',
+		);	
+
+		$this->CopifyWordpress->Api->expects($this->once())
+			->method('jobFeedback')
+			->with($feedback)
+			->will($this->returnValue(array('status' => 'success', 'id' => 9)));
+
+		$newPost = array(
+			'post_title' => 'some order name',
+			'post_content' => 'chips',
+			'post_status' => 'draft',
+			'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
+		);
+			
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyAddToPosts')
+			->with(54233, $newPost)
+			->will($this->returnValue(2));
+			
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetPostThumbnailFromUrl')
+			->with(2, 'https://some.image.com/lolcat.png', array('image_licence' => 'Foo blah <a href="https://some.image.com/lolcat.png">Foobar</a>'))
+			->will($this->returnValue(2));
+			
+		$response = array();	
+		$response['status'] = 'success';
+		$response['response'] = array('status' => 'success', 'id' => 9);
+		$response['message'] = 'Job Approved';	
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with($response);	
+
+		$this->CopifyWordpress->CopifyPostFeedback();
+	}	
 
 /**
  * testCopifySetPostThumbnailBadHost
