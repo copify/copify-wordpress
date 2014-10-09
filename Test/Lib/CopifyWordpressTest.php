@@ -235,7 +235,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifyRequestFilterCheckToken() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
 		$version = $this->CopifyWordpress->getVersion();
-		$this->assertEquals('1.0.7', $version);
+		$this->assertEquals('1.0.8', $version);
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1464,6 +1464,110 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$result = $this->CopifyWordpress->CopifyAddFlickrAttribution('foo bar');	
 		$expected = 'foo bar<div style="display:block;font-size:9px;">Photo: <a target="blank" title="Yellow-bellied Slider Turtle (Trachemys scripta scripta)" href="https://www.flickr.com/photos/bees/9968828954/" rel="nofollow">Yellow-bellied Slider Turtle (Trachemys scripta scripta)</a> by <a href="http://www.flickr.com/photos/bees" target="blank" title="bees" rel="nofollow">bees</a> licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="blank" rel="nofollow">Creative commons 4</a></div>';
 		$this->assertEquals($expected, $result);
+	}
+	
+/**
+ * Tests that CopifyMoveToDrafts does the correct stuff when the job isn't already in the database
+ *
+ * @author Chris Green
+ **/
+	public function testCopifyMoveToDraftNotExist() {
+		// Mock a load of stuff
+		$_POST['job_id'] = '186';
+		$_POST['post_type'] = 'post';
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		// Job we want to post
+		$job = array(
+			'id' => 186,
+			'name' => 'order name',
+			'copy' => 'some copy'
+		);
+		// The post
+		$new_post = array(
+			'post_title' => 'order name',
+			'post_content' => 'some copy',
+			'post_status' => 'draft',
+			'post_type' => 'post'
+		);
+		// Correct response
+		$response = array(
+			'status' => 'success',
+			'message' => 'Order moved to drafts',
+			'response' => true,
+		);
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifySetApiClass');
+
+		$this->CopifyWordpress->Api->expects($this->once())
+			->method('jobsView')
+			->with($this->equalTo('186'))
+			->will($this->returnValue($job));
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyJobIdExists')
+			->with($this->equalTo('186'))
+			->will($this->returnValue(false)); // Job doesn't exist in db
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('CopifyAddToPosts')
+			->with($this->equalTo(186), $this->equalTo($new_post));
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with($this->equalTo($response));
+
+		$this->CopifyWordpress->CopifyMoveToDrafts();
+	}
+
+/**
+ * Tests that CopifyMoveToDrafts returns correct JSON when there is no POST data
+ *
+ * @author Chris Green
+ **/
+	public function testCopifyMoveToDraftNoPost() {
+		// Mock a load of stuff
+		$_POST = array();
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		// Correct response
+		$response = array(
+			'status' => 'error',
+			'message' => 'POST request required',
+			'response' => '',
+		);
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with($this->equalTo($response));
+
+		$this->CopifyWordpress->CopifyMoveToDrafts();
+	}
+
+/**
+ * Tests that CopifyMoveToDrafts returns correct JSON when the post type is incorrect
+ *
+ * @author Chris Green
+ **/
+	public function testCopifyMoveToDraftWrongPostType() {
+		// Mock a load of stuff
+		$_POST['job_id'] = 186;
+		$_POST['post_type'] = 'hello';
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
+		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		// Correct response
+		$response = array(
+			'status' => 'error',
+			'message' => 'Post type must be either post or page',
+			'response' => '',
+		);
+
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with($this->equalTo($response));
+
+		$this->CopifyWordpress->CopifyMoveToDrafts();
 	}
 
 }
