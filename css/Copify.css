@@ -343,6 +343,43 @@
 	float:left;
 }
 
+/* Move to drafts modal and buttons inside */
+.CopifyPage #CopifyDraftsModal .modal-body {
+	padding-top: 15px;
+	text-align: center;
+}
+
+.CopifyPage .CopifyLargeSelect {
+	display: inline-block;
+	padding: 60px 80px;
+	margin: 0 20px;
+	border-radius: 6px;
+	border: 1px solid #dedee0;
+	background: #F9F9Fa;
+	cursor: pointer;
+	opacity: 0.4;
+}
+
+.CopifyPage .CopifyLargeSelect h3 {
+	color: #222;
+}
+
+.CopifyPage .CopifyLargeSelect:hover {
+	background: #e7e7e9;
+	border: 1px solid #acacae;
+	opacity: 0.6;
+}
+
+.CopifyPage .CopifyLargeSelect.selected {
+	background: #5bb75b;
+	border: 1px solid green;
+	opacity: 1.0;
+}
+
+.CopifyPage .CopifyLargeSelect.selected h3 {
+	color: #ffffff;
+}
+
 .CopifyPage  ::-webkit-input-placeholder {
     color:    #999;
 	font-style:italic;
