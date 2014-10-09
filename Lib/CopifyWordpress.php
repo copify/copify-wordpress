@@ -334,7 +334,7 @@ class CopifyWordpress {
 		try {
 			// Can only post to this method
 			if (empty($_POST)) {
-				throw new Exceptioon('POST request required');
+				throw new Exception('POST request required');
 			}
 			// Initialise Copify API class
 			$this->CopifySetApiClass();
@@ -923,7 +923,7 @@ class CopifyWordpress {
 			'post_type' => 'post' // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
 		);
 		// Do we have an admin ID we can set as post author?
-		$admins = get_users('role=administrator');
+		$admins = $this->wordpress('get_users', 'role=administrator');
 		if (isset($admins[0]) && is_object($admins[0]) && property_exists($admins[0], 'data') && property_exists($admins[0]->data, 'ID')) {
 			$newPost['post_author'] = $admins[0]->data->ID;
 		}
