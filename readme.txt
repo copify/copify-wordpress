@@ -1,9 +1,9 @@
 === Copify ===
-Version: 1.0.8
+Version: 1.0.9
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
-Tested up to: 3.9.0
+Tested up to: 4.0.0
 Stable tag: trunk
 Github Stable tag: master
 License: GPLv2 or later
