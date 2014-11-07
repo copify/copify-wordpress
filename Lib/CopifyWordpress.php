@@ -81,7 +81,10 @@ class CopifyWordpress {
 				$CopifyEmail = $CopifyLoginDetails['CopifyEmail'];
 				$CopifyApiKey = $CopifyLoginDetails['CopifyApiKey'];
 				$CopifyLocale = $CopifyLoginDetails['CopifyLocale'];
-			} 
+			} else {
+				$CopifyEmail = '';
+				$CopifyApiKey = '';
+			}
 			// All available locales
 			$CopifyAvailableLocales = array(
 				'uk' => 'UK',
