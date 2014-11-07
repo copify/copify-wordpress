@@ -38,6 +38,10 @@ This is where Copify can help. By installing our plugin and signing up for one o
 
 == Changelog ==
 
+= 1.0.9 =
+* Fixes undefined var in CopifyAddToPosts
+* Fixes undefined var in CopifyViewJob
+
 = 1.0.8 =
 * When moving an already approved order to drafts, offer selection of "Post" or "Page"
 

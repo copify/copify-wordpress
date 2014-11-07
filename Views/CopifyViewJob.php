@@ -244,7 +244,7 @@
 								if (isset($image_option['label']) && $image_option['label'] == 'Original') {
 									$copify_image_orig = $image_option['source'];
 								}
-								if (!$copify_image_thumb && isset($image_option['width']) && $image_option['width'] > 100 && $image_option['width'] < 600) {
+								if (!isset($copify_image_thumb) && isset($image_option['width']) && $image_option['width'] > 100 && $image_option['width'] < 600) {
 									$copify_image_thumb = $image_option['source'];
 								}
 						}

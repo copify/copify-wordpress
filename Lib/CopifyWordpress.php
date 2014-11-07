@@ -491,7 +491,7 @@ class CopifyWordpress {
  **/
 	public function CopifyAddToPosts($job_id, $newPost) {
 		// Create the post
-		$new_wp_id = $this->wordpress('wp_insert_post', $newPost, $wp_error);
+		$new_wp_id = $this->wordpress('wp_insert_post', $newPost, true);
 		// Check for errors
 		if ($this->wordpress('is_wp_error', $new_wp_id)) {
 			$errorMessage = $new_wp_id->get_error_message();
@@ -1065,7 +1065,7 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	protected function _wp_get_attachment_metadata() {
-		$attach_id = get_post_thumbnail_id($post->ID);
+		$attach_id = get_post_thumbnail_id();
 		return wp_get_attachment_metadata($attach_id);
 	}
 
