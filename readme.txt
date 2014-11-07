@@ -38,6 +38,12 @@ This is where Copify can help. By installing our plugin and signing up for one o
 
 == Changelog ==
 
+= 1.0.9 =
+* Fixes undefined var in CopifyAddToPosts
+* Fixes undefined var in CopifyViewJob
+* Fix missing $post variable in _wp_get_attachment_metadata
+* Fixes undefined vars in CopifySettings
+
 = 1.0.8 =
 * When moving an already approved order to drafts, offer selection of "Post" or "Page"
 

@@ -1,6 +1,6 @@
 <?php 
 require_once(__DIR__ . '/../../basics.php');
-require_once(__DIR__ . '/../../Lib/Api.php');
+require_once(__DIR__ . '/../../Lib/CopifyApi.php');
 require_once(__DIR__ . '/../../Lib/CopifyWordpress.php');
 // 
 //  CopifyWordpressTest.php
@@ -322,7 +322,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testCopifyRequestMissingCopy() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -368,7 +368,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testCopifyRequestNotComplete() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -414,7 +414,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testCopifyRequestOrderPublished() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -534,7 +534,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testCopifyPostFeedbackEmptyPost() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$_POST = null;
 		$this->CopifyWordpress->expects($this->never())
 			->method('CopifyAddToPosts');
@@ -554,7 +554,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testCopifyPostFeedbackMain() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView', 'jobFeedback'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView', 'jobFeedback'), array('foo@bar.com', '324532452345324'));
 		$_POST = array(
 			'type' => 'post',
 			'action' => 'CopifyPostFeedback',
@@ -628,7 +628,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testCopifyPostFeedbackImage() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView', 'jobFeedback'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView', 'jobFeedback'), array('foo@bar.com', '324532452345324'));
 		$_POST = array(
 			'type' => 'post',
 			'action' => 'CopifyPostFeedback',
@@ -1091,7 +1091,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testSetImage() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1127,7 +1127,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testSetImageWithMeta() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1177,7 +1177,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testSetImageMissingParams() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1208,7 +1208,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testDeleteImageMissingParams() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1236,7 +1236,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testDeleteImage() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1270,7 +1270,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testUnpublishPostMissingParams() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1299,7 +1299,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testUnpublishPostFails() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1332,7 +1332,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
  **/
 	public function testUnpublishPost() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', 'CopifySetPostThumbnailFromUrl', 'CopifyBeforeDeletePost'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -1476,7 +1476,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_POST['job_id'] = '186';
 		$_POST['post_type'] = 'post';
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		// Job we want to post
 		$job = array(
 			'id' => 186,
@@ -1530,7 +1530,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		// Mock a load of stuff
 		$_POST = array();
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		// Correct response
 		$response = array(
 			'status' => 'error',
@@ -1555,7 +1555,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_POST['job_id'] = 186;
 		$_POST['post_type'] = 'hello';
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
-		$this->CopifyWordpress->Api = $this->getMock('Api', array('jobsView'), array('foo@bar.com', '324532452345324'));
+		$this->CopifyWordpress->Api = $this->getMock('CopifyApi', array('jobsView'), array('foo@bar.com', '324532452345324'));
 		// Correct response
 		$response = array(
 			'status' => 'error',

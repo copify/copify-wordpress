@@ -81,7 +81,10 @@ class CopifyWordpress {
 				$CopifyEmail = $CopifyLoginDetails['CopifyEmail'];
 				$CopifyApiKey = $CopifyLoginDetails['CopifyApiKey'];
 				$CopifyLocale = $CopifyLoginDetails['CopifyLocale'];
-			} 
+			} else {
+				$CopifyEmail = '';
+				$CopifyApiKey = '';
+			}
 			// All available locales
 			$CopifyAvailableLocales = array(
 				'uk' => 'UK',
@@ -117,7 +120,7 @@ class CopifyWordpress {
 		}
 		// Initialise the Copify API helper class
 		if (!$this->Api) {
-			$this->Api = new Api($CopifyLoginDetails['CopifyEmail'], $CopifyLoginDetails['CopifyApiKey']);
+			$this->Api = new CopifyApi($CopifyLoginDetails['CopifyEmail'], $CopifyLoginDetails['CopifyApiKey']);
 		}	
 		// Set the correct end point for the API
 		if (defined('COPIFY_DEVMODE') && COPIFY_DEVMODE == true) {
@@ -491,7 +494,7 @@ class CopifyWordpress {
  **/
 	public function CopifyAddToPosts($job_id, $newPost) {
 		// Create the post
-		$new_wp_id = $this->wordpress('wp_insert_post', $newPost, $wp_error);
+		$new_wp_id = $this->wordpress('wp_insert_post', $newPost, true);
 		// Check for errors
 		if ($this->wordpress('is_wp_error', $new_wp_id)) {
 			$errorMessage = $new_wp_id->get_error_message();
@@ -1065,7 +1068,7 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	protected function _wp_get_attachment_metadata() {
-		$attach_id = get_post_thumbnail_id($post->ID);
+		$attach_id = get_post_thumbnail_id();
 		return wp_get_attachment_metadata($attach_id);
 	}
 

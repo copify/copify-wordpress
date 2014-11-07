@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 require_once('basics.php');
 require_once(ABSPATH . 'wp-admin/includes/plugin.php');
-require_once(COPIFY_PATH . COPIFY_DS . 'Lib/Api.php');
+require_once(COPIFY_PATH . COPIFY_DS . 'Lib/CopifyApi.php');
 require_once(COPIFY_PATH . COPIFY_DS . 'Lib/CopifyWordpress.php');
 
 // Initialise the Copify Wordpress class
