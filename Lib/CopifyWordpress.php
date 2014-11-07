@@ -117,7 +117,7 @@ class CopifyWordpress {
 		}
 		// Initialise the Copify API helper class
 		if (!$this->Api) {
-			$this->Api = new Api($CopifyLoginDetails['CopifyEmail'], $CopifyLoginDetails['CopifyApiKey']);
+			$this->Api = new CopifyApi($CopifyLoginDetails['CopifyEmail'], $CopifyLoginDetails['CopifyApiKey']);
 		}	
 		// Set the correct end point for the API
 		if (defined('COPIFY_DEVMODE') && COPIFY_DEVMODE == true) {

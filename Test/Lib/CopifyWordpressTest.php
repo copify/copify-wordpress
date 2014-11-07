@@ -1,6 +1,6 @@
 <?php 
 require_once(__DIR__ . '/../../basics.php');
-require_once(__DIR__ . '/../../Lib/Api.php');
+require_once(__DIR__ . '/../../Lib/CopifyApi.php');
 require_once(__DIR__ . '/../../Lib/CopifyWordpress.php');
 // 
 //  CopifyWordpressTest.php
