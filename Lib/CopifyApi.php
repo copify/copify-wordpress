@@ -6,7 +6,7 @@
 //  Created by Rob Mcvey on 2012-05-11.
 //  Copyright 2012 Rob Mcvey. All rights reserved.
 // 
-class Api {
+class CopifyApi {
 	
 /**
  * The API URL
