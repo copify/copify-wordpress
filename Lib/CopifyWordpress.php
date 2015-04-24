@@ -11,7 +11,7 @@ class CopifyWordpress {
 /**
  * Plugin version
  */	
-	protected $version = '1.0.9';
+	protected $version = '1.1.0';
 
 /**
  * Instance of Copify library
@@ -673,8 +673,7 @@ class CopifyWordpress {
  **/
 	public function CopifyAdminMenu() {
 		// Add main menu and icon
-		$icon = $this->wordpress('plugin_dir_url', null) . $this->copifyDirName . COPIFY_DS . 'img' . COPIFY_DS . 'icon16.png';
-		$this->wordpress('add_menu_page', 'Copify Wordpress Plugin', 'Copify', 'publish_posts', 'CopifyDashboard', array($this, 'CopifyDashboard'), $icon , 6);
+		$this->wordpress('add_menu_page', 'Copify Wordpress Plugin', 'Copify', 'publish_posts', 'CopifyDashboard', array($this, 'CopifyDashboard'), 'dashicons-edit' , 6);
 		// Add sub menus
 		$this->wordpress('add_submenu_page', 'CopifyDashboard', 'Copify Order New Content', 'Order blog post', 'publish_posts', 'CopifyOrder', array($this, 'CopifyOrder'));
 		$this->wordpress('add_submenu_page', 'CopifyDashboard', 'Copify Wordpress Settings', 'Settings', 'publish_posts', 'CopifySettings', array($this, 'CopifySettings'));
