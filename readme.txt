@@ -1,9 +1,9 @@
 === Copify ===
-Version: 1.0.9
+Version: 1.1.0
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
-Tested up to: 4.0.0
+Tested up to: 4.2.0
 Stable tag: trunk
 Github Stable tag: master
 License: GPLv2 or later
@@ -37,6 +37,10 @@ This is where Copify can help. By installing our plugin and signing up for one o
 3. Select "Auto-publish" and we'll publish your blog posts automatically with an image!
 
 == Changelog ==
+
+= 1.1.0 =
+* Use and standard dashicon in admin menu
+* Tested up to WP 4.2
 
 = 1.0.9 =
 * Fixes undefined var in CopifyAddToPosts
