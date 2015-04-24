@@ -481,18 +481,14 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts'));
 		$this->CopifyWordpress->expects($this->at(0))
 			->method('wordpress')
-			->with('plugin_dir_url', null)
-			->will($this->returnValue('/some/dir/'));
+			->with('add_menu_page', 'Copify Wordpress Plugin', 'Copify', 'publish_posts', 'CopifyDashboard', array($this->CopifyWordpress, 'CopifyDashboard'), 'dashicons-edit', 6);
 		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
-			->with('add_menu_page', 'Copify Wordpress Plugin', 'Copify', 'publish_posts', 'CopifyDashboard', array($this->CopifyWordpress, 'CopifyDashboard'), '/some/dir/copify/img/icon16.png', 6);
+			->with('add_submenu_page', 'CopifyDashboard', 'Copify Order New Content', 'Order blog post', 'publish_posts', 'CopifyOrder', array($this->CopifyWordpress, 'CopifyOrder'));
 		$this->CopifyWordpress->expects($this->at(2))
 			->method('wordpress')
-			->with('add_submenu_page', 'CopifyDashboard', 'Copify Order New Content', 'Order blog post', 'publish_posts', 'CopifyOrder', array($this->CopifyWordpress, 'CopifyOrder'));
-		$this->CopifyWordpress->expects($this->at(3))
-			->method('wordpress')
 			->with('add_submenu_page', 'CopifyDashboard', 'Copify Wordpress Settings', 'Settings', 'publish_posts', 'CopifySettings', array($this->CopifyWordpress, 'CopifySettings'));
-		$this->CopifyWordpress->expects($this->at(4))
+		$this->CopifyWordpress->expects($this->at(3))
 			->method('wordpress')
 			->with('add_submenu_page', 'CopifySettings', 'Copify View Job', 'View', 'publish_posts', 'CopifyViewJob', array($this->CopifyWordpress, 'CopifyViewJob'));
 		$this->CopifyWordpress->CopifyAdminMenu();
