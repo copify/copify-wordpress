@@ -264,6 +264,8 @@ class CopifyWordpress {
 			if (isset($_SERVER['HTTP_HOST'])) {
 				$newJob['brief'] .= "\n\nThis blog will be posted on " . $_SERVER['HTTP_HOST'];
 			}
+			// parse_str will add slashes if magic quotes on
+			$newJob = array_map("stripslashes", $newJob);
 			$response['response'] = $this->Api->jobsAdd($newJob);
 			$response['message'] = 'New job added';
 			$response['status'] = 'success';
