@@ -40,6 +40,7 @@ This is where Copify can help. By installing our plugin and signing up for one o
 
 = 1.1.2 =
 * Tested up to WP 4.4
+* Fix slashes in new orders
 
 = 1.1.0 =
 * Use and standard dashicon in admin menu
