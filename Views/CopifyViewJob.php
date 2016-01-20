@@ -96,67 +96,67 @@
 	    cursor: pointer;
 	    padding: 0;
 	}
-	
+
 </style>
 
 <div class="wrap CopifyView CopifyPage">
-	
+
 	<?php if (isset($job) && !empty($job)) : ?>
-	
+
 		<div class="icon32" id="icon-copify">
 			<br>
 		</div>
-	
-		<h2>	
+
+		<h2>
 			<a class="add-new-h2" id="" href="?page=CopifyDashboard">« Back to all Copify orders</a>
 		</h2>
-	
+
 		<?php if (isset($error)) : ?>
 			<div class="message error">
 				<?php echo $error; ?>
 			</div>
-		<?php endif; ?>	
-	
+		<?php endif; ?>
+
 		<?php if (isset($success)) : ?>
 			<div class="message success">
 				<?php echo $success; ?>
 			</div>
-		<?php endif; ?>	
-		
+		<?php endif; ?>
+
 		<?php if (isset($message)) : ?>
 			<div class="message">
 				<?php echo $message; ?>
 			</div>
 		<?php endif; ?>
-	
+
 		<div class="CopifyWell CopifyViewJob">
-		
+
 			<h1><?php echo $job['name']; ?></h1>
-			
+
 			<!-- Meta -->
 			<span class="CopifyMeta">
-				<?php 
+				<?php
 				echo sprintf('#%s |' , $job['id']);
 				echo sprintf(' Date created : %s', date('jS F Y' , strtotime($job['created'])));
 				?>
 			</span>
-			
+
 			<!-- Show original brief -->
 			<br>
 			<span class="CopifyButton CopifyShowBriefClick">Show original brief</span>
-			
-			
+
+
 			<!-- Move to drafts if already approved and not a post already -->
 			<?php if (!empty($job['copy']) && $job['job_status_id'] == 4 && !$CopifyJobIsPostAlready) : ?>
 				<span class="CopifyButton CopifyGreen CopifyMoveToDrafts">Move to Wordpress</span>
 				<form id="CopifyDraftsForm" style="display:none;">
 					<input type="hidden" id="CopifyDraftsJobIdHidden" value="<?php echo $job['id']; ?>" name="job_id">
 					<input type="hidden" id="CopifyDraftsPostTypeHidden" value="post" name="post_type">
-				</form>	
+				</form>
 				<!--<span class="CopifyConfirmSaving" id="CopifyConfirmSaving" style="display:none;">&nbsp;</span>-->
-				
+
 				<!-- Modal -->
-				<div id="CopifyDraftsModal" class="modal" style="display:none;">	
+				<div id="CopifyDraftsModal" class="modal" style="display:none;">
 					<div class="modal-header">
 						<button data-dismiss="modal" class="close" type="button">×</button>
 						<h3>Move to...</h3>
@@ -174,26 +174,26 @@
 					</div>
 				</div>
 			<?php endif; ?>
-			
-			
+
+
 			<!-- This job is already in wordpress -->
-			<?php if (!empty($job['copy']) && $CopifyJobIsPostAlready) : 
+			<?php if (!empty($job['copy']) && $CopifyJobIsPostAlready) :
 				$urlText = 'Edit in Wordpress';
 				$buttonClass = 'CopifyButton CopifyGreen';
-				$linkToPost = sprintf('<a class="%s" href="post.php?post=%s&action=edit">%s</a>', $buttonClass, $CopifyJobIsPostAlready, $urlText); 
+				$linkToPost = sprintf('<a class="%s" href="post.php?post=%s&action=edit">%s</a>', $buttonClass, $CopifyJobIsPostAlready, $urlText);
 				echo $linkToPost;
 				?>
 			<?php endif; ?>
-			
-		
+
+
 			<!-- The brief -->
 			<div class="CopifyViewJobBriefDiv" style="display:none;">
 				<div class="CopifyViewJobBrief message">
 					<?php echo $this->CopifyFormatBrief($job['brief']); ?>
 				</div>
 			</div>
-			
-			
+
+
 			<!-- Status info -->
 			<?php if (in_array($job['job_status_id'], array(1,2,6,7))) : // Job status info
 					if (array_key_exists($job['job_status_id'], $statusList)) { // Job status
@@ -211,16 +211,16 @@
 						<li><span class="completed">Completed</span> - Your content is ready for you to approve</li>
 						<li><span class="approved">Approved</span> -  The content has been approved and is ready to publish</li>
 					</ul>
-				</div>	
+				</div>
 			<?php endif; ?>
-			
-		
+
+
 			<!-- The finished copy -->
 			<?php if(!empty($job['copy']) && in_array($job['job_status_id'], array(3,4))) : ?>
-				
+
 				<h3 class="CopifyViewFinishedCopyHeading">The Finished Copy</h3>
 				<div class="CopifyViewFinishedCopy">
-					<?php 
+					<?php
 					// If we have a title, and it's not the same as the order name (suggests blog package) we prepend the copy
 					$finishedCopy = '';
 					if (isset($job['title']) && !empty($job['title']) && $job['title'] != $job['name']) {
@@ -230,14 +230,14 @@
 					echo $this->CopifyFormatCopy($finishedCopy);
 					?>
 				</div>
-			
+
 			<?php endif; ?>
-			
-			
+
+
 			<!-- Modal for feedback -->
 			<?php if(isset($CopifyWriter) && !empty($CopifyWriter) && $job['job_status_id'] == 3 && !$CopifyJobIsPostAlready) : ?>
-			
-				<?php 
+
+				<?php
 					// Do we have an image?
 					if (isset($job['image']) && !empty($job['image']) && is_array($job['image'])) {
 						foreach ($job['image'] as $image_option) {
@@ -256,39 +256,39 @@
 							echo sprintf('<input type="hidden" name="CopifySelectedImageUrl" value="%s" id="CopifySelectedImageUrl" >', $copify_image_orig);
 							echo sprintf('<textarea type="hidden" style="display:none;" name="CopifySelectedImageLicence" id="CopifySelectedImageLicence" readonly="readonly" >%s</textarea>', $job['image_licence']);
 							echo '</div>';
-						}	
+						}
 					}
-				
+
 				?>
-			
+
 				<!-- Approve btn -->
 				<span class="CopifyButton CopifyGreen CopifyApproveAndDraft">Approve & Move to Drafts</span>
-			
+
 				<!-- Modal -->
 				<div id="CopifyFeedBackModal" class="modal" style="display:none;">
-		
+
 					<form id="CopifyFeedbackForm">
-		
+
 						<div class="modal-header">
 							<button data-dismiss="modal" class="close" type="button">×</button>
 					      	<h3>Approve & Move to Drafts</h3>
 					    </div>
-	    
+
 						<div class="modal-body">
 
 							<p>We try to ensure that all of the writers on Copify are of a great standard. Help us by leaving some honest feedback for <?php echo $CopifyWriter['first_name']; ?>... </p>
 
 							<div class="CopifyFeedback">
-					
+
 								<input type="hidden" id="CopifyApproveJobIdHidden" value="<?php echo $job['id']; ?>" name="job_id">
 								<input type="hidden" id="CopifyApproveJobNameHidden" value="<?php echo $job['name']; ?>" name="name">
 								<input type="hidden" id="CopifyApproveJobCopyHidden" value="<?php echo $job['copy']; ?>" name="copy">
-			
-								
+
+
 								<label>
-									<img alt="<?php echo $CopifyWriter['first_name']; ?>" src="<?php echo $CopifyWriter['avatar']; ?>">		            
-								</label> 
-	            
+									<img alt="<?php echo $CopifyWriter['first_name']; ?>" src="<?php echo $CopifyWriter['avatar']; ?>">
+								</label>
+
 					            <div class="CopifyStarsDiv">
 					            	<ul>
 						                <li>
@@ -337,12 +337,12 @@
 						                  </label>
 						                </li>
 						         	</ul>
-								</div>	
-					
+								</div>
+
 				      		</div>
 
 					    </div>
-		
+
 					    <div class="modal-footer">
 							<div class="CopifyChoosePostOrPage">
 								<input type="radio" name="post_type" value="post" checked="checked">
@@ -354,26 +354,26 @@
 					      	<span class="CopifyButton CopifyGreen" id="CopifyConfirmApprove">Approve & Move to Drafts</span>
 							<span class="CopifyConfirmSaving" id="CopifyConfirmSaving" style="display:none;">&nbsp;</span>
 					    </div>
-			
+
 					</form>
-			
+
 				</div>
 
 			<?php endif; ?>
-			
+
 		</div>
-	
+
 	<?php else : ?>
 		<div class="message error">
 			Invalid job
 		</div>
-	<?php endif; ?>	
+	<?php endif; ?>
 
 </div>
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	
+
 	// Show brief
 	jQuery('.CopifyShowBriefClick').click(function() {
 		if(jQuery(this).html() == 'Show original brief') {
@@ -382,31 +382,31 @@ jQuery(document).ready(function() {
 			jQuery(this).html('Show original brief');
 		}
 		jQuery('.CopifyViewJobBriefDiv').toggle();
-		
+
 	});
-	
+
 	// Show approve modal
 	jQuery('.CopifyApproveAndDraft').click(function() {
 		jQuery('#CopifyFeedBackModal').modal({
 			show: true
 		});
 	});
-	
+
 	// Post feedback via ajax, show indicator, check success and redirect...
 	jQuery('#CopifyConfirmApprove').click(function() {
-		
+
 		// Hide the approve button and show the spinny thing
 		jQuery('#CopifyFeedBackModal .CopifyButton').hide();
 		jQuery('#CopifyConfirmSaving').show();
-		
+
 		// Get the variables we need from la form...
 		var job_id = jQuery('#CopifyApproveJobIdHidden').val();
 		var name = jQuery('#CopifyApproveJobNameHidden').val();
 		var copy = jQuery('#CopifyApproveJobCopyHidden').val();
-		var comment = jQuery('.CopifyStarsDiv').find('input:checked').parent('.CopifyRating').find('.CopifyFeedbackComment').html();
+		var comment = "Thanks";
 		var rating = jQuery('.CopifyStarsDiv').find('input:checked').val();
 		var post_type = jQuery('.CopifyChoosePostOrPage').find('input[type=radio]:checked').val();
-		
+
 		// Our feedback ob:
 		var feedback = {
 			action: 'CopifyPostFeedback',
@@ -417,13 +417,13 @@ jQuery(document).ready(function() {
 			rating: rating,
 			type: post_type,
 		};
-		
+
 		// Push our image on feedback object if there's one set
 		if (jQuery("#CopifySetSelectedImageCheck").length > 0 && jQuery("#CopifySetSelectedImageCheck").prop("checked")) {
 			feedback['image'] = jQuery("#CopifySelectedImageUrl").val();
 			feedback['image_licence'] = jQuery("#CopifySelectedImageLicence").val();
 		}
-	
+
 		// Make ajax request
 		jQuery.ajax(ajaxurl, {
 			type: 'post',
@@ -439,45 +439,45 @@ jQuery(document).ready(function() {
 				} else {
 					alert(data.message);
 				}
-			}, 
+			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert(errorThrown);
 			},
 			timeout: 30000,
 			cache: false
 		});
-		
-		
+
+
 	});
-	
+
 	// Show move to drafts modal
 	jQuery('.CopifyMoveToDrafts').click(function() {
 		jQuery('#CopifyDraftsModal').modal({
 			show: true
 		});
 	});
-	
+
 	// Set the post type and css
 	jQuery('#CopifyDraftsPostTypeSelect').change(function() {
 		var post_type = jQuery(this).val();
 		jQuery('#CopifyDraftsPostTypeHidden').attr('value', post_type);
 	});
-	
+
 	// Move an already approved job to drafts
 	jQuery('#CopifyConfirmToDrafts').click(function() {
-		
+
 		jQuery(this).hide();
 		jQuery('#CopifyConfirmSaving').show();
 
 		var job_id = jQuery('#CopifyDraftsJobIdHidden').val();
 		var post_type = jQuery('#CopifyDraftsPostTypeHidden').val();
-		
+
 		var job = {
 			job_id: job_id,
 			post_type: post_type,
 			action: 'CopifyMoveToDrafts'
 		};
-		
+
 		jQuery.ajax(ajaxurl, {
 			type: 'post',
 			data: job,
@@ -491,25 +491,25 @@ jQuery(document).ready(function() {
 				} else {
 					alert(data.message);
 				}
-			}, 
+			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert(errorThrown);
 			},
 			timeout: 30000,
 			cache: false
 		});
-		
+
 	});
-	
+
 	<?php if($job['job_status_id'] != 4) : ?>
-	
+
 	//Prevent copy paste from copy area
 	jQuery('.CopifyViewFinishedCopy').bind('cut copy paste', function(e) {
 		e.preventDefault();
 		alert('Please approve before copying! Thanks!');
 	});
-	
+
 	<?php endif; ?>
-	
+
 });
 </script>
