@@ -3,7 +3,7 @@ Version: 1.1.2
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
-Tested up to: 4.4.0
+Tested up to: 4.5.0
 Stable tag: trunk
 Github Stable tag: master
 License: GPLv2 or later
