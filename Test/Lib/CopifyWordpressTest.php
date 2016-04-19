@@ -1,11 +1,11 @@
-<?php 
+<?php
 require_once(__DIR__ . '/../../basics.php');
 require_once(__DIR__ . '/../../Lib/CopifyApi.php');
 require_once(__DIR__ . '/../../Lib/CopifyWordpress.php');
-// 
+//
 //  CopifyWordpressTest.php
 //  copify-wordpress
-//  
+//
 //  Created by Rob Mcvey on 2014-06-17.
 //  Copyright 2014 Rob McVey. All rights reserved.
 //
@@ -50,7 +50,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-			
+
 		$this->CopifyWordpress->CopifySetApiClass();
 		$this->assertEquals('https://uk.copify.com/api', $this->CopifyWordpress->Api->basePath);
 	}
@@ -121,7 +121,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('add_option', 'CopifyLoginDetails', $toSave)
-			->will($this->returnValue(true));	
+			->will($this->returnValue(true));
 		$this->CopifyWordpress->CopifySettings();
 	}
 
@@ -153,7 +153,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('update_option', 'CopifyLoginDetails', $toSave)
-			->will($this->returnValue(true));	
+			->will($this->returnValue(true));
 		$this->CopifyWordpress->CopifySettings();
 	}
 
@@ -172,8 +172,8 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with(array('message' => 'Must include auth token'));
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
-			->with('HTTP/1.0 400 Bad Request');	
-		$_GET["copify-action"] = true;	
+			->with('HTTP/1.0 400 Bad Request');
+		$_GET["copify-action"] = true;
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
 
@@ -192,7 +192,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with(array('message' => 'Copify plugin not conigured'));
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
-			->with('HTTP/1.0 404 Not Found');	
+			->with('HTTP/1.0 404 Not Found');
 		$_GET["copify-action"] = true;
 		$_GET["token"] = 'blah';
 		$this->CopifyWordpress->CopifyRequestFilter();
@@ -220,7 +220,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with(array('message' => 'Permission denied'));
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
-			->with('HTTP/1.0 403 Forbidden');	
+			->with('HTTP/1.0 403 Forbidden');
 		$_GET["copify-action"] = true;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0';
 		$this->CopifyWordpress->CopifyRequestFilter();
@@ -235,7 +235,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifyRequestFilterCheckToken() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
 		$version = $this->CopifyWordpress->getVersion();
-		$this->assertEquals('1.1.1', $version);
+		$this->assertEquals('1.1.2', $version);
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
@@ -295,9 +295,9 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->once())
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
-			->will($this->returnValue($mockVal));		
+			->will($this->returnValue($mockVal));
 		$this->CopifyWordpress->expects($this->once())
-			->method('CopifySetApiClass');	
+			->method('CopifySetApiClass');
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyJobIdExists')
 			->with(62343)
@@ -307,7 +307,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with(array('message' => 'Order 62343 already published'));
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
-			->with('HTTP/1.0 409 Conflict');	
+			->with('HTTP/1.0 409 Conflict');
 		$_GET["copify-action"] = true;
 		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
@@ -331,9 +331,9 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->once())
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
-			->will($this->returnValue($mockVal));		
+			->will($this->returnValue($mockVal));
 		$this->CopifyWordpress->expects($this->once())
-			->method('CopifySetApiClass');	
+			->method('CopifySetApiClass');
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyJobIdExists')
 			->with(62343)
@@ -343,17 +343,17 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'name' => 'some order name',
 			'copy' => '',
 			'job_status_id' => 3,
-		);	
+		);
 		$this->CopifyWordpress->Api->expects($this->once())
 			->method('jobsView')
 			->with(62343)
-			->will($this->returnValue($job));	
+			->will($this->returnValue($job));
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array('message' => 'Can not find copy for order 62343'));
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
-			->with('HTTP/1.0 404 Not Found');	
+			->with('HTTP/1.0 404 Not Found');
 		$_GET["copify-action"] = true;
 		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
@@ -377,9 +377,9 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->once())
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
-			->will($this->returnValue($mockVal));		
+			->will($this->returnValue($mockVal));
 		$this->CopifyWordpress->expects($this->once())
-			->method('CopifySetApiClass');	
+			->method('CopifySetApiClass');
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyJobIdExists')
 			->with(62343)
@@ -389,17 +389,17 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'name' => 'some order name',
 			'copy' => 'some copy is here',
 			'job_status_id' => 2,
-		);	
+		);
 		$this->CopifyWordpress->Api->expects($this->once())
 			->method('jobsView')
 			->with(62343)
-			->will($this->returnValue($job));	
+			->will($this->returnValue($job));
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array('message' => 'Order 62343 is not yet complete or approved'));
 		$this->CopifyWordpress->expects($this->once())
 			->method('setheader')
-			->with('HTTP/1.0 404 Not Found');	
+			->with('HTTP/1.0 404 Not Found');
 		$_GET["copify-action"] = true;
 		$_GET["id"] = 62343;
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
@@ -424,19 +424,19 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-		
+
 		$authors = new stdClass();
 		$authors->data = new stdClass();
 		$authors->data->ID = 22;
 		$authorsMock = array(0 => $authors);
-		
+
 		$this->CopifyWordpress->expects($this->at(3))
 			->method('wordpress')
 			->with('get_users', 'role=administrator')
 			->will($this->returnValue($authorsMock));
-					
+
 		$this->CopifyWordpress->expects($this->once())
-			->method('CopifySetApiClass');	
+			->method('CopifySetApiClass');
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyJobIdExists')
 			->with(62343)
@@ -446,18 +446,18 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'name' => 'some order name',
 			'copy' => 'some copy is here',
 			'job_status_id' => 3,
-		);	
+		);
 		$this->CopifyWordpress->Api->expects($this->once())
 			->method('jobsView')
 			->with(62343)
-			->will($this->returnValue($job));	
+			->will($this->returnValue($job));
 		$newPost = array(
 			'post_title' => $job['name'],
 			'post_content' => $job['copy'],
 			'post_status' => 'publish',
 			'post_type' => 'post',
 			'post_author' => 22,
-		);	
+		);
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyAddToPosts')
 			->with(62343, $newPost)
@@ -521,7 +521,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$result = $this->CopifyWordpress->CopifyFlatten($multi);
 		$this->assertEquals($expected, $result);
 	}
-	
+
 /**
  * testCopifyPostFeedbackEmptyPost
  *
@@ -535,7 +535,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->never())
 			->method('CopifyAddToPosts');
 		$this->CopifyWordpress->expects($this->never())
-			->method('CopifySetPostThumbnailFromUrl');	
+			->method('CopifySetPostThumbnailFromUrl');
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array('message' => 'POST request required', 'status' => 'error', 'response' => ''));
@@ -560,62 +560,62 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'comment' => 'good ta',
 			'rating' => 4,
 		);
-		
+
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifySetApiClass');
-			
+
 		$job = array(
 			'id' => 4233,
 			'name' => 'some order name',
 			'copy' => 'chips',
 			'job_status_id' => 3,
-		);	
+		);
 		$this->CopifyWordpress->Api->expects($this->once())
 			->method('jobsView')
 			->with(4233)
 			->will($this->returnValue($job));
-			
+
 		$feedback = array(
 			'job_id' => 4233,
 			'comment' => 'good ta',
 			'rating' => 4,
 		    'name' => 'my great post',
 		    'copy' => 'amazing copy',
-		);	
-			
+		);
+
 		$this->CopifyWordpress->Api->expects($this->once())
 			->method('jobFeedback')
 			->with($feedback)
 			->will($this->returnValue(array('status' => 'success', 'id' => 9)));
-		
+
 		$newPost = array(
 			'post_title' => 'some order name',
 			'post_content' => 'chips',
 			'post_status' => 'draft',
-			'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
+			'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may
 		);
-			
+
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyAddToPosts')
 			->with(4233, $newPost)
-			->will($this->returnValue(2));	
-		
-		
+			->will($this->returnValue(2));
+
+
 		$this->CopifyWordpress->expects($this->never())
 			->method('CopifySetPostThumbnailFromUrl');
-			
-		$response = array();	
+
+		$response = array();
 		$response['status'] = 'success';
 		$response['response'] = array('status' => 'success', 'id' => 9);
-		$response['message'] = 'Job Approved';	
-			
+		$response['message'] = 'Job Approved';
+
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
-			->with($response);	
-				
+			->with($response);
+
 		$this->CopifyWordpress->CopifyPostFeedback();
 	}
-	
+
 /**
  * testCopifyPostFeedbackImage
  *
@@ -645,7 +645,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'name' => 'some order name',
 			'copy' => 'chips',
 			'job_status_id' => 3,
-		);	
+		);
 		$this->CopifyWordpress->Api->expects($this->once())
 			->method('jobsView')
 			->with(54233)
@@ -657,7 +657,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'rating' => 4,
 		    'name' => 'my great post',
 		    'copy' => 'amazing copy',
-		);	
+		);
 
 		$this->CopifyWordpress->Api->expects($this->once())
 			->method('jobFeedback')
@@ -668,30 +668,30 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'post_title' => 'some order name',
 			'post_content' => 'chips',
 			'post_status' => 'draft',
-			'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may 
+			'post_type' => 'post'  // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ] //You may
 		);
-			
+
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifyAddToPosts')
 			->with(54233, $newPost)
 			->will($this->returnValue(2));
-			
+
 		$this->CopifyWordpress->expects($this->once())
 			->method('CopifySetPostThumbnailFromUrl')
 			->with(2, 'https://some.image.com/lolcat.png', array('image_licence' => 'Foo blah <a href="https://some.image.com/lolcat.png">Foobar</a>'))
 			->will($this->returnValue(2));
-			
-		$response = array();	
+
+		$response = array();
 		$response['status'] = 'success';
 		$response['response'] = array('status' => 'success', 'id' => 9);
-		$response['message'] = 'Job Approved';	
+		$response['message'] = 'Job Approved';
 
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
-			->with($response);	
+			->with($response);
 
 		$this->CopifyWordpress->CopifyPostFeedback();
-	}	
+	}
 
 /**
  * testCopifySetPostThumbnailBadHost
@@ -753,7 +753,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifySetPostThumbnailCantLoadUrl() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents'));
 		$wp_upload_dir = array(
-			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06',
 			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
 			'subdir' => '/2014/06',
 			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
@@ -767,7 +767,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->once())
 			->method('_file_get_contents')
 			->with('http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg')
-			->will($this->returnValue(false));	
+			->will($this->returnValue(false));
 		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
 	}
@@ -783,7 +783,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifySetPostThumbnailUploadBitsFails() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique'));
 		$wp_upload_dir = array(
-			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06',
 			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
 			'subdir' => '/2014/06',
 			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
@@ -823,7 +823,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifySetPostThumbnailInsertAttachFails() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique'));
 		$wp_upload_dir = array(
-			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06',
 			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
 			'subdir' => '/2014/06',
 			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
@@ -867,7 +867,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->at(5))
 			->method('wordpress')
 			->with('wp_insert_attachment', $wp_insert_attachment, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
-			->will($this->returnValue(0));	
+			->will($this->returnValue(0));
 		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
 	}
@@ -883,7 +883,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifySetPostThumbnailSetThumbFails() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique', 'setUpdateAttachmentMeta'));
 		$wp_upload_dir = array(
-			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06',
 			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
 			'subdir' => '/2014/06',
 			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
@@ -934,7 +934,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->at(7))
 			->method('wordpress')
 			->with('set_post_thumbnail', 4, 432)
-			->will($this->returnValue(false));	
+			->will($this->returnValue(false));
 		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
 	}
@@ -948,7 +948,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifySetPostThumbnail() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique', 'setUpdateAttachmentMeta'));
 		$wp_upload_dir = array(
-			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06',
 			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
 			'subdir' => '/2014/06',
 			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
@@ -999,7 +999,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->at(7))
 			->method('wordpress')
 			->with('set_post_thumbnail', 4, 432)
-			->will($this->returnValue(211));	
+			->will($this->returnValue(211));
 		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image);
 		$this->assertEquals(211, $result);
@@ -1014,7 +1014,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifySetPostThumbnailWithMeta() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader', 'CopifySetApiClass', 'CopifyJobIdExists', 'CopifyAddToPosts', '_file_get_contents', 'unique', 'setUpdateAttachmentMeta'));
 		$wp_upload_dir = array(
-			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06', 
+			'path' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06',
 			'url' => 'http://localhost.3dlockers.com/wp-content/uploads/2014/06',
 			'subdir' => '/2014/06',
 			'basedir' => '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads',
@@ -1058,7 +1058,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->at(5))
 			->method('wordpress')
 			->with('wp_insert_attachment', $wp_insert_attachment, '/Users/robmcvey/Projects/wordpress-3.9/wp-content/uploads/2014/06/53a2a5db214eb.jpg')
-			->will($this->returnValue(432));		
+			->will($this->returnValue(432));
 		$meta = array(
 			'copify_attr_photo_title' => 'Yellow-bellied Slider Turtle (Trachemys scripta scripta)',
 			'copify_attr_url' => 'https://www.flickr.com/photos/bees/9968828954/',
@@ -1073,7 +1073,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->at(7))
 			->method('wordpress')
 			->with('set_post_thumbnail', 4, 432)
-			->will($this->returnValue(211));	
+			->will($this->returnValue(211));
 		$image = 'http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg';
 		$result = $this->CopifyWordpress->CopifySetPostThumbnailFromUrl(4, $image, $meta);
 		$this->assertEquals(211, $result);
@@ -1104,7 +1104,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
-				'success' => true, 
+				'success' => true,
 				'message' => 'Image for post 22 set to http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg',
 				'set_post_thumbnail' => 421
 			));
@@ -1148,7 +1148,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
-				'success' => true, 
+				'success' => true,
 				'message' => 'Image for post 22 set to http://farm1.staticflickr.com/71/185461246_ad07aa0f2d_o.jpg',
 				'set_post_thumbnail' => 421
 			));
@@ -1276,7 +1276,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
-		
+
 		$this->CopifyWordpress->expects($this->once())
 			->method('outputJson')
 			->with(array(
@@ -1314,7 +1314,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			->with(array(
 				'message' => 'Failed to trash post 77',
 			));
-		$_GET["wp_post_id"] = 77;	
+		$_GET["wp_post_id"] = 77;
 		$_GET["copify-action"] = "unpublish-post";
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
@@ -1351,12 +1351,12 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 				'success' => true,
 				'message' => 'Post 77 moved to trash',
 			));
-		$_GET["wp_post_id"] = 77;	
+		$_GET["wp_post_id"] = 77;
 		$_GET["copify-action"] = "unpublish-post";
 		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0f';
 		$this->CopifyWordpress->CopifyRequestFilter();
 	}
-	
+
 /**
  * testCopifyAddFlickrAttributionNoChange
  *
@@ -1457,11 +1457,11 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$this->CopifyWordpress->expects($this->once())
 			->method('_wp_get_attachment_metadata')
 			->will($this->returnValue($_wp_get_attachment_metadata));
-		$result = $this->CopifyWordpress->CopifyAddFlickrAttribution('foo bar');	
+		$result = $this->CopifyWordpress->CopifyAddFlickrAttribution('foo bar');
 		$expected = 'foo bar<div style="display:block;font-size:9px;">Photo: <a target="blank" title="Yellow-bellied Slider Turtle (Trachemys scripta scripta)" href="https://www.flickr.com/photos/bees/9968828954/" rel="nofollow">Yellow-bellied Slider Turtle (Trachemys scripta scripta)</a> by <a href="http://www.flickr.com/photos/bees" target="blank" title="bees" rel="nofollow">bees</a> licensed under <a href="http://creativecommons.org/licenses/by/4.0/" target="blank" rel="nofollow">Creative commons 4</a></div>';
 		$this->assertEquals($expected, $result);
 	}
-	
+
 /**
  * Tests that CopifyMoveToDrafts does the correct stuff when the job isn't already in the database
  *
