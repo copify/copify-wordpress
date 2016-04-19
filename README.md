@@ -26,11 +26,9 @@ The plugin is best used alongside one of Copify's [monthly blog packages](http:/
 
 We want to use git for version control, but WordPress uses SVN. Urgh.
 
-We can get around this by using two local branches, `master` and `svn`.
+So, initialise the SVN repo locally using `git svn`:
 
-When creating the `svn` branch locally, we set a different remote;
-
-`git checkout -b svn remotes/git-svn`
+`git svn init --stdlayout https://plugins.svn.wordpress.org/copify`
 
 Development can be carried out on any branch other than `svn` then when we want to publish our changes to WordPress, we merge using the `--squash` option;
 
@@ -42,7 +40,7 @@ The `svn` branch can now be commited with a single commit - important for SVN to
 
 ```bash
 1 Squashed commit of the following:
-2 
+2
 3 commit bc314d4aec1ce5a69eaea06e601943f0cfe06eaf
 4 Merge: b09a9b4 17a8ef7
 5 Author: Rob McVey <robmcvey@gmail.com>
@@ -63,7 +61,3 @@ r1003783 = 3a7bb6a653e0eba4a382c6bccdd95267aa3657b3 (refs/remotes/trunk)
 
 ...
 ```
-
-
-
-
