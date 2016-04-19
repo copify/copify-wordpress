@@ -124,7 +124,7 @@ class CopifyWordpress {
 		}
 		// Set the correct end point for the API
 		if (defined('COPIFY_DEVMODE') && COPIFY_DEVMODE == true) {
-			$this->Api->basePath = 'https://localhost.copify.com/api';
+			$this->Api->basePath = COPIFY_DEV_URL;
 		} else {
 			$this->Api->basePath = sprintf('https://%s.copify.com/api', $CopifyLoginDetails['CopifyLocale']);
 		}
