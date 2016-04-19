@@ -39,3 +39,26 @@ Make changes and commit as usual using `git commit`, then diffs and new versions
 $ git svn dcommit
 $ git svn tag 1.1.1
 ```
+
+### Assets
+
+Set up a URL and svn branch for the assets
+
+```bash
+$ git config --add svn-remote.assets.url http://plugins.svn.wordpress.org/copify/assets
+$ git config --add svn-remote.assets.fetch :refs/remotes/assets
+```
+
+Existing assets can then be fetched in to a new branch;
+
+```bash
+$ git svn fetch -r HEAD assets
+$ git checkout -b assets
+```
+
+Make changes (edit icons or banners) then commit while on `assets` branch;
+
+```bash
+$ git commit -am "Edited icon"
+$ git svn dcommit
+```
