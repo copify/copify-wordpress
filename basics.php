@@ -1,15 +1,20 @@
 <?php
-// 
+//
 //  basics.php
 //  copify-wordpress
-//  
+//
 //  Created by Rob Mcvey on 2014-10-08.
 //  Copyright 2014 Rob McVey. All rights reserved.
-// 
+//
 
 // Dev mode
 if (!defined('COPIFY_DEVMODE')) {
-	define('COPIFY_DEVMODE', false);
+	define('COPIFY_DEVMODE', true);
+}
+
+// Dev url
+if (!defined('COPIFY_DEV_URL')) {
+	define('COPIFY_DEV_URL', 'http://192.168.99.100:8080/api');
 }
 
 // Directory seperator for this system
