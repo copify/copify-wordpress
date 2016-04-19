@@ -37,7 +37,6 @@ Make changes and commit as usual using `git commit`, then diffs and new versions
 
 ```bash
 $ git svn dcommit
-$ git svn tag 1.1.1
 ```
 
 ### Assets
