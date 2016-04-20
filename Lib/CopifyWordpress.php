@@ -51,7 +51,14 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifySettings() {
+
 		try {
+            // All available locales
+			$CopifyAvailableLocales = array(
+				'uk' => 'UK',
+				'us' => 'USA',
+				'au' => 'Australia',
+			);
 			// Get API credentials
 			$CopifyLoginDetails = $this->wordpress('get_option', 'CopifyLoginDetails' , false);
 			// API crendtials form submitted
@@ -90,12 +97,6 @@ class CopifyWordpress {
                 $CopifyLocale = '';
                 $CopifyWPUser = '';
 			}
-			// All available locales
-			$CopifyAvailableLocales = array(
-				'uk' => 'UK',
-				'us' => 'USA',
-				'au' => 'Australia',
-			);
 			// Flash message of some kind?
 			if (isset($_GET['flashMessage']) && !empty($_GET['flashMessage'])) {
 				$message = $_GET['flashMessage'];
