@@ -152,7 +152,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'CopifyLocale' => 'au',
             'CopifyWPUser' => 6,
 		);
-		$this->CopifyWordpress->expects($this->at(1))
+		$this->CopifyWordpress->expects($this->at(2))
 			->method('wordpress')
 			->with('add_option', 'CopifyLoginDetails', $toSave)
 			->will($this->returnValue(true));
@@ -188,7 +188,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'CopifyApiKey' => '876453456786',
 			'CopifyLocale' => 'au',
 		);
-		$this->CopifyWordpress->expects($this->at(1))
+		$this->CopifyWordpress->expects($this->at(2))
 			->method('wordpress')
 			->with('update_option', 'CopifyLoginDetails', $toSave)
 			->will($this->returnValue(true));
