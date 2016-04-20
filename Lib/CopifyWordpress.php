@@ -59,6 +59,7 @@ class CopifyWordpress {
 				'us' => 'USA',
 				'au' => 'Australia',
 			);
+            $wp_users = $this->wordpress('get_users', []);
 			// Get API credentials
 			$CopifyLoginDetails = $this->wordpress('get_option', 'CopifyLoginDetails' , false);
 			// API crendtials form submitted
