@@ -11,7 +11,7 @@ class CopifyWordpress {
 /**
  * Plugin version
  */
-	protected $version = '1.1.3';
+	protected $version = '1.2.0';
 
 /**
  * Instance of Copify library
@@ -933,9 +933,13 @@ class CopifyWordpress {
 			'post_status' => 'publish',
 			'post_type' => 'post' // [ 'post' | 'page' | 'link' | 'nav_menu_item' | 'custom_post_type' ]
 		);
-		// Do we have an admin ID we can set as post author?
+		// Do we have an a selected user to post under? OR an admin ID we can set as post author?
 		$admins = $this->wordpress('get_users', 'role=administrator');
-		if (isset($admins[0]) && is_object($admins[0]) && property_exists($admins[0], 'data') && property_exists($admins[0]->data, 'ID')) {
+        // Get API credentials
+        $CopifyLoginDetails = $this->wordpress('get_option', 'CopifyLoginDetails' , false);
+        if (isset($CopifyLoginDetails['CopifyWPUser']) && is_numeric($CopifyLoginDetails['CopifyWPUser'])) {
+            $newPost['post_author'] = $CopifyLoginDetails['CopifyWPUser'];
+        } else if (isset($admins[0]) && is_object($admins[0]) && property_exists($admins[0], 'data') && property_exists($admins[0]->data, 'ID')) {
 			$newPost['post_author'] = $admins[0]->data->ID;
 		}
 		$wp_post_id = $this->CopifyAddToPosts($id, $newPost);
