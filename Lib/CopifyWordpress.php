@@ -60,11 +60,13 @@ class CopifyWordpress {
 				$CopifyEmail = $_POST['CopifyEmail'];
 				$CopifyApiKey = $_POST['CopifyApiKey'];
 				$CopifyLocale = $_POST['CopifyLocale'];
+                $CopifyWPUser = $_POST['CopifyWPUser'];
 				// Array to save
 				$toSave = array(
 					'CopifyEmail' => $CopifyEmail,
 					'CopifyApiKey' => $CopifyApiKey,
-					'CopifyLocale' => $CopifyLocale
+					'CopifyLocale' => $CopifyLocale,
+                    'CopifyWPUser' => $CopifyWPUser
 				);
 				// Update or Add?
 				if ($CopifyLoginDetails) {
@@ -81,6 +83,7 @@ class CopifyWordpress {
 				$CopifyEmail = $CopifyLoginDetails['CopifyEmail'];
 				$CopifyApiKey = $CopifyLoginDetails['CopifyApiKey'];
 				$CopifyLocale = $CopifyLoginDetails['CopifyLocale'];
+                $CopifyWPUser = $CopifyLoginDetails['CopifyWPUser'];
 			} else {
 				$CopifyEmail = '';
 				$CopifyApiKey = '';
