@@ -187,6 +187,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'CopifyEmail' => 'hello@newemail.com',
 			'CopifyApiKey' => '876453456786',
 			'CopifyLocale' => 'au',
+            'CopifyWPUser' => ''
 		);
 		$this->CopifyWordpress->expects($this->at(2))
 			->method('wordpress')
