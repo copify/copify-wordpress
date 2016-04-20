@@ -109,10 +109,15 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_POST['CopifyApiKey'] = '876453456786';
 		$_POST['CopifyLocale'] = 'au';
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress'));
+        $getUsers = [
+            ['ID' => 1, 'display_name' => 'admin'],
+            ['ID' => 2, 'display_name' => 'dave'],
+        ];
+        $userObject = json_decode(json_encode($getUsers), FALSE);
         $this->CopifyWordpress->expects($this->at(0))
 			->method('wordpress')
 			->with('get_users', [])
-			->will($this->returnValue([1,2]));
+			->will($this->returnValue($userObject));
 		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
@@ -142,10 +147,15 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_POST['CopifyLocale'] = 'au';
         $_POST['CopifyWPUser'] = 6;
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress'));
+        $getUsers = [
+            ['ID' => 1, 'display_name' => 'admin'],
+            ['ID' => 2, 'display_name' => 'dave'],
+        ];
+        $userObject = json_decode(json_encode($getUsers), FALSE);
         $this->CopifyWordpress->expects($this->at(0))
 			->method('wordpress')
 			->with('get_users', [])
-			->will($this->returnValue([1,2]));
+			->will($this->returnValue($userObject));
         $this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
@@ -179,10 +189,15 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'CopifyApiKey' => '324532452345324',
 			'CopifyLocale' => 'uk',
 		);
+        $getUsers = [
+            ['ID' => 1, 'display_name' => 'admin'],
+            ['ID' => 2, 'display_name' => 'dave'],
+        ];
+        $userObject = json_decode(json_encode($getUsers), FALSE);
         $this->CopifyWordpress->expects($this->at(0))
 			->method('wordpress')
 			->with('get_users', [])
-			->will($this->returnValue([1,2]));
+			->will($this->returnValue($userObject));
 		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
