@@ -59,6 +59,11 @@ class CopifyWordpress {
 				'us' => 'USA',
 				'au' => 'Australia',
 			);
+            $CopifyEmail = '';
+            $CopifyApiKey = '';
+            $CopifyLocale = '';
+            $CopifyWPUser = '';
+            // Get our users for autopublish
             $wp_users = $this->wordpress('get_users', []);
 			// Get API credentials
 			$CopifyLoginDetails = $this->wordpress('get_option', 'CopifyLoginDetails' , false);
@@ -92,11 +97,6 @@ class CopifyWordpress {
 				$CopifyApiKey = $CopifyLoginDetails['CopifyApiKey'];
 				$CopifyLocale = $CopifyLoginDetails['CopifyLocale'];
                 $CopifyWPUser = (isset($CopifyLoginDetails['CopifyWPUser'])) ? $CopifyLoginDetails['CopifyWPUser'] : '';
-			} else {
-				$CopifyEmail = '';
-				$CopifyApiKey = '';
-                $CopifyLocale = '';
-                $CopifyWPUser = '';
 			}
 			// Flash message of some kind?
 			if (isset($_GET['flashMessage']) && !empty($_GET['flashMessage'])) {
