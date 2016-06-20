@@ -79,8 +79,6 @@ class CopifyWordpress {
                 } else {
                     $CopifyWPUser = '';
                 }
-
-
 				// Array to save
 				$toSave = array(
 					'CopifyEmail' => $CopifyEmail,
@@ -109,7 +107,6 @@ class CopifyWordpress {
 				$CopifyApiKey = '';
                 $CopifyLocale = '';
                 $CopifyWPUser = '';
-
 			}
 			// Flash message of some kind?
 			if (isset($_GET['flashMessage']) && !empty($_GET['flashMessage'])) {
