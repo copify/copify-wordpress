@@ -8,6 +8,7 @@ Automatically publish unique, relevant blogs each week from Copify's team of pro
 
 ### Requirements
 
+* PHP >= 5.3
 * WordPress >= 3.2.0
 * PHP cURL extension
 * PHP JSON library

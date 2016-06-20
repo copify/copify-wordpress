@@ -11,7 +11,7 @@ class CopifyWordpress {
 /**
  * Plugin version
  */
-	protected $version = '1.2.0';
+	protected $version = '1.2.1';
 
 /**
  * Instance of Copify library
@@ -51,7 +51,20 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	public function CopifySettings() {
+
 		try {
+            // All available locales
+			$CopifyAvailableLocales = array(
+				'uk' => 'UK',
+				'us' => 'USA',
+				'au' => 'Australia'
+			);
+            $CopifyEmail = '';
+            $CopifyApiKey = '';
+            $CopifyLocale = '';
+            $CopifyWPUser = '';
+            // Get our users for autopublish
+            $wp_users = $this->wordpress('get_users', array());
 			// Get API credentials
 			$CopifyLoginDetails = $this->wordpress('get_option', 'CopifyLoginDetails' , false);
 			// API crendtials form submitted
@@ -60,7 +73,14 @@ class CopifyWordpress {
 				$CopifyEmail = $_POST['CopifyEmail'];
 				$CopifyApiKey = $_POST['CopifyApiKey'];
 				$CopifyLocale = $_POST['CopifyLocale'];
-                $CopifyWPUser = $_POST['CopifyWPUser'];
+
+                if (isset($_POST['CopifyWPUser'])) {
+                    $CopifyWPUser = $_POST['CopifyWPUser'];
+                } else {
+                    $CopifyWPUser = '';
+                }
+
+
 				// Array to save
 				$toSave = array(
 					'CopifyEmail' => $CopifyEmail,
@@ -87,13 +107,10 @@ class CopifyWordpress {
 			} else {
 				$CopifyEmail = '';
 				$CopifyApiKey = '';
+                $CopifyLocale = '';
+                $CopifyWPUser = '';
+
 			}
-			// All available locales
-			$CopifyAvailableLocales = array(
-				'uk' => 'UK',
-				'us' => 'USA',
-				'au' => 'Australia',
-			);
 			// Flash message of some kind?
 			if (isset($_GET['flashMessage']) && !empty($_GET['flashMessage'])) {
 				$message = $_GET['flashMessage'];

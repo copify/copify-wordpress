@@ -1,70 +1,70 @@
 <?php
-// 
+//
 //  Copify.php
 //  php
-//  
+//
 //  Created by Rob Mcvey on 2012-05-11.
 //  Copyright 2012 Rob Mcvey. All rights reserved.
-// 
+//
 class CopifyApi {
-	
+
 /**
  * The API URL
  */
 	public $basePath = 'https://sandbox.copify.com/api';
-		
+
 /**
  * The API version
  */
 	public $apiVersion = 'v1';
-		
+
 /**
  * live / sandbox
  */
 	public $mode = 'live';
-	
+
 /**
  * Which country API to use. uk or us
  */
 	public $country = 'uk';
-	
+
 /**
  * Resource path e.g. jobs
  */
-	public $resource;	
+	public $resource;
 
 /**
  * Accept format
  */
-	public $format = 'json';	
+	public $format = 'json';
 
 /**
  * The full URL to the resource e.g. https://www.copify.com/jobs/123.json
  */
-	public $fullUrl;	
+	public $fullUrl;
 
 /**
  * URL parameters to append
  */
-	public $params = '';	
+	public $params = '';
 
 /**
  * The HTTP method to use
  */
-	public $httpMethod = 'GET';	
+	public $httpMethod = 'GET';
 
 /**
  * An array of headers to use during the HTTP request
  */
 	public $headers = array();
-	
+
 /**
  * Start up
  *
  * @return void
  * @author Rob Mcvey
- * @param string $apiEmail 
- * @param string $apiKey 
+ * @param string $apiEmail
+ * @param string $apiKey
  **/
 	public function __construct($apiEmail = null , $apiKey = null) {
 		// If we are not on sandbox, set the country sub domain
@@ -74,13 +74,13 @@ class CopifyApi {
 
 		if(empty($apiKey) || empty($apiEmail)) {
 			throw new InvalidArgumentException('Please set the values for your API key and your email e.g: <pre>$Copify = new Copify("API KEY" , "API EMAIL");</pre>');
-		} 
+		}
 
 		// Set the default headers for Authorization and User-Agent
 		$this->headers['Authorization'] = 'Bearer ' . $apiKey;
 		$this->headers['User-Agent'] = $apiEmail;
 	}
-		
+
 /**
  * Sets the full URL
  *
@@ -90,7 +90,7 @@ class CopifyApi {
 	public function setfullUrl() {
 		$this->fullUrl = $this->basePath .'/' . $this->apiVersion . '/'. $this->resource . '.' . $this->format . $this->params;
 	}
-	
+
 /**
  * Get a list of job records (20 per page)
  *
@@ -114,7 +114,7 @@ class CopifyApi {
  *
  * @return array
  * @author Rob Mcvey
- * @param int $id 
+ * @param int $id
  **/
 	public function jobsView($id = null) {
 		if(!$id || !is_numeric($id)) {
@@ -237,7 +237,7 @@ class CopifyApi {
  *
  * @return array
  * @author Rob Mcvey
- * @param int $id 
+ * @param int $id
  **/
 	public function usersView($id =null) {
 		if(!$id || !is_numeric($id)) {
@@ -260,19 +260,19 @@ class CopifyApi {
 		}
 		// Build the URL
 		$this->setfullUrl();
-		
+
 		// create a curly wurly resource
 		$curlyWurly = curl_init($this->fullUrl);
-		
+
 		// Return the response don't just splurt it out on screen
 		curl_setopt($curlyWurly , CURLOPT_RETURNTRANSFER, true);
-				
+
 		// Return the headers from Copify
 		curl_setopt($curlyWurly , CURLOPT_HEADER, false);
-		
+
 		// Don't hang around forever
 		curl_setopt($curlyWurly , CURLOPT_TIMEOUT, 20);
-		
+
 		// Set the HTTP method (make uppercase just in case)
 		$method = strtoupper($this->httpMethod);
 		curl_setopt($curlyWurly , CURLOPT_CUSTOMREQUEST, $method);
@@ -291,10 +291,10 @@ class CopifyApi {
 		// Some users have issues with CA certs so encrypt but dont auth
 		curl_setopt($curlyWurly, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curlyWurly, CURLOPT_SSL_VERIFYHOST, false);
-		
+
 		if(!$response = curl_exec($curlyWurly)) {
 			throw new Exception(curl_error($curlyWurly));
-		} 
+		}
 
 		// Bye bye curly wurly
 		curl_close($curlyWurly);

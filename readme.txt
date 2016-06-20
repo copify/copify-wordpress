@@ -1,5 +1,6 @@
 === Copify ===
-Version: 1.2.0
+
+Version: 1.2.1
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
@@ -38,6 +39,12 @@ This is where Copify can help. By installing our plugin and signing up for one o
 
 == Changelog ==
 
+<<<<<<< 4159b6e30c12e6fdfd282c4782e3c683e34b2578
+=======
+= 1.2.1 =
+* Backwards support for PHP 5.3
+
+>>>>>>> Squashed commit of the following:
 = 1.2.0 =
 * Allows posts that are auto-published to be assigned to a custom user
 

@@ -61,7 +61,6 @@
 
             <label for="CopifyWPUser">Auto-publish author <i>(optional)</i><br><small style="color:#ccc;">Posts that go live automatically will be published under this author</small></label>
 			<div class="input">
-                <?php $wp_users = get_users([]); ?>
 				<select name="CopifyWPUser">
 					<?php
 					foreach($wp_users as $wp_user) {

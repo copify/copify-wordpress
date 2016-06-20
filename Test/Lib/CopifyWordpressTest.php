@@ -34,6 +34,45 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	}
 
 /**
+ * Check dev mode
+ *
+ * @param string $foo Bar
+ * @return void
+ */
+    public function testDevMode()
+    {
+        $this->assertFalse(COPIFY_DEVMODE);
+    }
+
+/**
+ * testCopifyRequestFilterTokenMisMatch
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifyRequestFilterTokenMisMatch() {
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
+		$mockVal = array(
+			'CopifyEmail' => 'foo@bar.com',
+			'CopifyApiKey' => '324532452345324',
+			'CopifyLocale' => 'uk',
+		);
+		$this->CopifyWordpress->expects($this->once())
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue($mockVal));
+		$this->CopifyWordpress->expects($this->once())
+			->method('outputJson')
+			->with(array('message' => 'Permission denied'));
+		$this->CopifyWordpress->expects($this->once())
+			->method('setheader')
+			->with('HTTP/1.0 403 Forbidden');
+		$_GET["copify-action"] = true;
+		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0';
+		$this->CopifyWordpress->CopifyRequestFilter();
+	}
+
+/**
  * testCopifySetApiClass
  *
  * @return void
@@ -109,7 +148,16 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 		$_POST['CopifyApiKey'] = '876453456786';
 		$_POST['CopifyLocale'] = 'au';
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress'));
-		$this->CopifyWordpress->expects($this->at(0))
+        $getUsers = array(
+            array('ID' => 1, 'display_name' => 'admin'),
+            array('ID' => 2, 'display_name' => 'dave'),
+        );
+        $userObject = json_decode(json_encode($getUsers), FALSE);
+        $this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_users', array())
+			->will($this->returnValue($userObject));
+		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue(false));
@@ -117,8 +165,47 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'CopifyEmail' => 'hello@newemail.com',
 			'CopifyApiKey' => '876453456786',
 			'CopifyLocale' => 'au',
+            'CopifyWPUser' => '',
 		);
-		$this->CopifyWordpress->expects($this->at(1))
+		$this->CopifyWordpress->expects($this->at(2))
+			->method('wordpress')
+			->with('add_option', 'CopifyLoginDetails', $toSave)
+			->will($this->returnValue(true));
+		$this->CopifyWordpress->CopifySettings();
+	}
+
+/**
+ * testCopifySettingsSaveWithUser
+ *
+ * @return void
+ * @author Rob Mcvey
+ **/
+	public function testCopifySettingsSaveWithUser() {
+		$_POST['CopifyEmail'] = 'hello@newemail.com';
+		$_POST['CopifyApiKey'] = '876453456786';
+		$_POST['CopifyLocale'] = 'au';
+        $_POST['CopifyWPUser'] = 6;
+		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress'));
+        $getUsers = array(
+            array('ID' => 1, 'display_name' => 'admin'),
+            array('ID' => 2, 'display_name' => 'dave'),
+        );
+        $userObject = json_decode(json_encode($getUsers), FALSE);
+        $this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_users', array())
+			->will($this->returnValue($userObject));
+        $this->CopifyWordpress->expects($this->at(1))
+			->method('wordpress')
+			->with('get_option', 'CopifyLoginDetails', false)
+			->will($this->returnValue(false));
+		$toSave = array(
+			'CopifyEmail' => 'hello@newemail.com',
+			'CopifyApiKey' => '876453456786',
+			'CopifyLocale' => 'au',
+            'CopifyWPUser' => 6,
+		);
+		$this->CopifyWordpress->expects($this->at(2))
 			->method('wordpress')
 			->with('add_option', 'CopifyLoginDetails', $toSave)
 			->will($this->returnValue(true));
@@ -141,7 +228,16 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'CopifyApiKey' => '324532452345324',
 			'CopifyLocale' => 'uk',
 		);
-		$this->CopifyWordpress->expects($this->at(0))
+        $getUsers = array(
+            array('ID' => 1, 'display_name' => 'admin'),
+            array('ID' => 2, 'display_name' => 'dave'),
+        );
+        $userObject = json_decode(json_encode($getUsers), FALSE);
+        $this->CopifyWordpress->expects($this->at(0))
+			->method('wordpress')
+			->with('get_users', array())
+			->will($this->returnValue($userObject));
+		$this->CopifyWordpress->expects($this->at(1))
 			->method('wordpress')
 			->with('get_option', 'CopifyLoginDetails', false)
 			->will($this->returnValue($mockVal));
@@ -149,8 +245,9 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 			'CopifyEmail' => 'hello@newemail.com',
 			'CopifyApiKey' => '876453456786',
 			'CopifyLocale' => 'au',
+            'CopifyWPUser' => ''
 		);
-		$this->CopifyWordpress->expects($this->at(1))
+		$this->CopifyWordpress->expects($this->at(2))
 			->method('wordpress')
 			->with('update_option', 'CopifyLoginDetails', $toSave)
 			->will($this->returnValue(true));
@@ -199,34 +296,6 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	}
 
 /**
- * testCopifyRequestFilterTokenMisMatch
- *
- * @return void
- * @author Rob Mcvey
- **/
-	public function testCopifyRequestFilterTokenMisMatch() {
-		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
-		$mockVal = array(
-			'CopifyEmail' => 'foo@bar.com',
-			'CopifyApiKey' => '324532452345324',
-			'CopifyLocale' => 'uk',
-		);
-		$this->CopifyWordpress->expects($this->once())
-			->method('wordpress')
-			->with('get_option', 'CopifyLoginDetails', false)
-			->will($this->returnValue($mockVal));
-		$this->CopifyWordpress->expects($this->once())
-			->method('outputJson')
-			->with(array('message' => 'Permission denied'));
-		$this->CopifyWordpress->expects($this->once())
-			->method('setheader')
-			->with('HTTP/1.0 403 Forbidden');
-		$_GET["copify-action"] = true;
-		$_GET["token"] = 'd0cf87af82e652220087e7613f0332abc1461a0';
-		$this->CopifyWordpress->CopifyRequestFilter();
-	}
-
-/**
  * testCopifyRequestFilterCheckToken
  *
  * @return void
@@ -235,7 +304,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifyRequestFilterCheckToken() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
 		$version = $this->CopifyWordpress->getVersion();
-		$this->assertEquals('1.2.0', $version);
+		$this->assertEquals('1.2.1', $version);
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',
