@@ -34,7 +34,17 @@ $ git svn init --stdlayout https://plugins.svn.wordpress.org/copify
 $ git svn fetch
 ```
 
-Make changes and commit as usual using `git commit`, then diffs and new versions can be pushed to SVN with;
+Once setup, we use `--squash` to keep things in single commits. E.g. workflow;
+
+```bash
+git checkout -b bugfix
+# new changes
+git commit -a
+git checkout master
+git merge --squash bugfix
+```
+
+Then, we can use the `dcommit` option to sync back to WordPress's SVN repo.
 
 ```bash
 $ git svn dcommit

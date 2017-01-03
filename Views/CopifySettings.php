@@ -35,12 +35,12 @@
 
 			<label for="CopifyEmail">Email</label>
 			<div class="input">
-				<input name="CopifyEmail" value="<?php echo $CopifyEmail; ?>" class="CopifyEmail" type="text" maxLength="100" />
+				<input name="CopifyEmail" value="<?php echo $CopifyEmail; ?>" class="CopifyEmail" type="email" maxLength="100" />
 			</div>
 
 			<label for="CopifyApiKey">API Key</label>
 			<div class="input">
-				<input name="CopifyApiKey" style="width:300px;" value="<?php echo $CopifyApiKey; ?>" class="CopifyApiKey" type="text" maxLength="40" />
+				<input name="CopifyApiKey" style="width:300px;" value="<?php echo $CopifyApiKey; ?>" class="CopifyApiKey" id="ApiKeyInput" type="text" maxLength="40" />
 			</div>
 
 			<label for="CopifyApiKey">Select country</label>
@@ -79,3 +79,23 @@
 	</form>
 
 </div>
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        // Removes whitespace from start and end of email field
+        jQuery('input[type=email]').blur(function() {
+            input = jQuery.trim(jQuery(this).val());
+            jQuery(this).val(input);
+            // Force the field to refresh as Chrome can't seem to do it by itself
+            jQuery(this).addClass('chr_refresh').removeClass('chr_refresh');
+        });
+        // Removes whitespace from start and end of API key field
+        jQuery('#ApiKeyInput').blur(function() {
+            input = jQuery.trim(jQuery(this).val());
+            jQuery(this).val(input);
+            // Force the field to refresh as Chrome can't seem to do it by itself
+            jQuery(this).addClass('chr_refresh').removeClass('chr_refresh');
+        });
+    });
+</script>

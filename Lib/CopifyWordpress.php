@@ -11,7 +11,7 @@ class CopifyWordpress {
 /**
  * Plugin version
  */
-	protected $version = '1.2.1';
+	protected $version = '1.2.2';
 
 /**
  * Instance of Copify library
@@ -1111,6 +1111,7 @@ class CopifyWordpress {
  * @author Rob Mcvey
  **/
 	protected function outputJson($json) {
+        $this->setheader("Content-Type: application/json");
 		echo json_encode($json);
 		die();
 	}

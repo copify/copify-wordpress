@@ -1,10 +1,10 @@
 === Copify ===
 
-Version: 1.2.1
+Version: 1.2.2
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
-Tested up to: 4.5.0
+Tested up to: 4.7.0
 Stable tag: trunk
 Github Stable tag: master
 License: GPLv2 or later
@@ -38,6 +38,10 @@ This is where Copify can help. By installing our plugin and signing up for one o
 3. Select "Auto-publish" and we'll publish your blog posts automatically with an image!
 
 == Changelog ==
+
+= 1.2.2 =
+* Add application/json header in responses
+* Tested up to WordPress 4.7
 
 = 1.2.1 =
 * Backwards support for PHP 5.3
