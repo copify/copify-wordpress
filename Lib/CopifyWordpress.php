@@ -11,7 +11,7 @@ class CopifyWordpress {
 /**
  * Plugin version
  */
-	protected $version = '1.2.2';
+	protected $version = '1.2.3';
 
 /**
  * Instance of Copify library
@@ -447,7 +447,19 @@ class CopifyWordpress {
 					'post_status' => 'draft',
 					'post_type' => $post_type,
 				);
-				$this->CopifyAddToPosts($job_id, $newPost);
+				$wp_post_id = $this->CopifyAddToPosts($job_id, $newPost);
+
+                // Do we have a feature image to set?
+                if (isset($job['image']) && isset($job['image_licence']) && is_array($job['image'])) {
+                    foreach ($job['image'] as $k => $size) {
+                        // Only use the larger "Original" size and let WP crop as it sees fit
+                        if($size['label'] == 'Original' && isset($size['source'])) {
+                            $meta = array('image_licence' => $job['image_licence']);
+                            $this->CopifySetPostThumbnailFromUrl($wp_post_id, $size['source'], $meta);
+                        }
+                    }
+                }
+
 			}
 			// Build the success response
 			$response['status'] = 'success';
@@ -967,6 +979,9 @@ class CopifyWordpress {
  *
  * @return void
  * @author Rob Mcvey
+ * @param int The ID of the existing post
+ * @param string The URL to get the image
+ * @param array Meta to assign to the image
  **/
 	public function CopifySetPostThumbnailFromUrl($post_id, $url, $meta = array()) {
 		// Validate the host

@@ -304,7 +304,7 @@ class CopifyWordpressTest extends PHPUnit_Framework_TestCase {
 	public function testCopifyRequestFilterCheckToken() {
 		$this->CopifyWordpress = $this->getMock('CopifyWordpress', array('wordpress', 'outputJson', 'setheader'));
 		$version = $this->CopifyWordpress->getVersion();
-		$this->assertEquals('1.2.2', $version);
+		$this->assertEquals('1.2.3', $version);
 		$mockVal = array(
 			'CopifyEmail' => 'foo@bar.com',
 			'CopifyApiKey' => '324532452345324',

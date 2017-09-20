@@ -1,6 +1,6 @@
 === Copify ===
 
-Version: 1.2.2
+Version: 1.2.3
 Contributors: robmcvey
 Tags: blog writers, automatic blogging, post writers, auto blogging, content, copywriting, copywriters, blogging, writers, writing, seo
 Requires at least: 3.2.0
@@ -38,6 +38,9 @@ This is where Copify can help. By installing our plugin and signing up for one o
 3. Select "Auto-publish" and we'll publish your blog posts automatically with an image!
 
 == Changelog ==
+
+= 1.2.3 =
+* When moving a post to drafts, the "Featured Image" if available
 
 = 1.2.2 =
 * Add application/json header in responses

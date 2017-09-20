@@ -3,7 +3,7 @@
 Plugin Name: Copify
 Plugin URI: https://github.com/copify/copify-wordpress
 Description: Automatically publish unique, relevant content every week from Copify's team of professional writers.
-Version: 1.2.2
+Version: 1.2.3
 Author: Rob McVey
 Author URI: http://uk.copify.com/
 License: GPL2
